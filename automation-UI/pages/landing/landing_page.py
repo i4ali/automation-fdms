@@ -1,58 +1,54 @@
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
+from base.webdriver import SeleniumWebDriver
 
 
 class LandingPage:
     _url = 'http://0.0.0.0:30000/'
-    _title = 'FDMS'
-    _new_project_button = "//button[text()='New Project']"
-    _create_project_button = "//button[text()='Create']"
-    _project_fields = {
-        'Project Name': 'projectName',
-        'Company Name': 'companyName',
+    _urlcontains = 'wells'
+    _new_well_button = "//button[text()='New Well']"
+    _well_fields = {
         'Well Name': 'wellName',
-        'UWI / API Number': 'uwiNumber'
+        'UWI/API Number': 'uwi'
     }
+    _title = 'FDMS'
+    _well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
+    _new_well_ok_button = "//button[text()='OK']"
+
+    def __init__(self, browsertype):
+        self.driver = SeleniumWebDriver(browsertype)
 
     def goto(self):
-        self.driver = webdriver.Firefox()
-        self.driver.get(self._url)
+        self.driver.get_url(self._url)
 
     def isat(self):
-        return self.driver.title == self._title
+        return self._urlcontains in self.driver.getcurrenturl()
 
-    def newprojectbuttonexists(self):
-        try:
-            self.driver.find_element_by_xpath(self._new_project_button)
-        except NoSuchElementException:
-            return False
-        else:
-            return True
+    def addnewwell(self, wellname, apinumber):
+        new_well_button = self.driver.getElement(self._new_well_button, "xpath")
+        new_well_button.click()
+        well_name_field = self.driver.getElement(self._well_fields['Well Name'], "name")
+        well_name_field.send_keys(wellname)
+        well_name_field = self.driver.getElement(self._well_fields['UWI/API Number'], "name")
+        well_name_field.send_keys(apinumber)
+        self.driver.getElement(self._new_well_ok_button, "xpath").click()
 
-    def validatenewprojectfields(self, *args):
-        try:
-            for arg in args:
-                self.driver.find_element_by_name(self._project_fields[arg])
-        except NoSuchElementException:
-            return False
-        else:
-            return True
+    def wellsuccessmessagepops(self):
+        return True if self.driver.getElement(self._well_success_message_toast, "xpath") else False
 
-    def clicknewprojectbutton(self):
-        new_proj_button = self.driver.find_element_by_xpath(self._new_project_button)
-        new_proj_button.click()
+    def wellexists(self, wellname):
+        return True if self.driver.getElement(wellname, "link") else False
 
-    def addnewproject(self, projectname, companyname, wellname, apinumber=None):
-        self.clicknewprojectbutton()
-        projectname_field = self.driver.find_element_by_name(self._project_fields['Project Name'])
-        projectname_field.send_keys(projectname)
-        companyname_field = self.driver.find_element_by_name(self._project_fields['Company Name'])
-        companyname_field.send_keys(companyname)
-        wellname_field = self.driver.find_element_by_name(self._project_fields['Well Name'])
-        wellname_field.send_keys(wellname)
-        if apinumber is not None:
-            apinumber_field = self.driver.find_element_by_name(self._project_fields['UWI / API Number'])
-            apinumber_field.send_keys(apinumber)
-        self.driver.find_element_by_xpath(self._create_project_button).click()
+
+    #TODO make this a generic function that every page can use
+    # def newprojectbuttonexists(self):
+    #     try:
+    #         self.driver.find_element_by_xpath(self._new_project_button)
+    #     except NoSuchElementException:
+    #         return False
+    #     else:
+    #         return True
+
+    def __del__(self):
+        self.driver.close()
+
 
 

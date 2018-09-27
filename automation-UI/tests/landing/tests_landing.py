@@ -2,30 +2,26 @@ from pages.landing.landing_page import LandingPage
 import unittest
 
 
+
 class LandingPageTest(unittest.TestCase):
 
+    def setUpClass(cls):
+        pass
+
     def test_can_go_to_landing_page(self):
-        self.lp = LandingPage()
+        self.lp = LandingPage("firefox")
         self.lp.goto()
         assert self.lp.isat()
 
-    def test_new_project_button_exists(self):
-        self.lp = LandingPage()
+    def test_add_new_well(self):
+        self.lp = LandingPage("firefox")
         self.lp.goto()
-        assert self.lp.newprojectbuttonexists()
+        self.lp.addnewwell('test', '12')
+        assert self.lp.wellsuccessmessagepops()
+        assert self.lp.wellexists('test')
 
-    def test_validate_add_new_project_window_fields(self):
-        self.lp = LandingPage()
-        self.lp.goto()
-        self.lp.clicknewprojectbutton()
-        assert self.lp.validatenewprojectfields('Project Name', 'Company Name', 'Well Name', 'UWI / API Number')
-
-    @unittest.skip("WIP")
-    def test_add_new_project(self):
-        self.lp = LandingPage()
-        self.lp.goto()
-        self.lp.addnewproject('test4', 'test4', 'test4')
-        #assert lp.projectexists()
+    def tearDownClass(cls):
+        pass
 
 
 

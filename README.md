@@ -17,8 +17,9 @@ Python v3.6
 3) install dependencies and packages through "pip install -r requirements.txt"
 4) cd into directory /automation-fdms/automation-UI
 5) run "export PYTHONPATH=."
-6) run "python3 -m unittest" 
+6) run "python3 -m unittest -v" 
 
 #### Windows TBD
 
-NOTE - Plan is to move the setup to a docker image to simplify the execution steps
+TODO 
+
