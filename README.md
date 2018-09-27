@@ -6,11 +6,19 @@ Project root contains sub-project automation-UI and potentially automation-backe
 ## automation-UI
 UI automation is done using Python binding for selenium v3
 
-### Execution Steps
-1) Install python v3.6
-2) Use virtual environment(optional) - this is the preferred way but not required
-3) Clone the repo
-4) Install dependencies and packages through "pip install -r requirements.txt"
-5) Run the tests through the commandline - TBD
+### Pre-requisite
+Python v3.6
 
-TBD - Plan is to move the setup to a docker image 
+### Execution Steps
+#### Linux
+1) use python virtual environment(optional) - this is the preferred way but not required
+2) clone the repo to a directory
+3) copy the drivers in /automation-fdms/automation-UI/drivers to /usr/bin or /usr/local/bin
+3) install dependencies and packages through "pip install -r requirements.txt"
+4) cd into directory /automation-fdms/automation-UI
+5) run "export PYTHONPATH=."
+6) run "python3 -m unittest" 
+
+#### Windows TBD
+
+NOTE - Plan is to move the setup to a docker image to simplify the execution steps

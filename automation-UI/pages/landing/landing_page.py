@@ -43,8 +43,6 @@ class LandingPage:
         new_proj_button.click()
 
     def addnewproject(self, projectname, companyname, wellname, apinumber=None):
-        # new_proj_button = self.driver.find_element_by_xpath(self._new_project_button)
-        # new_proj_button.click()
         self.clicknewprojectbutton()
         projectname_field = self.driver.find_element_by_name(self._project_fields['Project Name'])
         projectname_field.send_keys(projectname)
