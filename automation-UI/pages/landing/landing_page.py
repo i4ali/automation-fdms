@@ -1,3 +1,8 @@
+"""
+Landing page test to encapsulate all functionality related to the FDMS landing page. This includes the
+locators, functions to be performed on the page
+"""
+
 from base.webdriver import SeleniumWebDriver
 
 
@@ -13,8 +18,8 @@ class LandingPage:
     _well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
     _new_well_ok_button = "//button[text()='OK']"
 
-    def __init__(self, browsertype):
-        self.driver = SeleniumWebDriver(browsertype)
+    def __init__(self, driver):
+        self.driver = SeleniumWebDriver(driver)
 
     def goto(self):
         self.driver.get_url(self._url)
@@ -47,8 +52,6 @@ class LandingPage:
     #     else:
     #         return True
 
-    def __del__(self):
-        self.driver.close()
 
 
 

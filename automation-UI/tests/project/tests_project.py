@@ -3,9 +3,19 @@ import unittest
 from pymongo import MongoClient
 from utilities.read_data import getCSVData
 from ddt import ddt, data, unpack
+from utilities.teststatus import TestStatus
+from base.webdriverfactory import WebDriverFactory
 
 @ddt
 class ProjectPageTest(unittest.TestCase):
+
+
+    @pytest.fixture(autouse=True)
+    def object_setup(self):
+        self.wdf = WebDriverFactory("chrome")
+        self.driver = self.wdf.getWebDriverInstance()
+        self.teststatus = TestStatus(self.driver)
+        self.landingpage = LandingPage(self.driver)
 
     def setUp(self):
         conn = MongoClient("mongodb://localhost:31001/")
@@ -21,7 +31,7 @@ class ProjectPageTest(unittest.TestCase):
         self.pp.goto()
         assert self.pp.isat()
 
-    @data(*getCSVData('testdata/projecttestdata.csv'))
+    @data(*getCSVData('testdata/projecttestdatagood.csv'))
     @unpack
     def test_add_new_project(self, Projectname, Companyname, Wellname, APInumber):
         self.pp = ProjectPage("firefox")

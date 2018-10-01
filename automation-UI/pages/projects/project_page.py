@@ -13,8 +13,8 @@ class ProjectPage:
         'UWI / API Number': 'uwiNumber'
     }
 
-    def __init__(self, browsertype):
-        self.driver = SeleniumWebDriver(browsertype)
+    def __init__(self, driver):
+        self.driver = SeleniumWebDriver(driver)
 
     def addnewproject(self, projectname, companyname, wellname, apinumber=None):
         new_proj_button = self.driver.getElement(self._new_project_button, "xpath")
@@ -41,6 +41,3 @@ class ProjectPage:
 
     def projectsuccessmessagepops(self):
         return True if self.driver.getElement(self._project_successfully_created_toast, "xpath") else False
-
-    def __del__(self):
-        self.driver.close()

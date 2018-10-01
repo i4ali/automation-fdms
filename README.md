@@ -14,10 +14,10 @@ Python v3.6
 1) use python virtual environment(optional) - this is the preferred way but not required
 2) clone the repo to a directory
 3) copy the drivers in /automation-fdms/automation-UI/drivers to /usr/bin or /usr/local/bin
-3) install dependencies and packages through "pip install -r requirements.txt"
-4) cd into directory /automation-fdms/automation-UI
-5) run "export PYTHONPATH=."
-6) run "python3 -m unittest -v" 
+4) install dependencies and packages through "pip install -r requirements.txt"
+5) cd into directory /automation-fdms/automation-UI
+6) run "export PYTHONPATH=."
+7) run "py.test -v -s" 
 
 #### Windows TBD
 
