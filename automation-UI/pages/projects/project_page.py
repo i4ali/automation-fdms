@@ -6,6 +6,7 @@ class ProjectPage:
     _new_project_button = "//button[text()='New Project']"
     _create_project_button = "//button[text()='Create']"
     _project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
+    _project_title = "//h1[contains(text(), 'Projects')]"
     _project_fields = {
         'Project Name': 'projectName',
         'Company Name': 'companyName',
@@ -34,7 +35,7 @@ class ProjectPage:
         self.driver.get_url(self._url)
 
     def isat(self):
-        return self._urlcontains in self.driver.getcurrenturl()
+        return True if self.driver.getElement(self._project_title, "xpath") else False
 
     def projectexists(self, projectname):
         return True if self.driver.getElement(projectname, "link") else False
