@@ -1,6 +1,9 @@
 """
 Landing page test class to encapsulate test cases related to the landing page for FDMS
-web application
+web application.
+
+The file is either run individually through pytest testrunner for e.g. 'pytest tests_landing.py' or is run
+as part of the test_suites file through pytest testrunner for e.g. 'pytest test_suites.py'.
 """
 
 # standard and site-package import
@@ -23,10 +26,13 @@ class LandingPageTest(unittest.TestCase):
 
     Attributes
     ----------
+    wdf : WebDriverFactory instance
+    driver : web driver instance obtained from web driver factory instance
+    teststatus : TestStatus instance
     conn : MongoClient connection instance
     database : 'service-fdms' database
     well : well collection from the db
-    lp : LandingPage instance
+    landingpage : LandingPage instance
 
 
     Methods
@@ -51,6 +57,11 @@ class LandingPageTest(unittest.TestCase):
 
     @pytest.fixture(autouse=True)
     def object_setup(self):
+        """
+        Obtains web driver instance from web driver factory
+        Instantiates LandingPage, TestStatus instance to be used by the test class
+        The function is called before every test function runs automagically
+        """
         self.wdf = WebDriverFactory("chrome")
         self.driver = self.wdf.getWebDriverInstance()
         self.teststatus = TestStatus(self.driver)
@@ -91,6 +102,8 @@ class LandingPageTest(unittest.TestCase):
         self.teststatus.mark(result1, "success toast message")
         result2 = self.landingpage.wellexists(wellname)
         self.teststatus.markFinal("add_new_well_success", result2, "check well existance in table")
+
+
     # @data(*getCSVData('testdata/welltestdatabad.csv'))
     # @unpack
     # def test_add_new_well_fail(self, wellname, apinumber):
@@ -109,5 +122,3 @@ class LandingPageTest(unittest.TestCase):
     #     assert self.lp.welldoesntexist(wellname)
 
 
-if __name__ == '__main__':
-    unittest.main(verbosity=2)

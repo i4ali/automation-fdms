@@ -7,7 +7,7 @@ tc2 = unittest.TestLoader().loadTestsFromTestCase(ProjectPageTest)
 
 
 smoke_test = unittest.TestSuite([tc1, tc2])
-#TODO
-# regression_test
-
-#unittest.TextTestRunner(verbosity=2).run(smoke_test)
+# #TODO
+# # regression_test
+#
+# #unittest.TextTestRunner(verbosity=2).run(smoke_test)

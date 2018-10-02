@@ -17,7 +17,7 @@ Python v3.6
 4) install dependencies and packages through "pip install -r requirements.txt"
 5) cd into directory /automation-fdms/automation-UI
 6) run "export PYTHONPATH=."
-7) run "py.test -v -s" 
+7) run "py.test <testfile> -v -s" 
 
 #### Windows TBD
 
