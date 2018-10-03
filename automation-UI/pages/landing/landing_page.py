@@ -5,7 +5,7 @@ Landing page object to encapsulate all functionality related to the FDMS landing
 locators, functions to be performed on the page
 """
 
-from base.webdriver import SeleniumWebDriver
+from base.seleniumwebdriver import SeleniumWebDriver
 from pages.landing.welledit.welledit_page import WellEditPage
 
 
@@ -77,18 +77,15 @@ class LandingPage:
     def well_success_message_pops(self):
         return True if self.driver.get_element(self._well_success_message_toast, "xpath") else False
 
+    def get_toast_message(self):
+        # TODO grab toast message element and return its text
+        pass
+
     def well_exists(self, wellname):
+        # TODO think about how to handle pagination here before looking for element
         return True if self.driver.get_element(wellname, "link") else False
 
 
-    #TODO make this a generic function that every page can use
-    # def newprojectbuttonexists(self):
-    #     try:
-    #         self.driver.find_element_by_xpath(self._new_project_button)
-    #     except NoSuchElementException:
-    #         return False
-    #     else:
-    #         return True
 
 
 

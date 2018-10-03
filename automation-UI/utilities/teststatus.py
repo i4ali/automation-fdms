@@ -7,11 +7,10 @@ It provides functionality to assert the result
 Example:
     self.check_point.markFinal("Test Name", result, "Message")
 """
-from base.webdriver import SeleniumWebDriver
+from base.seleniumwebdriver import SeleniumWebDriver
 from traceback import print_stack
 
 class TestStatus:
-
 
     def __init__(self, driver):
         """

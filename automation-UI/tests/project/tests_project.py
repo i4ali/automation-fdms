@@ -19,6 +19,7 @@ from utilities.teststatus import TestStatus
 from utilities.read_data import getCSVData
 from base.webdriverfactory import WebDriverFactory
 from pages.projects.project_page import ProjectPage
+import globalconfig
 
 @ddt
 class ProjectPageTest(unittest.TestCase):
@@ -58,17 +59,21 @@ class ProjectPageTest(unittest.TestCase):
 
         """
 
-    @pytest.fixture(autouse=True)
+    @pytest.yield_fixture(autouse=True)
     def object_setup(self):
         """
         Obtains web driver instance from web driver factory
         Instantiates LandingPage, TestStatus instance to be used by the test class
-        The function is called before every test function runs automagically
+        The function is run twice as follows:
+        a) before every test function and runs the code before the yield keyword
+        b) after every test function and runs the code after the yield keyword
         """
-        self.wdf = WebDriverFactory("chrome")
+        self.wdf = WebDriverFactory(globalconfig.browser)
         self.driver = self.wdf.getWebDriverInstance()
         self.teststatus = TestStatus(self.driver)
         self.projectpage = ProjectPage(self.driver)
+        yield
+        self.driver.quit()
 
     @pytest.fixture()
     def clear_project_from_db(self):
@@ -76,7 +81,7 @@ class ProjectPageTest(unittest.TestCase):
         Connects to MongoDB and removes the project, well and client collection from the database
         service-fdms
         """
-        conn = MongoClient("mongodb://localhost:31001/")
+        conn = MongoClient(globalconfig.mongoDB_conn_URI)
         db = conn['service-fdms']
         project = db.get_collection('project')
         client = db.get_collection('client')

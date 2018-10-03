@@ -5,7 +5,7 @@ WellEditPage class to encapsulate all functionality related to the FDMS landing 
 locators, functions to be performed on the page
 """
 
-from base.webdriver import SeleniumWebDriver
+from base.seleniumwebdriver import SeleniumWebDriver
 
 
 class ProjectEditPage:

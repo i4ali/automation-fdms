@@ -8,10 +8,9 @@ Example:
     wdf = WebDriverFactory(browser)
     wdf.getWebDriverInstance()
 """
-import traceback
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
-import os
+import globalconfig
 
 class WebDriverFactory():
 
@@ -40,12 +39,12 @@ class WebDriverFactory():
         Returns:
             'WebDriver Instance'
         """
-        if self.browser == "iexplorer":
+        if self.browser.lower() == "iexplorer":
             # Set ie driver
             driver = webdriver.Ie()
-        elif self.browser == "firefox":
+        elif self.browser.lower() == "firefox":
             driver = webdriver.Firefox()
-        elif self.browser == "chrome":
+        elif self.browser.lower() == "chrome":
             # Set chrome driver
             # chromedriver = "/Users/atomar/Documents/workspace_personal/selenium/chromedriver"
             # os.environ["webdriver.chrome.driver"] = chromedriver
@@ -54,7 +53,7 @@ class WebDriverFactory():
         else:
             driver = webdriver.Firefox()
         # Setting Driver Implicit Time out for An Element
-        driver.implicitly_wait(5)
+        driver.implicitly_wait(globalconfig.browser_implicit_wait_in_secs)
         # Maximize the window
         driver.maximize_window()
         return driver

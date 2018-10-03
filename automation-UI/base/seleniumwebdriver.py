@@ -62,8 +62,6 @@ class SeleniumWebDriver():
             os.makedirs(destinationDirectory)
         self.driver.save_screenshot(destinationFile)
 
-    def close(self):
-        self.driver.close()
 
 
 

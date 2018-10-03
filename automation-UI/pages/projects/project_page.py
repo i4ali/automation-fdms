@@ -5,7 +5,7 @@ Project page object to encapsulate all functionality related to the FDMS project
 locators, functions to be performed on the page
 """
 
-from base.webdriver import SeleniumWebDriver
+from base.seleniumwebdriver import SeleniumWebDriver
 from pages.projects.projectedit.projectedit_page import ProjectEditPage
 
 class ProjectPage:
@@ -48,7 +48,6 @@ class ProjectPage:
     _project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
     _project_title = "//h1[contains(text(), 'Projects')]"
 
-
     def __init__(self, driver):
         self.driver = SeleniumWebDriver(driver)
 
@@ -79,3 +78,7 @@ class ProjectPage:
 
     def project_success_message_pops(self):
         return True if self.driver.get_element(self._project_successfully_created_toast, "xpath") else False
+
+    def get_toast_message(self):
+        # TODO grab toast message element and return its text
+        pass
