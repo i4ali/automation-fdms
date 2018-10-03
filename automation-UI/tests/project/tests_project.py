@@ -17,9 +17,9 @@ import pytest
 # project import
 from utilities.teststatus import TestStatus
 from utilities.read_data import getCSVData
-from base.webdriverfactory import WebDriverFactory
 from pages.projects.project_page import ProjectPage
 import globalconfig
+from base.driver import Driver
 
 @ddt
 class ProjectPageTest(unittest.TestCase):
@@ -59,6 +59,12 @@ class ProjectPageTest(unittest.TestCase):
 
         """
 
+    @pytest.yield_fixture(scope="class", autouse=True)
+    def class_setup(self):
+        self.driver = Driver.instance()
+        yield
+        self.driver.quit()
+
     @pytest.yield_fixture(autouse=True)
     def object_setup(self):
         """
@@ -68,12 +74,8 @@ class ProjectPageTest(unittest.TestCase):
         a) before every test function and runs the code before the yield keyword
         b) after every test function and runs the code after the yield keyword
         """
-        self.wdf = WebDriverFactory(globalconfig.browser)
-        self.driver = self.wdf.getWebDriverInstance()
-        self.teststatus = TestStatus(self.driver)
-        self.projectpage = ProjectPage(self.driver)
-        yield
-        self.driver.quit()
+        self.teststatus = TestStatus()
+        self.projectpage = ProjectPage()
 
     @pytest.fixture()
     def clear_project_from_db(self):

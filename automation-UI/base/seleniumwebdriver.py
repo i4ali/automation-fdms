@@ -1,11 +1,13 @@
 from selenium.webdriver.common.by import By
 import time
 import os
+from base.driver import Driver
 
 
 class SeleniumWebDriver():
-    def __init__(self, driver):
-        self.driver = driver
+    def __init__(self):
+        # self.driver = driver
+        self.driver = Driver.instance()
 
     def _wait_for_doc_ready(self):
         state = ""

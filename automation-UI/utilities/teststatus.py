@@ -12,12 +12,12 @@ from traceback import print_stack
 
 class TestStatus:
 
-    def __init__(self, driver):
+    def __init__(self):
         """
         Inits CheckPoint class
         """
         # super(TestStatus, self).__init__()
-        self.driver = SeleniumWebDriver(driver)
+        self.driver = SeleniumWebDriver()
         self.resultList = []
 
     def setResult(self, result,  resultMessage, expectedresult):
