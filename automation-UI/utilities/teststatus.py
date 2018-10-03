@@ -21,37 +21,46 @@ class TestStatus:
         self.driver = SeleniumWebDriver(driver)
         self.resultList = []
 
-    def setResult(self, result, resultMessage):
+    def setResult(self, result,  resultMessage, expectedresult):
         try:
             if result is not None:
-                if result:
+                if result == expectedresult:
                     self.resultList.append("PASS")
                 else:
                     self.resultList.append("FAIL")
-                    self.driver.screenShot(resultMessage)
+                    self.driver.screenshot(resultMessage)
             else:
                 self.resultList.append("FAIL")
-                self.driver.screenShot(resultMessage)
+                self.driver.screenshot(resultMessage)
         except:
             self.resultList.append("FAIL")
-            self.driver.screenShot(resultMessage)
+            self.driver.screenshot(resultMessage)
             print_stack()
 
-    def mark(self, result, resultMessage):
+    def mark(self, result, resultMessage, expectedresult="pass"):
         """
         Mark the result of the verification point in a test case
         """
-        self.setResult(result, resultMessage)
+        if expectedresult.strip().lower() == "pass":
+            expectedresult = True
+        else:
+            expectedresult = False
+        self.setResult(result, resultMessage, expectedresult)
 
-    def markFinal(self, testName, result, resultMessage):
+    def markFinal(self, result, resultMessage, expectedresult="pass"):
         """
         Mark the final result of the verification point in a test case
         This needs to be called at least once in a test case
         This should be final test status of the test case
         """
-        self.setResult(result, resultMessage)
+        if expectedresult.strip().lower() == "pass":
+            expectedresult = True
+        else:
+            expectedresult = False
+        self.setResult(result, resultMessage, expectedresult)
 
         if "FAIL" in self.resultList:
+            # print(self.resultList)
             self.resultList.clear()
             assert True == False
         else:

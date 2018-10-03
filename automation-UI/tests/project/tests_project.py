@@ -1,4 +1,6 @@
 """
+@package tests.project
+
 Project page test class to encapsulate test cases related to the project page for FDMS
 web application
 
@@ -91,22 +93,23 @@ class ProjectPageTest(unittest.TestCase):
         """
         self.projectpage.goto()
         result = self.projectpage.isat()
-        self.teststatus.markFinal("can_go_to_project_page", result, "can go to project page")
+        self.teststatus.markFinal(result, "can go to project page")
 
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('testdata/projecttestdatagood.csv'))
+    @data(*getCSVData('testdata/projecttestdataandexpectedresult.csv'))
     @unpack
-    def test_add_new_project(self, Projectname, Companyname, Wellname, APInumber):
+    def test_add_new_project(self, projectname, companyname, wellname, apinumber, expectedresult):
         """
         Adds a new well to the database
-        :param Wellname: name of the well to be entered into the form
-        :param APInumber: api number to be entered into the form
-        :param Projectname: project name to entered into the form
-        :param Companyname: client/company name to be entered into the form
+        :param wellname: name of the well to be entered into the form
+        :param apinumber: api number to be entered into the form
+        :param projectname: project name to entered into the form
+        :param companyname: client/company name to be entered into the form
+        :param expectedresult: expected result Pass or Fail
         """
         self.projectpage.goto()
-        self.projectpage.addnewproject(Projectname, Companyname, Wellname, APInumber)
-        result = self.projectpage.projectsuccessmessagepops()
-        self.teststatus.mark(result, "project success message pops")
-        result2 = self.projectpage.projectexists(Projectname)
-        self.teststatus.markFinal("add_new_project", result2, "project exists in table")
+        self.projectpage.add_new_project(projectname, companyname, wellname, apinumber)
+        result = self.projectpage.project_success_message_pops()
+        self.teststatus.mark(result, "project success message pops", expectedresult)
+        result2 = self.projectpage.project_exists(projectname)
+        self.teststatus.markFinal(result2, "project exists in table", expectedresult)

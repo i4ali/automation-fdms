@@ -1,8 +1,7 @@
-from selenium.webdriver.chrome.webdriver import WebDriver
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 import time
 import os
+
 
 class SeleniumWebDriver():
     def __init__(self, driver):
@@ -18,7 +17,7 @@ class SeleniumWebDriver():
         self.driver.get(url)
         self._wait_for_doc_ready()
 
-    def getByType(self, locatorType):
+    def get_by_type(self, locatorType):
         locatorType = locatorType.lower()
         if locatorType == "id":
             return By.ID
@@ -34,21 +33,21 @@ class SeleniumWebDriver():
             return By.LINK_TEXT
         return False
 
-    def getElement(self, locator, locatorType="id"):
+    def get_element(self, locator, locatorType="id"):
         self._wait_for_doc_ready()
         element = None
         locatorType = locatorType.lower()
-        byType = self.getByType(locatorType)
+        byType = self.get_by_type(locatorType)
         element = self.driver.find_element(byType, locator)
         return element
 
-    def getTitle(self):
+    def get_title(self):
         return self.driver.title
 
-    def getcurrenturl(self):
+    def get_current_url(self):
         return self.driver.current_url
 
-    def screenShot(self, resultMessage):
+    def screenshot(self, resultMessage):
         """
         Takes screenshot of the current open web page
         """

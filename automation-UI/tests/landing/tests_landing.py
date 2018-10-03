@@ -1,4 +1,6 @@
 """
+@package  tests.landing
+
 Landing page test class to encapsulate test cases related to the landing page for FDMS
 web application.
 
@@ -17,6 +19,7 @@ from pages.landing.landing_page import LandingPage
 from utilities.read_data import getCSVData
 from utilities.teststatus import TestStatus
 from base.webdriverfactory import WebDriverFactory
+
 
 
 @ddt
@@ -85,31 +88,27 @@ class LandingPageTest(unittest.TestCase):
         """
         self.landingpage.goto()
         result = self.landingpage.isat()
-        self.teststatus.markFinal("can_go_to_landing_page", result, "URL verification")
+        self.teststatus.markFinal(result, "URL verification")
 
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('testdata/welltestdatagood.csv'))
+    @data(*getCSVData('testdata/welltestdataandexpectedresult.csv'))
     @unpack
-    def test_add_new_well_success(self, wellname, apinumber):
+    def test_add_new_well_validation(self, wellname, apinumber, expectedresult):
         """
         Adds a new well to the database
         :param wellname: name of the well to be entered into the form
         :param apinumber: api number to be entered into the form
+        :param expectedresult: expected result Pass or Fail for the entry
         """
         self.landingpage.goto()
-        self.landingpage.addnewwell(wellname, apinumber)
-        result1 = self.landingpage.wellsuccessmessagepops()
-        self.teststatus.mark(result1, "success toast message")
-        result2 = self.landingpage.wellexists(wellname)
-        self.teststatus.markFinal("add_new_well_success", result2, "check well existance in table")
+        self.landingpage.add_new_well(wellname, apinumber)
+        result1 = self.landingpage.well_success_message_pops()
+        self.teststatus.mark(result1, "success toast message", expectedresult)
+        result2 = self.landingpage.well_exists(wellname)
+        self.teststatus.markFinal(result2, "check well existance in table", expectedresult)
 
 
-    # @data(*getCSVData('testdata/welltestdatabad.csv'))
-    # @unpack
-    # def test_add_new_well_fail(self, wellname, apinumber):
-    #     pass
-
-    # @data(*getCSVData('../../testdata/welltestdatagood.csv'))
+    # @data(*getCSVData('../../testdata/welltestdataandexpectedresult.csv'))
     # @unpack
     # @unittest.skip("WIP")
     # def test_rem_well(self, wellname, apinumber):
