@@ -8,15 +8,17 @@ locators, functions to be performed on the page
 from base.webdriver import SeleniumWebDriver
 
 
-class WellEditPage:
-    url = 'http://0.0.0.0:30000/wells/edit-well'
-    create_well_button = "//button[text()='Create Well']"
-    well_fields = {
-        'Well name': 'wellName',
-        'UWI/API Number': 'uwi'
+class ProjectEditPage:
+    url = 'http://0.0.0.0:30000/wells/edit-project'
+    create_project_button = "//button[text()='Create Project']"
+    project_fields = {
+        'Project Name': 'projectName',
+        'Company Name': 'companyName',
+        'Well Name': 'wellName',
+        'UWI / API Number': 'uwi'
     }
     title = 'FDMS'
-    project_title = "//h1[contains(text(), 'NEW WELL')]"
+    project_title = "//h1[contains(text(), 'NEW PROJECT')]"
     uwi_api_number_validation_message = "//div[contains(text(), 'UWI / API must be either 14 or 16 characters.')]"
     well_name_validation_message = "//div[contains(text(), 'Well name is required.')]"
 

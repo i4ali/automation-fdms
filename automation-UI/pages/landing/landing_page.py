@@ -59,6 +59,7 @@ class LandingPage:
 
     def goto(self):
         self.driver.get_url(self._url)
+        return self
 
     def isat(self):
         return self._urlcontains in self.driver.get_current_url()
@@ -71,6 +72,7 @@ class LandingPage:
         well_name_field = self.driver.get_element(WellEditPage.well_fields['UWI/API Number'], "name")
         well_name_field.send_keys(apinumber)
         self.driver.get_element(WellEditPage.create_well_button, "xpath").click()
+        return self
 
     def well_success_message_pops(self):
         return True if self.driver.get_element(self._well_success_message_toast, "xpath") else False
