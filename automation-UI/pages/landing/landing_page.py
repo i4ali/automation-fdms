@@ -54,8 +54,8 @@ class LandingPage:
     _well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
     _new_well_ok_button = "//button[text()='Create Well']"
 
-    def __init__(self, driver):
-        self.driver = SeleniumWebDriver(driver)
+    def __init__(self):
+        self.driver = SeleniumWebDriver()
 
     def goto(self):
         self.driver.get_url(self._url)

@@ -18,9 +18,8 @@ import pytest
 from pages.landing.landing_page import LandingPage
 from utilities.read_data import getCSVData
 from utilities.teststatus import TestStatus
-from base.webdriverfactory import WebDriverFactory
 import globalconfig
-
+from base.driver import Driver
 
 
 @ddt
@@ -57,6 +56,11 @@ class LandingPageTest(unittest.TestCase):
         validating the form entries
 
     """
+    @pytest.yield_fixture(scope="class", autouse=True)
+    def class_setup(self):
+        self.driver = Driver.instance()
+        yield
+        self.driver.quit()
 
     @pytest.yield_fixture(autouse=True)
     def object_setup(self):
@@ -67,12 +71,8 @@ class LandingPageTest(unittest.TestCase):
         a) before every test function and runs the code before the yield keyword
         b) after every test function and runs the code after the yield keyword
         """
-        self.wdf = WebDriverFactory(globalconfig.browser)
-        self.driver = self.wdf.getWebDriverInstance()
-        self.teststatus = TestStatus(self.driver)
-        self.landingpage = LandingPage(self.driver)
-        yield
-        self.driver.quit()
+        self.teststatus = TestStatus()
+        self.landingpage = LandingPage()
 
     @pytest.fixture()
     def clear_well_from_db(self):

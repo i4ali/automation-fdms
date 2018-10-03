@@ -48,8 +48,8 @@ class ProjectPage:
     _project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
     _project_title = "//h1[contains(text(), 'Projects')]"
 
-    def __init__(self, driver):
-        self.driver = SeleniumWebDriver(driver)
+    def __init__(self):
+        self.driver = SeleniumWebDriver()
 
     def add_new_project(self, projectname, companyname, wellname, apinumber=None):
         new_proj_button = self.driver.get_element(self._new_project_button, "xpath")
