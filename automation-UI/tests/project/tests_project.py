@@ -19,10 +19,10 @@ from utilities.teststatus import TestStatus
 from utilities.read_data import getCSVData
 from pages.projects.project_page import ProjectPage
 import globalconfig
-from base.driver import Driver
+
 
 @ddt
-class ProjectPageTest(unittest.TestCase):
+class TestProjectPage(unittest.TestCase):
     """
         Project page test class
 
@@ -59,20 +59,11 @@ class ProjectPageTest(unittest.TestCase):
 
         """
 
-    @pytest.yield_fixture(scope="class", autouse=True)
-    def class_setup(self):
-        self.driver = Driver.instance()
-        yield
-        self.driver.quit()
-
-    @pytest.yield_fixture(autouse=True)
+    @pytest.fixture(autouse=True)
     def object_setup(self):
         """
-        Obtains web driver instance from web driver factory
-        Instantiates LandingPage, TestStatus instance to be used by the test class
-        The function is run twice as follows:
-        a) before every test function and runs the code before the yield keyword
-        b) after every test function and runs the code after the yield keyword
+        Instantiates ProjectPage, TestStatus instance to be used by the test class
+        The function is run before every test function is called
         """
         self.teststatus = TestStatus()
         self.projectpage = ProjectPage()
@@ -84,7 +75,7 @@ class ProjectPageTest(unittest.TestCase):
         service-fdms
         """
         conn = MongoClient(globalconfig.mongoDB_conn_URI)
-        db = conn['service-fdms']
+        db = conn[globalconfig.mongoDB]
         project = db.get_collection('project')
         client = db.get_collection('client')
         well = db.get_collection('well')
@@ -92,7 +83,7 @@ class ProjectPageTest(unittest.TestCase):
         client.delete_many({})
         well.delete_many({})
 
-
+    @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
         """
         Instanstiates landing page and verifies the page can be reached
@@ -102,6 +93,7 @@ class ProjectPageTest(unittest.TestCase):
         result = self.projectpage.isat()
         self.teststatus.markFinal(result, "can go to project page")
 
+    @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('testdata/projecttestdataandexpectedresult.csv'))
     @unpack

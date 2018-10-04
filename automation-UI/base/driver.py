@@ -1,9 +1,25 @@
+"""
+@package base
+
+This is a module that implements the Singleton driver class
+"""
+
 from selenium import webdriver
 from selenium.webdriver.chrome.webdriver import WebDriver
+
 import globalconfig
 
-class Driver:
 
+class Driver:
+    """
+    Singleton Driver class to enforce one driver instance use
+
+    Methods
+    -------
+    instance()
+        return driver instance. Same instance if already exists
+
+    """
     @staticmethod
     def instance():
         if '_instance' not in Driver.__dict__:

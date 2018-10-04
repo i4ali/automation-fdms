@@ -46,10 +46,6 @@ class LandingPage:
     _url = 'http://0.0.0.0:30000/'
     _urlcontains = 'wells'
     _new_well_button = "//button[text()='New Well']"
-    _well_fields = {
-        'Well Name': 'wellName',
-        'UWI/API Number': 'uwi'
-    }
     _title = 'FDMS'
     _well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
     _new_well_ok_button = "//button[text()='Create Well']"
@@ -79,6 +75,10 @@ class LandingPage:
 
     def get_toast_message(self):
         # TODO grab toast message element and return its text
+        pass
+
+    def edit_well(self):
+        #TODO
         pass
 
     def well_exists(self, wellname):

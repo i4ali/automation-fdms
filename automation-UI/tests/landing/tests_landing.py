@@ -19,11 +19,10 @@ from pages.landing.landing_page import LandingPage
 from utilities.read_data import getCSVData
 from utilities.teststatus import TestStatus
 import globalconfig
-from base.driver import Driver
 
 
 @ddt
-class LandingPageTest(unittest.TestCase):
+class TestLandingPage(unittest.TestCase):
     """
     Landing page test class
 
@@ -56,20 +55,12 @@ class LandingPageTest(unittest.TestCase):
         validating the form entries
 
     """
-    @pytest.yield_fixture(scope="class", autouse=True)
-    def class_setup(self):
-        self.driver = Driver.instance()
-        yield
-        self.driver.quit()
 
-    @pytest.yield_fixture(autouse=True)
+    @pytest.fixture(autouse=True)
     def object_setup(self):
         """
-        Obtains web driver instance from web driver factory
         Instantiates LandingPage, TestStatus instance to be used by the test class
-        The function is run twice as follows:
-        a) before every test function and runs the code before the yield keyword
-        b) after every test function and runs the code after the yield keyword
+        The function is run before every test function is called
         """
         self.teststatus = TestStatus()
         self.landingpage = LandingPage()
@@ -81,10 +72,11 @@ class LandingPageTest(unittest.TestCase):
         service-fdms
         """
         self.conn = MongoClient(globalconfig.mongoDB_conn_URI)
-        self.database = self.conn['service-fdms']
+        self.database = self.conn[globalconfig.mongoDB]
         self.well = self.database.get_collection('well')
         self.well.delete_many({})
 
+    @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):
         """
         Instanstiates landing page and verifies the page can be reached
@@ -94,6 +86,7 @@ class LandingPageTest(unittest.TestCase):
         result = self.landingpage.isat()
         self.teststatus.markFinal(result, "URL verification")
 
+    @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('testdata/welltestdataandexpectedresult.csv'))
     @unpack
