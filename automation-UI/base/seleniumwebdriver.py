@@ -2,11 +2,11 @@ from selenium.webdriver.common.by import By
 import time
 import os
 from base.driver import Driver
+from selenium.common.exceptions import NoSuchElementException
 
 
 class SeleniumWebDriver():
     def __init__(self):
-        # self.driver = driver
         self.driver = Driver.instance()
 
     def _wait_for_doc_ready(self):
@@ -48,6 +48,19 @@ class SeleniumWebDriver():
 
     def get_current_url(self):
         return self.driver.current_url
+
+    def get_text(self, locator="", locatorType="id", element=None, info=""):
+        try:
+            if locator: # This means if locator is not empty
+                element = self.get_element(locator, locatorType)
+            text = element.text
+            if len(text) == 0:
+                text = element.get_attribute("innerText")
+            if len(text) != 0:
+                text = text.strip()
+        except NoSuchElementException:
+            return ""
+        return text
 
     def screenshot(self, resultMessage):
         """
