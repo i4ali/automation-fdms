@@ -6,7 +6,7 @@ locators, functions to be performed on the page
 """
 
 from base.seleniumwebdriver import SeleniumWebDriver
-from pages.projects.projectedit.projectedit_page import ProjectEditPage
+from pages.projects.projectedit_page import ProjectEditPage
 
 class ProjectPage:
     """
@@ -30,7 +30,7 @@ class ProjectPage:
             method to go to the url for the page
 
         isat()
-            method to check if current page is landing page
+            method to check if current page is wells page
 
         add_new_project(projectname, companyname, wellname, apinumber)
             method to add new project
@@ -42,7 +42,7 @@ class ProjectPage:
             method to check if the projectname by projectname exists in the table
 
         """
-    _url = 'http://0.0.0.0:30000/projects'
+    _url = 'http://localhost:9000/projects'
     _urlcontains = 'projects'
     _new_project_button = "//button[text()='New Project']"
     _project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
@@ -51,20 +51,13 @@ class ProjectPage:
     def __init__(self):
         self.driver = SeleniumWebDriver()
 
-    def add_new_project(self, projectname, companyname, wellname, apinumber=None):
-        new_proj_button = self.driver.get_element(self._new_project_button, "xpath")
-        new_proj_button.click()
-        projectname_field = self.driver.get_element(ProjectEditPage.project_fields['Project Name'], "name")
-        projectname_field.send_keys(projectname)
-        companyname_field = self.driver.get_element(ProjectEditPage.project_fields['Company Name'], "name")
-        companyname_field.send_keys(companyname)
-        wellname_field = self.driver.get_element(ProjectEditPage.project_fields['Well Name'], "name")
-        wellname_field.send_keys(wellname)
-        if apinumber is not None:
-            apinumber_field = self.driver.get_element(ProjectEditPage.project_fields['UWI / API Number'], "name")
-            apinumber_field.send_keys(apinumber)
-        self.driver.get_element(ProjectEditPage.create_project_button, "xpath").click()
-        return self
+    def add_new_project(self, projectname, companyname, wellname, apinumber):
+        self.click_new_project()
+        ProjectEditPage().enter_project_name(projectname)
+        ProjectEditPage().enter_company_name(companyname)
+        ProjectEditPage().enter_well_name(wellname)
+        ProjectEditPage().enter_api_number(apinumber)
+        ProjectEditPage().click_create_project()
 
     def goto(self):
         self.driver.get_url(self._url)
@@ -82,3 +75,8 @@ class ProjectPage:
     def get_toast_message(self):
         # TODO grab toast message element and return its text
         pass
+
+    def click_new_project(self):
+        self.driver.get_element(self._new_project_button, "xpath").click()
+
+

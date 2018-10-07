@@ -4,8 +4,8 @@
 Project page test class to encapsulate test cases related to the project page for FDMS
 web application
 
-The file is either run individually through pytest testrunner for e.g. 'pytest tests_project.py' or is run
-as part of the test_suites file through pytest testrunner for e.g. 'pytest tests_project.py'.
+The file is either run individually through pytest testrunner for e.g. 'pytest tests_projects.py' or is run
+as part of the test_suites file through pytest testrunner for e.g. 'pytest tests_projects.py'.
 """
 
 # standard and site-package import
@@ -17,12 +17,14 @@ import pytest
 # project import
 from utilities.teststatus import TestStatus
 from utilities.read_data import getCSVData
+from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
+from pages.projects.projectedit_page import ProjectEditPage
 import globalconfig
 
 
 @ddt
-class TestProjectPage(unittest.TestCase):
+class TestProjects(unittest.TestCase):
     """
         Project page test class
 
@@ -66,7 +68,9 @@ class TestProjectPage(unittest.TestCase):
         The function is run before every test function is called
         """
         self.teststatus = TestStatus()
+        self.wellpage = WellPage()
         self.projectpage = ProjectPage()
+        self.projecteditpage = ProjectEditPage()
 
     @pytest.fixture()
     def clear_project_from_db(self):
@@ -86,18 +90,19 @@ class TestProjectPage(unittest.TestCase):
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
         """
-        Instanstiates landing page and verifies the page can be reached
+        Instanstiates wells page and verifies the page can be reached
         successfully from the browser
         """
-        self.projectpage.goto()
+        self.wellpage.goto()
+        self.wellpage.navigate_to_projects()
         result = self.projectpage.isat()
         self.teststatus.markFinal(result, "can go to project page")
 
     @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('testdata/projecttestdataandexpectedresult.csv'))
+    @data(*getCSVData('testdata/projecttestdata.csv'))
     @unpack
-    def test_add_new_project(self, projectname, companyname, wellname, apinumber, expectedresult):
+    def test_add_new_project(self, projectname, companyname, wellname, apinumber):
         """
         Adds a new well to the database
         :param wellname: name of the well to be entered into the form
@@ -106,9 +111,42 @@ class TestProjectPage(unittest.TestCase):
         :param companyname: client/company name to be entered into the form
         :param expectedresult: expected result Pass or Fail
         """
-        self.projectpage.goto()
+        self.wellpage.goto()
+        self.wellpage.navigate_to_projects()
         self.projectpage.add_new_project(projectname, companyname, wellname, apinumber)
         result = self.projectpage.project_success_message_pops()
-        self.teststatus.mark(result, "project success message pops", expectedresult)
+        self.teststatus.mark(result, "project success message pops")
         result2 = self.projectpage.project_exists(projectname)
-        self.teststatus.markFinal(result2, "project exists in table", expectedresult)
+        self.teststatus.markFinal(result2, "project exists in table")
+
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('testdata/wellnamevalidation.csv'))
+    @unpack
+    def test_wellname_validation(self, wellname, validationmessage):
+        """FDMS-182"""
+        self.wellpage.goto()
+        self.wellpage.navigate_to_projects()
+        self.projectpage.click_new_project()
+        self.projecteditpage.enter_well_name(wellname)
+        self.projecteditpage.click_create_project()
+        assert self.projecteditpage.get_validation_message_wellname() == validationmessage.strip()
+
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('testdata/apinamevalidation.csv'))
+    @unpack
+    def test_apiname_validation(self, apinumber, validationmessage):
+        """FDMS-183"""
+        self.wellpage.goto()
+        self.wellpage.navigate_to_projects()
+        self.projectpage.click_new_project()
+        self.projecteditpage.enter_api_number(apinumber)
+        self.projecteditpage.click_create_project()
+        assert self.projecteditpage.get_validation_message_apiname() == validationmessage.strip()
+
+
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # @data(*getCSVData('testdata/projectnamevalidation.csv'))
+    # @unpack
+    # def test_project_name_validation(self, wellname, apinumber, validationmessage):
+    #     """FDMS-183"""
+    #     pass
