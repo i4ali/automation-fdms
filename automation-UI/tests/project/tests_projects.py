@@ -20,6 +20,7 @@ from utilities.read_data import getCSVData
 from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
+from pages.navigation.navigation_page import NavigationPage
 import globalconfig
 
 
@@ -51,13 +52,15 @@ class TestProjects(unittest.TestCase):
         test_can_go_to_project_page()
             Verify that the project page comes up successfully
 
-        test_add_new_project_success(Projectname, Companyname, Wellname, APInumber)
+        test_add_new_project(Projectname, Companyname, Wellname, APInumber)
             Verify that new well can be added using the appropriate format for Projectname,
             Companyname, Wellname, APInumber and validating the form entries
 
-        test_add_new_well_failure(wellname, apinumber)
-            Verify that new well cannot be added using the inappropriate format for Projectname,
-            Companyname, Wellname, APInumber and validating the form entries
+        test_wellname_validation(wellname, validationmessage)
+            Validate the wellname field of the new well form
+
+        test_apiname_validation(apiname, validationmessage)
+            Validate the apiname field of the new well form
 
         """
 
@@ -71,6 +74,7 @@ class TestProjects(unittest.TestCase):
         self.wellpage = WellPage()
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
+        self.navigationpage = NavigationPage()
 
     @pytest.fixture()
     def clear_project_from_db(self):
@@ -93,14 +97,13 @@ class TestProjects(unittest.TestCase):
         Instanstiates wells page and verifies the page can be reached
         successfully from the browser
         """
-        self.wellpage.goto()
-        self.wellpage.navigate_to_projects()
+        self.navigationpage.navigate_to_projects()
         result = self.projectpage.isat()
         self.teststatus.markFinal(result, "can go to project page")
 
     @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('testdata/projecttestdata.csv'))
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
     def test_add_new_project(self, projectname, companyname, wellname, apinumber):
         """
@@ -111,8 +114,7 @@ class TestProjects(unittest.TestCase):
         :param companyname: client/company name to be entered into the form
         :param expectedresult: expected result Pass or Fail
         """
-        self.wellpage.goto()
-        self.wellpage.navigate_to_projects()
+        self.navigationpage.navigate_to_projects()
         self.projectpage.add_new_project(projectname, companyname, wellname, apinumber)
         result = self.projectpage.project_success_message_pops()
         self.teststatus.mark(result, "project success message pops")
@@ -120,24 +122,30 @@ class TestProjects(unittest.TestCase):
         self.teststatus.markFinal(result2, "project exists in table")
 
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('testdata/wellnamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
     @unpack
     def test_wellname_validation(self, wellname, validationmessage):
-        """FDMS-182"""
-        self.wellpage.goto()
-        self.wellpage.navigate_to_projects()
+        """FDMS-182
+        Validates the wellname field when adding a new project
+        :param wellname: name of the well to be entered into the form
+        :param validationmessage: the expected validation message
+        """
+        self.navigationpage.navigate_to_projects()
         self.projectpage.click_new_project()
         self.projecteditpage.enter_well_name(wellname)
         self.projecteditpage.click_create_project()
         assert self.projecteditpage.get_validation_message_wellname() == validationmessage.strip()
 
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('testdata/apinamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
     @unpack
     def test_apiname_validation(self, apinumber, validationmessage):
-        """FDMS-183"""
-        self.wellpage.goto()
-        self.wellpage.navigate_to_projects()
+        """FDMS-183
+        Validates the apiname field when adding a new project
+        :param apiname: apiname to be entered into the form
+        :param validationmessage: the expected validation message
+        """
+        self.navigationpage.navigate_to_projects()
         self.projectpage.click_new_project()
         self.projecteditpage.enter_api_number(apinumber)
         self.projecteditpage.click_create_project()

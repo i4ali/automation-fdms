@@ -19,11 +19,10 @@ class WellPage:
         driver : web driver instance obtained from web driver factory instance
         urlcontains : string to look for in url
         new_well_button : locator in the form of xpath for the new well button
-        well_fields : dictionary to store fieldnames as keys and the locators in the form of
-                      name for the values
         title : title of the page
         well_success_message_toast : locator in the form of xpath for the toast message on success for well addition
         new_well_ok_button : locator in the form of xpath for create new well button
+        page_header : locator in the form of xpath for the page header
 
         Methods
         -------
@@ -42,6 +41,12 @@ class WellPage:
         well_exists(wellname)
             method to check if the well by wellname exists in the table
 
+        click_new_well()
+            method to click new well button on wells page
+
+        navigate_to_projects()
+            method to navigate to projects page
+
         """
     url = 'http://localhost:9000/'
     urlcontains = 'wells'
@@ -49,7 +54,6 @@ class WellPage:
     title = 'FDMS'
     well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
     new_well_ok_button = "//button[text()='Create Well']"
-    projects_link = "a[href='/projects']"
     page_header = "//h1[text()='Wells']"
 
     def __init__(self):
@@ -63,15 +67,29 @@ class WellPage:
         return self.driver.is_element_present(self.page_header, "xpath")
 
     def add_new_well(self, wellname, apinumber):
+        """
+        clicks new well on well page to create new well and enter
+        all field information
+        :param wellname: well name to be entered into form
+        :param apinumber: apinumber to be entered into form
+        """
         self.click_new_well()
         WellEditPage().enter_well_name(wellname)
         WellEditPage().enter_api_number(apinumber)
         WellEditPage().click_create_well()
 
     def well_success_message_pops(self):
+        """
+        Check to see if the success message pops after project created
+        :return: Boolean
+        """
         return self.driver.is_element_present(self.well_success_message_toast, "xpath")
 
     def get_toast_message(self):
+        """
+        Find the toast element and return its message
+        :return: text of the toast message
+        """
         # TODO grab toast message element and return its text
         pass
 
@@ -84,10 +102,11 @@ class WellPage:
         return self.driver.is_element_present(wellname, "link")
 
     def click_new_well(self):
+        """
+        Click the new  well button on the well page
+        """
         self.driver.get_element(self.new_well_button, "xpath").click()
 
-    def navigate_to_projects(self):
-        self.driver.get_element(self.projects_link, "css").click()
 
 
 

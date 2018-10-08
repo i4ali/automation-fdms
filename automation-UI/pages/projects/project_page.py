@@ -18,11 +18,9 @@ class ProjectPage:
         driver : web driver instance obtained from web driver factory instance
         urlcontains : string to look for in url
         new_project_button : locator in the form of xpath for the new project button
-        project_fields : dictionary to store fieldnames as keys and the locators in the form of
-                      name for the values
-        title : title of the page
-        well_success_message_toast : locator in the form of xpath for the toast message on success for well addition
-        create_project_button : locator in the form of xpath for create project button
+        project_successfully_created_toast : locator in the form of xpath for the toast message on success for
+        well addition
+        page_header : locator in the form of xpath for the page header
 
         Methods
         -------
@@ -41,6 +39,12 @@ class ProjectPage:
         project_exists(projectname)
             method to check if the projectname by projectname exists in the table
 
+        get_toast_message()
+            method to grab toast message element and return its text
+
+        click_new_project()
+            method to click new project button on project page
+
         """
     url = 'http://localhost:9000/projects'
     urlcontains = 'projects'
@@ -53,6 +57,14 @@ class ProjectPage:
         self.driver = SeleniumWebDriver()
 
     def add_new_project(self, projectname, companyname, wellname, apinumber):
+        """
+        clicks new project on project page to create new project and enter
+        all field information
+        :param projectname: project name to be entered into form
+        :param companyname: company name to be entered into form
+        :param wellname: well name to be entered into form
+        :param apinumber: apinumber to be entered into form
+        """
         self.click_new_project()
         ProjectEditPage().enter_project_name(projectname)
         ProjectEditPage().enter_company_name(companyname)
@@ -61,23 +73,46 @@ class ProjectPage:
         ProjectEditPage().click_create_project()
 
     def goto(self):
+        """
+        Go to the project page
+        """
         self.driver.get_url(self.url)
         return self
 
     def isat(self):
+        """
+        Check if currently at project page
+        :return: Boolean
+        """
         return self.driver.is_element_present(self.page_header, "xpath")
 
     def project_exists(self, projectname):
+        """
+        Check the project table to see if project by projectname exists
+        :param projectname: project name to search
+        :return: Boolean
+        """
         return self.driver.is_element_present(projectname, "link")
 
     def project_success_message_pops(self):
+        """
+        Check to see if the success message pops after project created
+        :return: Boolean
+        """
         return self.driver.is_element_present(self.project_successfully_created_toast, "xpath")
 
     def get_toast_message(self):
+        """
+        Find the toast element and return its message
+        :return: text of the toast message
+        """
         # TODO grab toast message element and return its text
         pass
 
     def click_new_project(self):
+        """
+        Click the new project button on the project page
+        """
         self.driver.get_element(self.new_project_button, "xpath").click()
 
 

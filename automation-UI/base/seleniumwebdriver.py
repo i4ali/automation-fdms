@@ -60,17 +60,17 @@ class SeleniumWebDriver():
         return self.driver.current_url
 
     def get_text(self, locator="", locatorType="id", element=None, info=""):
-        try:
-            if locator: # This means if locator is not empty
-                element = self.get_element(locator, locatorType)
+        if locator: # This means if locator is not empty
+            element = self.get_element(locator, locatorType)
+        if element is not None:
             text = element.text
             if len(text) == 0:
                 text = element.get_attribute("innerText")
             if len(text) != 0:
                 text = text.strip()
-        except NoSuchElementException:
+            return text
+        else:
             return ""
-        return text
 
     def screenshot(self, resultMessage):
         """

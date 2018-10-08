@@ -47,13 +47,15 @@ class TestWells(unittest.TestCase):
     test_can_go_to_landing_page()
         Verify that the wells page comes up successfully
 
-    test_add_new_well_success(wellname, apinumber)
+    test_add_new_well(wellname, apinumber)
         Verify that new well can be added using the appropriate format for wellname and apinumber
         validating the form entries
 
-    test_add_new_well_failure(wellname, apinumber)
-        Verify that new well cannot be added for the inappropriate wellname and apinumber
-        validating the form entries
+    test_wellname_validation(wellname, validationmessage)
+        Validate the wellname field of the new well form
+
+    test_apiname_validation(apiname, validationmessage)
+        Validate the apiname field of the new well form
 
     """
 
@@ -84,13 +86,12 @@ class TestWells(unittest.TestCase):
         Instanstiates wells page and verifies the page can be reached
         successfully from the browser
         """
-        self.wellpage.goto()
         result = self.wellpage.isat()
         self.teststatus.markFinal(result, "URL verification")
 
     @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('testdata/welltestdata.csv'))
+    @data(*getCSVData('tests/testdata/welltestdata.csv'))
     @unpack
     def test_add_new_well(self, wellname, apinumber):
         """
@@ -99,7 +100,6 @@ class TestWells(unittest.TestCase):
         :param apinumber: api number to be entered into the form
         :param expectedresult: expected result Pass or Fail for the entry
         """
-        self.wellpage.goto()
         self.wellpage.add_new_well(wellname, apinumber)
         result1 = self.wellpage.well_success_message_pops()
         self.teststatus.mark(result1, "success toast message")
@@ -107,27 +107,33 @@ class TestWells(unittest.TestCase):
         self.teststatus.markFinal(result2, "check well existance in table")
 
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('testdata/wellnamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
     @unpack
     def test_wellname_validation(self, wellname, validationmessage):
-        """FDMS-182"""
-        self.wellpage.goto()
+        """FDMS-182
+        Validates the wellname field when adding a new well
+        :param wellname: name of the well to be entered into the form
+        :param validationmessage: the expected validation message
+        """
         self.wellpage.click_new_well()
         self.welleditpage.enter_well_name(wellname)
         self.welleditpage.click_create_well()
-        assert self.welleditpage.get_validation_message_wellname() == validationmessage.strip()
+        assert self.welleditpage.get_validation_message_wellname() in validationmessage
 
 
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('testdata/apinamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
     @unpack
     def test_apiname_validation(self, apinumber, validationmessage):
-        """FDMS-183"""
-        self.wellpage.goto()
+        """FDMS-183
+        Validates the apiname field when adding a new well
+        :param apiname: apiname to be entered into the form
+        :param validationmessage: the expected validation message
+        """
         self.wellpage.click_new_well()
         self.welleditpage.enter_api_number(apinumber)
         self.welleditpage.click_create_well()
-        assert self.welleditpage.get_validation_message_apiname() == validationmessage.strip()
+        assert self.welleditpage.get_validation_message_apiname() in validationmessage
 
 
 
