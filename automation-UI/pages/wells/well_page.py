@@ -43,23 +43,24 @@ class WellPage:
             method to check if the well by wellname exists in the table
 
         """
-    _url = 'http://localhost:9000/'
-    _urlcontains = 'wells'
-    _new_well_button = "//button[text()='New Well']"
-    _title = 'FDMS'
-    _well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
-    _new_well_ok_button = "//button[text()='Create Well']"
+    url = 'http://localhost:9000/'
+    urlcontains = 'wells'
+    new_well_button = "//button[text()='New Well']"
+    title = 'FDMS'
+    well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
+    new_well_ok_button = "//button[text()='Create Well']"
     projects_link = "a[href='/projects']"
+    page_header = "//h1[text()='Wells']"
 
     def __init__(self):
         self.driver = SeleniumWebDriver()
 
     def goto(self):
-        self.driver.get_url(self._url)
+        self.driver.get_url(self.url)
         return self
 
     def isat(self):
-        return self._urlcontains in self.driver.get_current_url()
+        return self.driver.is_element_present(self.page_header, "xpath")
 
     def add_new_well(self, wellname, apinumber):
         self.click_new_well()
@@ -68,7 +69,7 @@ class WellPage:
         WellEditPage().click_create_well()
 
     def well_success_message_pops(self):
-        return True if self.driver.get_element(self._well_success_message_toast, "xpath") else False
+        return self.driver.is_element_present(self.well_success_message_toast, "xpath")
 
     def get_toast_message(self):
         # TODO grab toast message element and return its text
@@ -80,11 +81,10 @@ class WellPage:
 
     def well_exists(self, wellname):
         # TODO think about how to handle pagination here before looking for element
-        return True if self.driver.get_element(wellname, "link") else False
+        return self.driver.is_element_present(wellname, "link")
 
     def click_new_well(self):
-        self.driver.get_element(self._new_well_button, "xpath").click()
-        return WellEditPage()
+        self.driver.get_element(self.new_well_button, "xpath").click()
 
     def navigate_to_projects(self):
         self.driver.get_element(self.projects_link, "css").click()

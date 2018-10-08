@@ -42,11 +42,12 @@ class ProjectPage:
             method to check if the projectname by projectname exists in the table
 
         """
-    _url = 'http://localhost:9000/projects'
-    _urlcontains = 'projects'
-    _new_project_button = "//button[text()='New Project']"
-    _project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
-    _project_title = "//h1[contains(text(), 'Projects')]"
+    url = 'http://localhost:9000/projects'
+    urlcontains = 'projects'
+    new_project_button = "//button[text()='New Project']"
+    project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
+    project_title = "//h1[contains(text(), 'Projects')]"
+    page_header = "//h1[text()='Projects']"
 
     def __init__(self):
         self.driver = SeleniumWebDriver()
@@ -60,23 +61,23 @@ class ProjectPage:
         ProjectEditPage().click_create_project()
 
     def goto(self):
-        self.driver.get_url(self._url)
+        self.driver.get_url(self.url)
         return self
 
     def isat(self):
-        return True if self.driver.get_element(self._project_title, "xpath") else False
+        return self.driver.is_element_present(self.page_header, "xpath")
 
     def project_exists(self, projectname):
-        return True if self.driver.get_element(projectname, "link") else False
+        return self.driver.is_element_present(projectname, "link")
 
     def project_success_message_pops(self):
-        return True if self.driver.get_element(self._project_successfully_created_toast, "xpath") else False
+        return self.driver.is_element_present(self.project_successfully_created_toast, "xpath")
 
     def get_toast_message(self):
         # TODO grab toast message element and return its text
         pass
 
     def click_new_project(self):
-        self.driver.get_element(self._new_project_button, "xpath").click()
+        self.driver.get_element(self.new_project_button, "xpath").click()
 
 
