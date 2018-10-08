@@ -22,6 +22,8 @@ class ProjectEditPage:
     uwi_api_number_validation_message = "//div[contains(text(), 'UWI / API must be either 14 or 16 characters.')]"
     wellname_validation_message = "test-wellName"
     apiname_validation_message = 'test-uwi'
+    companyname_validation_message = 'test-companyName'
+    projectname_validation_message = 'test-projectName'
 
     def __init__(self):
         self.driver = SeleniumWebDriver()
@@ -53,6 +55,12 @@ class ProjectEditPage:
 
     def get_validation_message_apiname(self):
         return self.driver.get_text(self.apiname_validation_message, "id")
+
+    def get_validation_message_companyname(self):
+        return self.driver.get_text(self.companyname_validation_message, "id")
+
+    def get_validation_message_projectname(self):
+        return self.driver.get_text(self.projectname_validation_message, "id")
 
 
 

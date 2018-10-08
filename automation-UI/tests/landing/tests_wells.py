@@ -106,11 +106,12 @@ class TestWells(unittest.TestCase):
         result2 = self.wellpage.well_exists(wellname)
         self.teststatus.markFinal(result2, "check well existance in table")
 
+    # @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
     @unpack
     def test_wellname_validation(self, wellname, validationmessage):
-        """FDMS-182
+        """FDMS-183
         Validates the wellname field when adding a new well
         :param wellname: name of the well to be entered into the form
         :param validationmessage: the expected validation message
@@ -121,11 +122,12 @@ class TestWells(unittest.TestCase):
         assert self.welleditpage.get_validation_message_wellname() in validationmessage
 
 
+    @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
     @unpack
     def test_apiname_validation(self, apinumber, validationmessage):
-        """FDMS-183
+        """FDMS-182
         Validates the apiname field when adding a new well
         :param apiname: apiname to be entered into the form
         :param validationmessage: the expected validation message
