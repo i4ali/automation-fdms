@@ -125,7 +125,7 @@ class TestProjects(unittest.TestCase):
     @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
     @unpack
     def test_wellname_validation(self, wellname, validationmessage):
-        """FDMS-182
+        """FDMS-183
         Validates the wellname field when adding a new project
         :param wellname: name of the well to be entered into the form
         :param validationmessage: the expected validation message
@@ -134,13 +134,13 @@ class TestProjects(unittest.TestCase):
         self.projectpage.click_new_project()
         self.projecteditpage.enter_well_name(wellname)
         self.projecteditpage.click_create_project()
-        assert self.projecteditpage.get_validation_message_wellname() == validationmessage.strip()
+        assert self.projecteditpage.get_validation_message_wellname() in validationmessage
 
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
     @unpack
     def test_apiname_validation(self, apinumber, validationmessage):
-        """FDMS-183
+        """FDMS-182
         Validates the apiname field when adding a new project
         :param apiname: apiname to be entered into the form
         :param validationmessage: the expected validation message
@@ -149,7 +149,37 @@ class TestProjects(unittest.TestCase):
         self.projectpage.click_new_project()
         self.projecteditpage.enter_api_number(apinumber)
         self.projecteditpage.click_create_project()
-        assert self.projecteditpage.get_validation_message_apiname() == validationmessage.strip()
+        assert self.projecteditpage.get_validation_message_apiname() in validationmessage
+
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/companynamevalidation.csv'))
+    @unpack
+    def test_companyname_validation(self, companyname, validationmessage):
+        """FDMS-182
+        Validates the apiname field when adding a new project
+        :param apiname: apiname to be entered into the form
+        :param validationmessage: the expected validation message
+        """
+        self.navigationpage.navigate_to_projects()
+        self.projectpage.click_new_project()
+        self.projecteditpage.enter_company_name(companyname)
+        self.projecteditpage.click_create_project()
+        assert self.projecteditpage.get_validation_message_companyname() in validationmessage
+
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projectnamevalidation.csv'))
+    @unpack
+    def test_projectname_validation(self, projectname, validationmessage):
+        """FDMS-182
+        Validates the apiname field when adding a new project
+        :param apiname: apiname to be entered into the form
+        :param validationmessage: the expected validation message
+        """
+        self.navigationpage.navigate_to_projects()
+        self.projectpage.click_new_project()
+        self.projecteditpage.enter_project_name(projectname)
+        self.projecteditpage.click_create_project()
+        assert self.projecteditpage.get_validation_message_projectname() in validationmessage
 
 
     # @pytest.mark.usefixtures("clear_well_from_db")
