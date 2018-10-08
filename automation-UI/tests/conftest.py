@@ -1,5 +1,6 @@
 from base.driver import Driver
 import pytest
+import globalconfig
 
 
 @pytest.yield_fixture(scope="session", autouse=True)
@@ -13,3 +14,11 @@ def session_setup():
     driver = Driver.instance()
     yield
     driver.quit()
+
+@pytest.fixture(autouse=True)
+def method_setup():
+    """
+    Every test would start from the base url (landing page)
+    """
+    driver = Driver.instance()
+    driver.get(globalconfig.base_url)

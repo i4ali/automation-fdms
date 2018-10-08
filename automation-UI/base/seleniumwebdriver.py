@@ -37,11 +37,21 @@ class SeleniumWebDriver():
 
     def get_element(self, locator, locatorType="id"):
         self._wait_for_doc_ready()
-        element = None
         locatorType = locatorType.lower()
         byType = self.get_by_type(locatorType)
-        element = self.driver.find_element(byType, locator)
+        try:
+            element = self.driver.find_element(byType, locator)
+        except NoSuchElementException:
+            return None
         return element
+
+    def is_element_present(self, locator="", locatorType="id", element=None):
+        if locator:  # This means if locator is not empty
+            element = self.get_element(locator, locatorType)
+        if element is not None:
+            return True
+        else:
+            return False
 
     def get_title(self):
         return self.driver.title
@@ -50,17 +60,17 @@ class SeleniumWebDriver():
         return self.driver.current_url
 
     def get_text(self, locator="", locatorType="id", element=None, info=""):
-        try:
-            if locator: # This means if locator is not empty
-                element = self.get_element(locator, locatorType)
+        if locator: # This means if locator is not empty
+            element = self.get_element(locator, locatorType)
+        if element is not None:
             text = element.text
             if len(text) == 0:
                 text = element.get_attribute("innerText")
             if len(text) != 0:
                 text = text.strip()
-        except NoSuchElementException:
+            return text
+        else:
             return ""
-        return text
 
     def screenshot(self, resultMessage):
         """
