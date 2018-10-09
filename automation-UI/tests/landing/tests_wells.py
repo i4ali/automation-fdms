@@ -86,7 +86,7 @@ class TestWells(unittest.TestCase):
         Instanstiates wells page and verifies the page can be reached
         successfully from the browser
         """
-        result = self.wellpage.isat()
+        result = self.wellpage.is_at()
         self.teststatus.markFinal(result, "URL verification")
 
     @pytest.mark.inprogress

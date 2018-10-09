@@ -5,10 +5,11 @@ Project page object to encapsulate all functionality related to the FDMS project
 locators, functions to be performed on the page
 """
 
-from base.seleniumwebdriver import SeleniumWebDriver
+from pages.base.base_page import BasePage
 from pages.projects.projectedit_page import ProjectEditPage
 
-class ProjectPage:
+
+class ProjectPage(BasePage):
     """
         Project page class
 
@@ -54,7 +55,7 @@ class ProjectPage:
     page_header = "//h1[text()='Projects']"
 
     def __init__(self):
-        self.driver = SeleniumWebDriver()
+        super().__init__()
 
     def add_new_project(self, projectname, companyname, wellname, apinumber):
         """
@@ -72,19 +73,19 @@ class ProjectPage:
         ProjectEditPage().enter_api_number(apinumber)
         ProjectEditPage().click_create_project()
 
-    def goto(self):
+    def go_to(self):
         """
         Go to the project page
         """
-        self.driver.get_url(self.url)
+        self.goto(self.url)
         return self
 
-    def isat(self):
+    def is_at(self):
         """
         Check if currently at project page
         :return: Boolean
         """
-        return self.driver.is_element_present(self.page_header, "xpath")
+        return self.isat(self.page_header, "xpath")
 
     def project_exists(self, projectname):
         """
@@ -114,5 +115,6 @@ class ProjectPage:
         Click the new project button on the project page
         """
         self.driver.get_element(self.new_project_button, "xpath").click()
+        return ProjectEditPage()
 
 

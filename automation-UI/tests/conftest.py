@@ -1,3 +1,10 @@
+"""
+@package tests
+
+conftest module for pytest to allow for reusable test fixtures
+between all test cases
+
+"""
 from base.driver import Driver
 import pytest
 import globalconfig
@@ -14,6 +21,7 @@ def session_setup():
     driver = Driver.instance()
     yield
     driver.quit()
+
 
 @pytest.fixture(autouse=True)
 def method_setup():

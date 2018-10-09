@@ -5,10 +5,10 @@ WellEditPage class to encapsulate all functionality related to the FDMS wells pa
 locators, functions to be performed on the page
 """
 
-from base.seleniumwebdriver import SeleniumWebDriver
+from pages.base.base_page import BasePage
 
 
-class WellEditPage:
+class WellEditPage(BasePage):
     url = 'http://0.0.0.0:30000/wells/edit-well'
     urlcontains = 'edit-well'
     create_well_button = "//button[text()='Create Well']"
@@ -24,14 +24,14 @@ class WellEditPage:
     apiname_validation_message = 'test-uwi'
 
     def __init__(self):
-        self.driver = SeleniumWebDriver()
+        super().__init__()
 
-    def goto(self):
-        self.driver.get_url(self.url)
+    def go_to(self):
+        self.goto(self.url)
         return self
 
-    def isat(self):
-        return True if self.driver.get_element(self.project_title, "xpath") else False
+    def is_at(self):
+        return self.isat(self.project_title, "xpath")
 
     def get_validation_message_wellname(self):
         return self.driver.get_text(self.wellname_validation_message, "id")

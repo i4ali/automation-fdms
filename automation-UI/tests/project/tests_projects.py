@@ -98,7 +98,7 @@ class TestProjects(unittest.TestCase):
         successfully from the browser
         """
         self.navigationpage.navigate_to_projects()
-        result = self.projectpage.isat()
+        result = self.projectpage.is_at()
         self.teststatus.markFinal(result, "can go to project page")
 
     @pytest.mark.smoketest
