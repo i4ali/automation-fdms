@@ -89,7 +89,7 @@ class TestWells(unittest.TestCase):
         result = self.wellpage.isat()
         self.teststatus.markFinal(result, "URL verification")
 
-    @pytest.mark.smoketest
+    @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/welltestdata.csv'))
     @unpack
@@ -122,7 +122,6 @@ class TestWells(unittest.TestCase):
         assert self.welleditpage.get_validation_message_wellname() in validationmessage
 
 
-    @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
     @unpack

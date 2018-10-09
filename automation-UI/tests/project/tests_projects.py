@@ -151,6 +151,7 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage.click_create_project()
         assert self.projecteditpage.get_validation_message_apiname() in validationmessage
 
+    @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/companynamevalidation.csv'))
     @unpack
