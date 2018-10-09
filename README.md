@@ -18,6 +18,7 @@ Python v3.6
 5) cd into directory /automation-fdms/automation-UI
 6) run "export PYTHONPATH=."
 7) run "py.test <testfile> -v -s" 
+8) to generate html report run "pytest -v -s --html=report_$(date +%y%m%d%H%M%S).html"
 
 #### Windows TBD
 
