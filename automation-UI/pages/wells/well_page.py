@@ -5,11 +5,11 @@ Landing page object to encapsulate all functionality related to the FDMS wells p
 locators, functions to be performed on the page
 """
 
-from base.seleniumwebdriver import SeleniumWebDriver
 from pages.wells.welledit_page import WellEditPage
+from pages.base.base_page import BasePage
 
 
-class WellPage:
+class WellPage(BasePage):
     """
         Landing page class
 
@@ -57,14 +57,14 @@ class WellPage:
     page_header = "//h1[text()='Wells']"
 
     def __init__(self):
-        self.driver = SeleniumWebDriver()
+        super().__init__()
 
-    def goto(self):
-        self.driver.get_url(self.url)
+    def go_to(self):
+        self.goto(self.url)
         return self
 
-    def isat(self):
-        return self.driver.is_element_present(self.page_header, "xpath")
+    def is_at(self):
+        return self.isat(self.page_header, "xpath")
 
     def add_new_well(self, wellname, apinumber):
         """
@@ -106,6 +106,7 @@ class WellPage:
         Click the new  well button on the well page
         """
         self.driver.get_element(self.new_well_button, "xpath").click()
+        return WellEditPage()
 
 
 
