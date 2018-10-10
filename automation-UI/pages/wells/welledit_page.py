@@ -11,7 +11,7 @@ from pages.base.base_page import BasePage
 class WellEditPage(BasePage):
     url = 'http://0.0.0.0:30000/wells/edit-well'
     urlcontains = 'edit-well'
-    create_well_button = "//button[text()='Create Well']"
+    create_well_button = "//button[text()='Submit']"
     well_fields = {
         'Well name': 'wellName',
         'UWI/API Number': 'uwi'
