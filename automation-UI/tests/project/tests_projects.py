@@ -15,7 +15,7 @@ from ddt import ddt, data, unpack
 import pytest
 
 # project import
-from utilities.teststatus import TestStatus
+from utilities.statustest import StatusTest
 from utilities.read_data import getCSVData
 from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
@@ -70,7 +70,7 @@ class TestProjects(unittest.TestCase):
         Instantiates ProjectPage, TestStatus instance to be used by the test class
         The function is run before every test function is called
         """
-        self.teststatus = TestStatus()
+        self.teststatus = StatusTest()
         self.wellpage = WellPage()
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
@@ -99,7 +99,7 @@ class TestProjects(unittest.TestCase):
         """
         self.navigationpage.navigate_to_projects()
         result = self.projectpage.is_at()
-        self.teststatus.markFinal(result, "can go to project page")
+        self.teststatus.mark_final(result, "can go to project page")
 
     @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_project_from_db")
@@ -119,7 +119,7 @@ class TestProjects(unittest.TestCase):
         result = self.projectpage.project_success_message_pops()
         self.teststatus.mark(result, "project success message pops")
         result2 = self.projectpage.project_exists(projectname)
-        self.teststatus.markFinal(result2, "project exists in table")
+        self.teststatus.mark_final(result2, "project exists in table")
 
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))

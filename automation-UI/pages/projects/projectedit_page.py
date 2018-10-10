@@ -9,7 +9,7 @@ from pages.base.base_page import BasePage
 
 class ProjectEditPage(BasePage):
     url = 'http://0.0.0.0:30000/wells/edit-project'
-    create_project_button = "//button[text()='Create Project']"
+    create_project_button = "//button[text()='Submit']"
     project_fields = {
         'Project Name': 'projectName',
         'Company Name': 'companyName',

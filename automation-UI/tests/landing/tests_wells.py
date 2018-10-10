@@ -18,7 +18,7 @@ import pytest
 from pages.wells.well_page import WellPage
 from pages.wells.welledit_page import WellEditPage
 from utilities.read_data import getCSVData
-from utilities.teststatus import TestStatus
+from utilities.statustest import StatusTest
 import globalconfig
 
 
@@ -65,7 +65,7 @@ class TestWells(unittest.TestCase):
         Instantiates LandingPage, TestStatus instance to be used by the test class
         The function is run before every test function is called
         """
-        self.teststatus = TestStatus()
+        self.teststatus = StatusTest()
         self.wellpage = WellPage()
         self.welleditpage = WellEditPage()
 
@@ -87,7 +87,7 @@ class TestWells(unittest.TestCase):
         successfully from the browser
         """
         result = self.wellpage.is_at()
-        self.teststatus.markFinal(result, "URL verification")
+        self.teststatus.mark_final(result, "URL verification")
 
     @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
@@ -104,7 +104,7 @@ class TestWells(unittest.TestCase):
         result1 = self.wellpage.well_success_message_pops()
         self.teststatus.mark(result1, "success toast message")
         result2 = self.wellpage.well_exists(wellname)
-        self.teststatus.markFinal(result2, "check well existance in table")
+        self.teststatus.mark_final(result2, "check well existance in table")
 
     # @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")

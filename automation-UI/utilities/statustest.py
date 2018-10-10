@@ -10,7 +10,7 @@ Example:
 from base.seleniumwebdriver import SeleniumWebDriver
 from traceback import print_stack
 
-class TestStatus:
+class StatusTest:
 
     def __init__(self):
         """
@@ -20,7 +20,7 @@ class TestStatus:
         self.driver = SeleniumWebDriver()
         self.resultList = []
 
-    def setResult(self, result,  resultMessage, expectedresult):
+    def set_result(self, result, resultMessage, expectedresult):
         try:
             if result is not None:
                 if result == expectedresult:
@@ -44,9 +44,9 @@ class TestStatus:
             expectedresult = True
         else:
             expectedresult = False
-        self.setResult(result, resultMessage, expectedresult)
+        self.set_result(result, resultMessage, expectedresult)
 
-    def markFinal(self, result, resultMessage, expectedresult="pass"):
+    def mark_final(self, result, resultMessage, expectedresult="pass"):
         """
         Mark the final result of the verification point in a test case
         This needs to be called at least once in a test case
@@ -56,7 +56,7 @@ class TestStatus:
             expectedresult = True
         else:
             expectedresult = False
-        self.setResult(result, resultMessage, expectedresult)
+        self.set_result(result, resultMessage, expectedresult)
 
         if "FAIL" in self.resultList:
             # print(self.resultList)
