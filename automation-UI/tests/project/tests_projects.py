@@ -22,6 +22,7 @@ from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.navigation.navigation_page import NavigationPage
 import globalconfig
+from base.DBclient import DBClient
 
 
 @ddt
@@ -82,14 +83,10 @@ class TestProjects(unittest.TestCase):
         Connects to MongoDB and removes the project, well and client collection from the database
         service-fdms
         """
-        conn = MongoClient(globalconfig.mongoDB_conn_URI)
-        db = conn[globalconfig.mongoDB]
-        project = db.get_collection('project')
-        client = db.get_collection('client')
-        well = db.get_collection('well')
-        project.delete_many({})
-        client.delete_many({})
-        well.delete_many({})
+        self.client = DBClient(globalconfig.mongoDB_conn_URI)
+        self.client.delete_table('project')
+        self.client.delete_table('client')
+        self.client.delete_table('well')
 
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
