@@ -6,7 +6,21 @@ different DB implementations(MongoDB or Postgres) providing a common user interf
 to test classes
 
 """
-
+from pydal import DAL
 
 class DBClient:
-    pass
+
+    def __init__(self, uri_db):
+        self.db = DAL(uri_db, migrate_enabled=False)
+
+
+    def delete_table(self, tablename):
+        self.db.define_table(tablename)
+        table = self.db.get(tablename)
+        table.drop()
+
+
+
+
+if __name__ == '__main__':
+   pass

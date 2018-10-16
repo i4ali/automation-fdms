@@ -20,6 +20,7 @@ from pages.wells.welledit_page import WellEditPage
 from utilities.read_data import getCSVData
 from utilities.statustest import StatusTest
 import globalconfig
+from base.DBclient import DBClient
 
 
 @ddt
@@ -75,10 +76,9 @@ class TestWells(unittest.TestCase):
         Connects to MongoDB and removes the well collection from the database
         service-fdms
         """
-        self.conn = MongoClient(globalconfig.mongoDB_conn_URI)
-        self.database = self.conn[globalconfig.mongoDB]
-        self.well = self.database.get_collection('well')
-        self.well.delete_many({})
+        self.client = DBClient(globalconfig.mongoDB_conn_URI)
+        self.client.delete_table('well')
+
 
     @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):
@@ -89,7 +89,7 @@ class TestWells(unittest.TestCase):
         result = self.wellpage.is_at()
         self.teststatus.mark_final(result, "URL verification")
 
-    @pytest.mark.inprogress
+    @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/welltestdata.csv'))
     @unpack
