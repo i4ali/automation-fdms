@@ -17,8 +17,8 @@ class DBClient:
     def delete_table(self, tablename):
         self.db.define_table(tablename)
         table = self.db.get(tablename)
-        table.drop()
-
+        table.truncate(mode='CASCADE')
+        self.db.commit()
 
 
 

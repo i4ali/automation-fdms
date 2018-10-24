@@ -76,8 +76,8 @@ class TestWells(unittest.TestCase):
         Connects to MongoDB and removes the well collection from the database
         service-fdms
         """
-        self.client = DBClient(globalconfig.mongoDB_conn_URI)
-        self.client.delete_table('well')
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        self.client.delete_table('wells')
 
 
     @pytest.mark.smoketest
@@ -101,10 +101,8 @@ class TestWells(unittest.TestCase):
         :param expectedresult: expected result Pass or Fail for the entry
         """
         self.wellpage.add_new_well(wellname, apinumber)
-        result1 = self.wellpage.well_success_message_pops()
-        self.teststatus.mark(result1, "success toast message")
-        result2 = self.wellpage.well_exists(wellname)
-        self.teststatus.mark_final(result2, "check well existance in table")
+        result = self.wellpage.well_success_message_pops()
+        self.teststatus.mark_final(result, "success toast message")
 
     # @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")

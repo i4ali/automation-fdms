@@ -83,10 +83,10 @@ class TestProjects(unittest.TestCase):
         Connects to MongoDB and removes the project, well and client collection from the database
         service-fdms
         """
-        self.client = DBClient(globalconfig.mongoDB_conn_URI)
-        self.client.delete_table('project')
-        self.client.delete_table('client')
-        self.client.delete_table('well')
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        self.client.delete_table('projects')
+        self.client.delete_table('clients')
+        self.client.delete_table('wells')
 
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
@@ -114,9 +114,7 @@ class TestProjects(unittest.TestCase):
         self.navigationpage.navigate_to_projects()
         self.projectpage.add_new_project(projectname, companyname, wellname, apinumber)
         result = self.projectpage.project_success_message_pops()
-        self.teststatus.mark(result, "project success message pops")
-        result2 = self.projectpage.project_exists(projectname)
-        self.teststatus.mark_final(result2, "project exists in table")
+        self.teststatus.mark_final(result, "project success message pops")
 
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))

@@ -59,7 +59,7 @@ class StatusTest:
         self.set_result(result, resultMessage, expectedresult)
 
         if "FAIL" in self.resultList:
-            # print(self.resultList)
+            print(self.resultList)
             self.resultList.clear()
             assert True == False
         else:
