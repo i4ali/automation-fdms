@@ -11,3 +11,4 @@ browser = "chrome"
 browser_arguments = ["--headless"]
 base_url = 'http://localhost:9000/'
 browser_implicit_wait_in_secs = 5
+pagination_limit = 10

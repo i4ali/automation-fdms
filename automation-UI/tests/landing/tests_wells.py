@@ -135,6 +135,20 @@ class TestWells(unittest.TestCase):
         assert self.welleditpage.get_validation_message_apiname() in validationmessage
 
 
+    @pytest.mark.inprogress1
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination(self):
+        # insert bulk data such that pagination limit is exceeded
+        # verify pagination
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/welltestdata.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_well(row[0], row[1])
+            table_entries+=1
+        if table_entries > globalconfig.pagination_limit:
+            result = self.wellpage.pagination_menu_exists()
+            self.teststatus.mark(result, )
 
 
     # @data(*getCSVData('../../testdata/welltestdata.csv'))

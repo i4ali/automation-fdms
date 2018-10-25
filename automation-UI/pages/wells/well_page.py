@@ -55,6 +55,7 @@ class WellPage(BasePage):
     well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
     new_well_ok_button = "//button[text()='Create Well']"
     page_header = "//h1[text()='Wells']"
+    pagination_menu = "div[class='ui pagination menu']"
 
     def __init__(self):
         super().__init__()
@@ -107,6 +108,9 @@ class WellPage(BasePage):
         """
         self.driver.get_element(self.new_well_button, "xpath").click()
         return WellEditPage()
+
+    def pagination_menu_exists(self):
+        return self.driver.is_element_present(self.pagination_menu, "css")
 
 
 
