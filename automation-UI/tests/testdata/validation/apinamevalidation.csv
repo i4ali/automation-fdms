@@ -1,0 +1,6 @@
+Apiname, Apiname Validation Message
+testapi,UWI / API must be either 14 or 16 characters.
+testapi1234565,
+testapi@abc1234,UWI / API must be either 14 or 16 characters.
+testapi@abc12345,
+testapi@abc1234567,UWI / API must be either 14 or 16 characters.

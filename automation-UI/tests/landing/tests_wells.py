@@ -13,6 +13,7 @@ import unittest
 from ddt import ddt, data, unpack
 from pymongo import MongoClient
 import pytest
+import time
 
 # project import
 from pages.wells.well_page import WellPage
@@ -79,7 +80,6 @@ class TestWells(unittest.TestCase):
         self.client = DBClient(globalconfig.postgres_conn_URI)
         self.client.delete_table('wells')
 
-
     @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):
         """
@@ -104,7 +104,6 @@ class TestWells(unittest.TestCase):
         result = self.wellpage.well_success_message_pops()
         self.teststatus.mark_final(result, "success toast message")
 
-    # @pytest.mark.inprogress
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
     @unpack
@@ -117,7 +116,7 @@ class TestWells(unittest.TestCase):
         self.wellpage.click_new_well()
         self.welleditpage.enter_well_name(wellname)
         self.welleditpage.click_create_well()
-        assert self.welleditpage.get_validation_message_wellname() in validationmessage
+        self.teststatus.mark_final(validationmessage == self.welleditpage.get_validation_message_wellname(), "wellname form validation")
 
 
     @pytest.mark.usefixtures("clear_well_from_db")
@@ -132,35 +131,53 @@ class TestWells(unittest.TestCase):
         self.wellpage.click_new_well()
         self.welleditpage.enter_api_number(apinumber)
         self.welleditpage.click_create_well()
-        assert self.welleditpage.get_validation_message_apiname() in validationmessage
+        self.teststatus.mark_final(validationmessage == self.welleditpage.get_validation_message_apiname(), "api name form validation")
 
-
-    @pytest.mark.inprogress1
+    @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination(self):
+    def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
         # insert bulk data such that pagination limit is exceeded
-        # verify pagination
         self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/welltestdata.csv')
+        rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_well(row[0], row[1])
             table_entries+=1
-        if table_entries > globalconfig.pagination_limit:
-            result = self.wellpage.pagination_menu_exists()
-            self.teststatus.mark(result, )
+        # verify pagination menu exists
+        self.wellpage.page_refresh()
+        result = self.wellpage.pagination_menu_exists()
+        self.teststatus.mark_final(result, "check the pagination menu shows up")
+
+    @pytest.mark.pagination
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
+        # insert bulk data such that pagination limit is not exceeded
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/pagination/wellpaginationnotexceed.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_well(row[0], row[1])
+            table_entries+=1
+        # verify pagination menu doesnt exists
+        self.wellpage.page_refresh()
+        result = not self.wellpage.pagination_menu_exists()
+        self.teststatus.mark_final(result, "check the pagination menu shows up")
+
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_entries_to_show_match_number_table_rows(self):
+    #     # insert bulk data such that pagination limit is exceeded
+    #     self.client = DBClient(globalconfig.postgres_conn_URI)
+    #     rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
+    #     table_entries = 0
+    #     for row in rows:
+    #         self.client.insert_well(row[0], row[1])
+    #         table_entries += 1
+        # verify entries to show matches number of rows in table
 
 
-    # @data(*getCSVData('../../testdata/welltestdata.csv'))
-    # @unpack
-    # @unittest.skip("WIP")
-    # def test_rem_well(self, wellname, apinumber):
-    #     self.lp = LandingPage("firefox")
-    #     self.lp.goto()
-    #     self.lp.addnewwell(wellname, apinumber)
-    #     assert self.lp.wellsuccessmessagepops()
-    #     assert self.lp.wellexists(wellname)
-    #     self.lp.removewell(wellname)
-    #     assert self.lp.welldoesntexist(wellname)
+    # def test_well_pagination_limit_exceed_and_can_navigate_to_nxt_page(self):
+    #     pass
+
 
 

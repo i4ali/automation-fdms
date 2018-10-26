@@ -13,8 +13,6 @@ class ProjectEditPage(BasePage):
     project_fields = {
         'Project Name': 'projectName',
         'Company Name': 'companyName',
-        'Well Name': 'wellName',
-        'UWI/API Number': 'uwi'
     }
     title = 'FDMS'
     project_title = "//h1[contains(text(), 'NEW PROJECT')]"
@@ -23,6 +21,9 @@ class ProjectEditPage(BasePage):
     apiname_validation_message = 'test-uwi'
     companyname_validation_message = 'test-companyName'
     projectname_validation_message = 'test-projectName'
+    companyname_validation_message_content = "Select or Create a Company."
+    companyname_dropdown = "//*[@class='dropdown icon']"
+    # companyname_dropdown = "//*[@role='listbox']"
 
     def __init__(self):
         super().__init__()
@@ -34,17 +35,13 @@ class ProjectEditPage(BasePage):
     def is_at(self):
         return self.isat(self.project_title, "xpath")
 
-    def enter_well_name(self, wellname):
-        self.driver.get_element(self.project_fields['Well Name'], "name").send_keys(wellname)
-
     def enter_project_name(self, projectname):
         self.driver.get_element(self.project_fields['Project Name'], "name").send_keys(projectname)
 
-    def enter_company_name(self, companyname):
-        self.driver.get_element(self.project_fields['Company Name'], "name").send_keys(companyname)
-
-    def enter_api_number(self, apinumber):
-        self.driver.get_element(self.project_fields['UWI/API Number'], "name").send_keys(apinumber)
+    def select_company_name(self, companyname):
+        companyname_element = "//span[text()='{0}']".format(companyname)
+        self.driver.get_element(self.companyname_dropdown, "xpath").click()
+        self.driver.get_element(companyname_element, "xpath").click()
 
     def click_create_project(self):
         self.driver.get_element(self.create_project_button, "xpath").click()
@@ -57,6 +54,9 @@ class ProjectEditPage(BasePage):
 
     def get_validation_message_companyname(self):
         return self.driver.get_text(self.companyname_validation_message, "id")
+
+    def companyname_validation_message_shows(self):
+        return self.get_validation_message_companyname() == self.companyname_validation_message_content
 
     def get_validation_message_projectname(self):
         return self.driver.get_text(self.projectname_validation_message, "id")

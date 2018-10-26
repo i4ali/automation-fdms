@@ -6,12 +6,10 @@ locators, functions to be performed on the page
 """
 
 from pages.base.base_page import BasePage
-from pages.projects.projectedit_page import ProjectEditPage
-from pages.clients.client_page import ClientPage
-from pages.navigation.navigation_page import NavigationPage
+from pages.clients.clientedit_page import ClientEditPage
 
 
-class ProjectPage(BasePage):
+class ClientPage(BasePage):
     """
         Project page class
 
@@ -49,17 +47,17 @@ class ProjectPage(BasePage):
             method to click new project button on project page
 
         """
-    url = 'http://localhost:9000/projects'
-    urlcontains = 'projects'
-    new_project_button = "//button[text()='New Project']"
-    project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
+    url = 'http://localhost:9000/clients'
+    urlcontains = 'clients'
+    new_client_button = "//button[text()='New Client']"
+    client_successfully_created_toast = "//*[contains(text(), 'Client successfully created')]"
     project_title = "//h1[contains(text(), 'Projects')]"
-    page_header = "//h1[text()='Projects']"
+    page_header = "//h1[text()='Clients']"
 
     def __init__(self):
         super().__init__()
 
-    def add_new_project(self, projectname, companyname):
+    def add_new_client(self, companyname):
         """
         clicks new project on project page to create new project and enter
         all field information
@@ -68,13 +66,9 @@ class ProjectPage(BasePage):
         :param wellname: well name to be entered into form
         :param apinumber: apinumber to be entered into form
         """
-        NavigationPage().navigate_to_clients()
-        ClientPage().add_new_client(companyname)
-        NavigationPage().navigate_to_projects()
-        self.click_new_project()
-        ProjectEditPage().enter_project_name(projectname)
-        ProjectEditPage().select_company_name(companyname)
-        ProjectEditPage().click_create_project()
+        self.click_new_client()
+        ClientEditPage().enter_company_name(companyname)
+        ClientEditPage().click_create_client()
 
     def go_to(self):
         """
@@ -90,20 +84,20 @@ class ProjectPage(BasePage):
         """
         return self.isat(self.page_header, "xpath")
 
-    def project_exists(self, projectname):
+    def client_exists(self, companyname):
         """
         Check the project table to see if project by projectname exists
         :param projectname: project name to search
         :return: Boolean
         """
-        return self.driver.is_element_present(projectname, "link")
+        return self.driver.is_element_present(companyname, "link")
 
-    def project_success_message_pops(self):
+    def client_success_message_pops(self):
         """
         Check to see if the success message pops after project created
         :return: Boolean
         """
-        return self.driver.is_element_present(self.project_successfully_created_toast, "xpath")
+        return self.driver.is_element_present(self.client_successfully_created_toast, "xpath")
 
     def get_toast_message(self):
         """
@@ -113,11 +107,11 @@ class ProjectPage(BasePage):
         # TODO grab toast message element and return its text
         pass
 
-    def click_new_project(self):
+    def click_new_client(self):
         """
         Click the new project button on the project page
         """
-        self.driver.get_element(self.new_project_button, "xpath").click()
-        return ProjectEditPage()
+        self.driver.get_element(self.new_client_button, "xpath").click()
+        return ClientEditPage()
 
 

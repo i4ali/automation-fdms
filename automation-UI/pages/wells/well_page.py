@@ -112,6 +112,9 @@ class WellPage(BasePage):
     def pagination_menu_exists(self):
         return self.driver.is_element_present(self.pagination_menu, "css")
 
+    def page_refresh(self):
+        return self.driver.refresh()
+
 
 
 

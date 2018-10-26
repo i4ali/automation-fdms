@@ -93,5 +93,9 @@ class SeleniumWebDriver():
         self.driver.save_screenshot(destinationFile)
 
 
+    def refresh(self):
+        self.driver.refresh()
+
+
 
 
