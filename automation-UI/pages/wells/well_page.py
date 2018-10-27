@@ -57,6 +57,8 @@ class WellPage(BasePage):
     new_well_ok_button = "//button[text()='Create Well']"
     page_header = "//h1[text()='Wells']"
     pagination_menu = "div[class='ui pagination menu']"
+    well_table = "//table//tbody"
+    well_table_rows = "tr"
 
     def __init__(self):
         super().__init__()
@@ -129,6 +131,11 @@ class WellPage(BasePage):
             self.navigation.navigate_to_wells()
         return self.driver.refresh()
 
+    def get_table_entries_count(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        table_entries = self.driver.get_immediate_child_elements(self.well_table,self.well_table_rows,"xpath", "tag")
+        return len(table_entries)
 
 
 

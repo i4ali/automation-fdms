@@ -38,6 +38,8 @@ class SeleniumWebDriver():
             return By.CLASS_NAME
         elif locatorType == "link":
             return By.LINK_TEXT
+        elif locatorType == "tag":
+            return By.TAG_NAME
         return False
 
     def get_element(self, locator, locatorType="id"):
@@ -49,6 +51,12 @@ class SeleniumWebDriver():
         except NoSuchElementException:
             return None
         return element
+
+    def get_immediate_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
+        locatorChildType = locatorTypeChild.lower()
+        ChildbyType = self.get_by_type(locatorChildType)
+        parent_element = self.get_element(locatorParent, locatorTypeParent)
+        return parent_element.find_elements(ChildbyType, locatorChild)
 
     def is_element_present(self, locator="", locatorType="id", element=None):
         if locator:  # This means if locator is not empty

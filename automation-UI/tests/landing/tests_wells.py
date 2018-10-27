@@ -163,6 +163,20 @@ class TestWells(unittest.TestCase):
         result = not self.wellpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
+    @pytest.mark.pagination
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
+        # insert bulk data such that pagination limit is exceeded
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_well(row[0], row[1])
+            table_entries += 1
+        self.wellpage.page_refresh()
+        self.teststatus.mark_final(self.wellpage.get_table_entries_count() == globalconfig.pagination_limit,
+                                   "table rows match pagination limit")
+
     # @pytest.mark.pagination
     # @pytest.mark.usefixtures("clear_well_from_db")
     # def test_well_pagination_limit_exceed_and_entries_to_show_match_number_table_rows(self):
