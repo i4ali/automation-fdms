@@ -5,7 +5,7 @@ WellEditPage class to encapsulate all functionality related to the FDMS wells pa
 locators, functions to be performed on the page
 """
 from pages.base.base_page import BasePage
-
+from pages.navigation.navigation_page import NavigationPage
 
 class ClientEditPage(BasePage):
     url = 'http://0.0.0.0:30000/wells/edit-project'
@@ -19,10 +19,7 @@ class ClientEditPage(BasePage):
 
     def __init__(self):
         super().__init__()
-
-    def go_to(self):
-        self.goto(self.url)
-        return self
+        self.navigation = NavigationPage()
 
     def is_at(self):
         return self.isat(self.project_title, "xpath")

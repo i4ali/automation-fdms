@@ -7,6 +7,7 @@ locators, functions to be performed on the page
 
 from pages.base.base_page import BasePage
 from pages.clients.clientedit_page import ClientEditPage
+from pages.navigation.navigation_page import NavigationPage
 
 
 class ClientPage(BasePage):
@@ -56,6 +57,8 @@ class ClientPage(BasePage):
 
     def __init__(self):
         super().__init__()
+        self.navigation = NavigationPage()
+        self.client_edit_page = ClientEditPage()
 
     def add_new_client(self, companyname):
         """
@@ -67,17 +70,15 @@ class ClientPage(BasePage):
         :param apinumber: apinumber to be entered into form
         """
         self.click_new_client()
-        ClientEditPage().enter_company_name(companyname)
-        ClientEditPage().click_create_client()
-
-    def go_to(self):
-        """
-        Go to the project page
-        """
-        self.goto(self.url)
-        return self
+        self.client_edit_page.enter_company_name(companyname)
+        self.client_edit_page.click_create_client()
 
     def is_at(self):
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
+        return self._is_at()
+
+    def _is_at(self):
         """
         Check if currently at project page
         :return: Boolean
@@ -90,6 +91,8 @@ class ClientPage(BasePage):
         :param projectname: project name to search
         :return: Boolean
         """
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
         return self.driver.is_element_present(companyname, "link")
 
     def client_success_message_pops(self):
@@ -97,6 +100,8 @@ class ClientPage(BasePage):
         Check to see if the success message pops after project created
         :return: Boolean
         """
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
         return self.driver.is_element_present(self.client_successfully_created_toast, "xpath")
 
     def get_toast_message(self):
@@ -111,6 +116,8 @@ class ClientPage(BasePage):
         """
         Click the new project button on the project page
         """
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
         self.driver.get_element(self.new_client_button, "xpath").click()
         return ClientEditPage()
 
