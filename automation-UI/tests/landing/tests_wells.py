@@ -105,7 +105,7 @@ class TestWells(unittest.TestCase):
         self.teststatus.mark_final(result, "success toast message")
 
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('tests/testdata/wellnamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/validation/wellnamevalidation.csv'))
     @unpack
     def test_wellname_validation(self, wellname, validationmessage):
         """FDMS-183
@@ -120,7 +120,7 @@ class TestWells(unittest.TestCase):
 
 
     @pytest.mark.usefixtures("clear_well_from_db")
-    @data(*getCSVData('tests/testdata/apinamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/validation/apinamevalidation.csv'))
     @unpack
     def test_apiname_validation(self, apinumber, validationmessage):
         """FDMS-182

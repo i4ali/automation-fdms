@@ -26,3 +26,5 @@ class NavigationPage(BasePage):
     def navigate_to_clients(self):
         self.driver.get_element(self.clients_link, "css").click()
 
+
+

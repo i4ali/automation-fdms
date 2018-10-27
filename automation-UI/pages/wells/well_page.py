@@ -7,6 +7,7 @@ locators, functions to be performed on the page
 
 from pages.wells.welledit_page import WellEditPage
 from pages.base.base_page import BasePage
+from pages.navigation.navigation_page import NavigationPage
 
 
 class WellPage(BasePage):
@@ -59,12 +60,15 @@ class WellPage(BasePage):
 
     def __init__(self):
         super().__init__()
-
-    def go_to(self):
-        self.goto(self.url)
-        return self
+        self.navigation = NavigationPage()
+        self.well_edit_page = WellEditPage()
 
     def is_at(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        return self._is_at()
+
+    def _is_at(self):
         return self.isat(self.page_header, "xpath")
 
     def add_new_well(self, wellname, apinumber):
@@ -74,16 +78,20 @@ class WellPage(BasePage):
         :param wellname: well name to be entered into form
         :param apinumber: apinumber to be entered into form
         """
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
         self.click_new_well()
-        WellEditPage().enter_well_name(wellname)
-        WellEditPage().enter_api_number(apinumber)
-        WellEditPage().click_create_well()
+        self.well_edit_page.enter_well_name(wellname)
+        self.well_edit_page.enter_api_number(apinumber)
+        self.well_edit_page.click_create_well()
 
     def well_success_message_pops(self):
         """
         Check to see if the success message pops after project created
         :return: Boolean
         """
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
         return self.driver.is_element_present(self.well_success_message_toast, "xpath")
 
     def get_toast_message(self):
@@ -106,13 +114,19 @@ class WellPage(BasePage):
         """
         Click the new  well button on the well page
         """
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
         self.driver.get_element(self.new_well_button, "xpath").click()
         return WellEditPage()
 
     def pagination_menu_exists(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
         return self.driver.is_element_present(self.pagination_menu, "css")
 
     def page_refresh(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
         return self.driver.refresh()
 
 

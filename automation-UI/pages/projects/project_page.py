@@ -58,6 +58,9 @@ class ProjectPage(BasePage):
 
     def __init__(self):
         super().__init__()
+        self.navigation = NavigationPage()
+        self.project_edit_page = ProjectEditPage()
+        self.client_page = ClientPage()
 
     def add_new_project(self, projectname, companyname):
         """
@@ -68,22 +71,20 @@ class ProjectPage(BasePage):
         :param wellname: well name to be entered into form
         :param apinumber: apinumber to be entered into form
         """
-        NavigationPage().navigate_to_clients()
-        ClientPage().add_new_client(companyname)
-        NavigationPage().navigate_to_projects()
+        self.navigation.navigate_to_clients()
+        self.client_page.add_new_client(companyname)
+        self.navigation.navigate_to_projects()
         self.click_new_project()
-        ProjectEditPage().enter_project_name(projectname)
-        ProjectEditPage().select_company_name(companyname)
-        ProjectEditPage().click_create_project()
-
-    def go_to(self):
-        """
-        Go to the project page
-        """
-        self.goto(self.url)
-        return self
+        self.project_edit_page.enter_project_name(projectname)
+        self.project_edit_page.select_company_name(companyname)
+        self.project_edit_page.click_create_project()
 
     def is_at(self):
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        return self._is_at()
+
+    def _is_at(self):
         """
         Check if currently at project page
         :return: Boolean
@@ -96,6 +97,8 @@ class ProjectPage(BasePage):
         :param projectname: project name to search
         :return: Boolean
         """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
         return self.driver.is_element_present(projectname, "link")
 
     def project_success_message_pops(self):
@@ -103,6 +106,8 @@ class ProjectPage(BasePage):
         Check to see if the success message pops after project created
         :return: Boolean
         """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
         return self.driver.is_element_present(self.project_successfully_created_toast, "xpath")
 
     def get_toast_message(self):
@@ -117,6 +122,8 @@ class ProjectPage(BasePage):
         """
         Click the new project button on the project page
         """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
         self.driver.get_element(self.new_project_button, "xpath").click()
         return ProjectEditPage()
 

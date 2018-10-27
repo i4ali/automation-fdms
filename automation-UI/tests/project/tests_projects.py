@@ -20,7 +20,6 @@ from utilities.read_data import getCSVData
 from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
-from pages.navigation.navigation_page import NavigationPage
 import globalconfig
 from base.DBclient import DBClient
 
@@ -75,7 +74,6 @@ class TestProjects(unittest.TestCase):
         self.wellpage = WellPage()
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
-        self.navigationpage = NavigationPage()
 
     @pytest.fixture()
     def clear_project_from_db(self):
@@ -94,7 +92,6 @@ class TestProjects(unittest.TestCase):
         Instanstiates wells page and verifies the page can be reached
         successfully from the browser
         """
-        self.navigationpage.navigate_to_projects()
         result = self.projectpage.is_at()
         self.teststatus.mark_final(result, "can go to project page")
 
@@ -112,7 +109,6 @@ class TestProjects(unittest.TestCase):
         :param companyname: client/company name to be entered into the form
         :param expectedresult: expected result Pass or Fail
         """
-        self.navigationpage.navigate_to_projects()
         self.projectpage.add_new_project(projectname, companyname)
         result = self.projectpage.project_success_message_pops()
         self.teststatus.mark_final(result, "project success message pops")
@@ -124,14 +120,13 @@ class TestProjects(unittest.TestCase):
         :param apiname: apiname to be entered into the form
         :param validationmessage: the expected validation message
         """
-        self.navigationpage.navigate_to_projects()
         self.projectpage.click_new_project()
         self.projecteditpage.click_create_project()
         result = self.projecteditpage.companyname_validation_message_shows()
         self.teststatus.mark_final(result, "verify validation message for company name")
 
     @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('tests/testdata/projectnamevalidation.csv'))
+    @data(*getCSVData('tests/testdata/validation/projectnamevalidation.csv'))
     @unpack
     def test_projectname_validation(self, projectname, validationmessage):
         """FDMS-182
@@ -139,7 +134,6 @@ class TestProjects(unittest.TestCase):
         :param apiname: apiname to be entered into the form
         :param validationmessage: the expected validation message
         """
-        self.navigationpage.navigate_to_projects()
         self.projectpage.click_new_project()
         self.projecteditpage.enter_project_name(projectname)
         self.projecteditpage.click_create_project()
