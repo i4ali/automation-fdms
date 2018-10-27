@@ -52,7 +52,7 @@ class SeleniumWebDriver():
             return None
         return element
 
-    def get_immediate_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
+    def get_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
         locatorChildType = locatorTypeChild.lower()
         ChildbyType = self.get_by_type(locatorChildType)
         parent_element = self.get_element(locatorParent, locatorTypeParent)

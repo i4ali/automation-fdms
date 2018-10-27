@@ -134,7 +134,7 @@ class WellPage(BasePage):
     def get_table_entries_count(self):
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        table_entries = self.driver.get_immediate_child_elements(self.well_table,self.well_table_rows,"xpath", "tag")
+        table_entries = self.driver.get_child_elements(self.well_table, self.well_table_rows, "xpath", "tag")
         return len(table_entries)
 
 
