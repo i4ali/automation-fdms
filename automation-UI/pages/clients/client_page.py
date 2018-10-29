@@ -51,9 +51,12 @@ class ClientPage(BasePage):
     url = 'http://localhost:9000/clients'
     urlcontains = 'clients'
     new_client_button = "//button[text()='New Client']"
+    pagination_menu = "div[class='ui pagination menu']"
     client_successfully_created_toast = "//*[contains(text(), 'Client successfully created')]"
     project_title = "//h1[contains(text(), 'Projects')]"
     page_header = "//h1[text()='Clients']"
+    client_table = "//table//tbody"
+    client_table_rows = "tr"
 
     def __init__(self):
         super().__init__()
@@ -120,5 +123,21 @@ class ClientPage(BasePage):
             self.navigation.navigate_to_clients()
         self.driver.get_element(self.new_client_button, "xpath").click()
         return ClientEditPage()
+
+    def page_refresh(self):
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
+        return self.driver.refresh()
+
+    def pagination_menu_exists(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        return self.driver.is_element_present(self.pagination_menu, "css")
+
+    def get_table_entries_count(self):
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
+        table_entries = self.driver.get_child_elements(self.client_table, self.client_table_rows, "xpath", "tag")
+        return len(table_entries)
 
 

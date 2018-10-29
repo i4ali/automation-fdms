@@ -139,6 +139,50 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage.click_create_project()
         self.teststatus.mark_final(validationmessage == self.projecteditpage.get_validation_message_projectname(), "project name validation")
 
+    @pytest.mark.pagination
+    @pytest.mark.usefixtures("clear_project_from_db")
+    def test_project_pagination_limit_exceed_and_pagination_menu_exists(self):
+        # insert bulk data such that pagination limit is exceeded
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_project(row[0])
+            table_entries += 1
+        # verify pagination menu exists
+        self.projectpage.page_refresh()
+        result = self.projectpage.pagination_menu_exists()
+        self.teststatus.mark_final(result, "check the pagination menu shows up")
+
+    @pytest.mark.pagination
+    @pytest.mark.usefixtures("clear_project_from_db")
+    def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
+        # insert bulk data such that pagination limit is not exceeded
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/pagination/projectpaginationnotexceed.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_project(row[0])
+            table_entries += 1
+        # verify pagination menu doesnt exists
+        self.projectpage.page_refresh()
+        result = not self.projectpage.pagination_menu_exists()
+        self.teststatus.mark_final(result, "check the pagination menu doesnt shows up")
+
+    @pytest.mark.pagination
+    @pytest.mark.usefixtures("clear_project_from_db")
+    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
+        # insert bulk data such that pagination limit is exceeded
+        self.client = DBClient(globalconfig.postgres_conn_URI)
+        rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
+        table_entries = 0
+        for row in rows:
+            self.client.insert_project(row[0])
+            table_entries += 1
+        self.projectpage.page_refresh()
+        self.teststatus.mark_final(self.projectpage.get_table_entries_count() == globalconfig.pagination_limit,
+                                   "table rows match pagination limit")
+
 
     # @pytest.mark.usefixtures("clear_well_from_db")
     # @data(*getCSVData('testdata/projectnamevalidation.csv'))

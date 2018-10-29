@@ -18,7 +18,6 @@ class DBClient:
         self.db.define_table('clients', Field('uuid'), Field('company_name'), Field('created_at'), Field('modified_at'), primarykey=['uuid'])
         self.db.define_table('projects', Field('uuid'), Field('client_uuid'), Field('name'), Field('created_at'), Field('modified_at'), primarykey=['uuid'])
 
-
     def insert_well(self, *args):
         self.db.wells.insert(uuid=uuid.uuid4(), well_name=args[0], uwi=args[1], created_at=datetime.datetime.now(), modified_at=datetime.datetime.now())
         self.db.commit()
@@ -28,8 +27,7 @@ class DBClient:
         self.db.commit()
 
     def insert_project(self, *args):
-        self.db.projects.insert(uuid=uuid.uuid4(), client_uuid=args[0], name=args[1], created_at=datetime.datetime.now(),
-                             modified_at=datetime.datetime.now())
+        self.db.projects.insert(uuid=uuid.uuid4(), name=args[0], created_at=datetime.datetime.now(), modified_at=datetime.datetime.now())
         self.db.commit()
 
     def delete_table(self, tablename):

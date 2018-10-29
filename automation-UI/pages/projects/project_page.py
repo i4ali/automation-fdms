@@ -55,6 +55,9 @@ class ProjectPage(BasePage):
     project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
     project_title = "//h1[contains(text(), 'Projects')]"
     page_header = "//h1[text()='Projects']"
+    pagination_menu = "div[class='ui pagination menu']"
+    project_table = "//table//tbody"
+    project_table_rows = "tr"
 
     def __init__(self):
         super().__init__()
@@ -126,5 +129,21 @@ class ProjectPage(BasePage):
             self.navigation.navigate_to_projects()
         self.driver.get_element(self.new_project_button, "xpath").click()
         return ProjectEditPage()
+
+    def page_refresh(self):
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        return self.driver.refresh()
+
+    def pagination_menu_exists(self):
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        return self.driver.is_element_present(self.pagination_menu, "css")
+
+    def get_table_entries_count(self):
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        table_entries = self.driver.get_child_elements(self.project_table, self.project_table_rows, "xpath", "tag")
+        return len(table_entries)
 
 
