@@ -1,7 +1,7 @@
 """
-@package pages.wells.welledit
+@package pages.projects
 
-WellEditPage class to encapsulate all functionality related to the FDMS wells page. This includes the
+ProjectEditPage class to encapsulate all functionality related to the FDMS project page. This includes the
 locators, functions to be performed on the page
 """
 from pages.base.base_page import BasePage
@@ -24,6 +24,7 @@ class ProjectEditPage(BasePage):
     companyname_validation_message_content = "Select or Create a Company."
     companyname_dropdown = "//*[@class='dropdown icon']"
     # companyname_dropdown = "//*[@role='listbox']"
+    create_new_company_link = "//a[text() = 'Create New Company']"
 
     def __init__(self):
         super().__init__()
@@ -60,6 +61,9 @@ class ProjectEditPage(BasePage):
 
     def get_validation_message_projectname(self):
         return self.driver.get_text(self.projectname_validation_message, "id")
+
+    def click_create_new_company(self):
+        self.driver.get_element(self.create_new_company_link, "xpath").click()
 
 
 

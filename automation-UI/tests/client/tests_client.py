@@ -1,10 +1,10 @@
 """
 @package  tests.client
 
-Landing page test class to encapsulate test cases related to the wells page for FDMS
+Client page test class to encapsulate test cases related to the clients page for FDMS
 web application.
 
-The file is either run individually through pytest testrunner for e.g. 'pytest tests_wells.py' or is run
+The file is either run individually through pytest testrunner for e.g. 'pytest tests_clients.py' or is run
 as part of the test_suites file through pytest testrunner for e.g. 'pytest test_suites.py'.
 """
 
@@ -28,45 +28,11 @@ from base.DBclient import DBClient
 
 @ddt
 class TestClients(unittest.TestCase):
-    """
-    Landing page test class
-
-    Attributes
-    ----------
-    wdf : WebDriverFactory instance
-    driver : web driver instance obtained from web driver factory instance
-    teststatus : TestStatus instance
-    conn : MongoClient connection instance
-    database : 'service-fdms' database
-    well : well collection from the db
-    wellpage : LandingPage instance
-
-
-    Methods
-    -------
-    clearWellFromDB()
-        Fixture to clear Well collection from DB before making any changes to the well DB
-        i.e. adding or removing well for e.g.
-
-    test_can_go_to_landing_page()
-        Verify that the wells page comes up successfully
-
-    test_add_new_well(wellname, apinumber)
-        Verify that new well can be added using the appropriate format for wellname and apinumber
-        validating the form entries
-
-    test_wellname_validation(wellname, validationmessage)
-        Validate the wellname field of the new well form
-
-    test_apiname_validation(apiname, validationmessage)
-        Validate the apiname field of the new well form
-
-    """
 
     @pytest.fixture(autouse=True)
     def object_setup(self):
         """
-        Instantiates LandingPage, TestStatus instance to be used by the test class
+        Instantiates ClientPage, ClientEditPage, TestStatus instance to be used by the test class
         The function is run before every test function is called
         """
         self.teststatus = StatusTest()
@@ -74,10 +40,10 @@ class TestClients(unittest.TestCase):
         self.clienteditpage = ClientEditPage()
 
     @pytest.fixture()
-    def clear_well_from_db(self):
+    def clear_client_from_db(self):
         """
-        Connects to MongoDB and removes the well collection from the database
-        service-fdms
+        Connects to DB and removes the well collection from the database
+        fdms
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         self.client.delete_table('clients')
@@ -85,34 +51,32 @@ class TestClients(unittest.TestCase):
     @pytest.mark.smoketest
     def test_can_go_to_clients_page(self):
         """
-        Instanstiates wells page and verifies the page can be reached
+        Instanstiates clients page and verifies the page can be reached
         successfully from the browser
         """
         result = self.clientpage.is_at()
         self.teststatus.mark_final(result, "URL verification")
 
     @pytest.mark.smoketest
-    @pytest.mark.usefixtures("clear_well_from_db")
+    @pytest.mark.usefixtures("clear_client_from_db")
     @data(*getCSVData('tests/testdata/clienttestdata.csv'))
     @unpack
     def test_add_new_client(self, companyname):
-        """
-        Adds a new well to the database
-        :param wellname: name of the well to be entered into the form
-        :param apinumber: api number to be entered into the form
-        :param expectedresult: expected result Pass or Fail for the entry
+        """ FDMS-192
+        Adds a new client to the database
+        :param companyname: name of the client to be entered into the form
         """
         self.clientpage.add_new_client(companyname)
         result = self.clientpage.client_success_message_pops()
         self.teststatus.mark_final(result, "success toast message")
 
-    @pytest.mark.usefixtures("clear_well_from_db")
+    @pytest.mark.usefixtures("clear_client_from_db")
     @data(*getCSVData('tests/testdata/validation/companynamevalidation.csv'))
     @unpack
     def test_companyname_validation(self, companyname, validationmessage):
-        """FDMS-183
-        Validates the wellname field when adding a new well
-        :param wellname: name of the well to be entered into the form
+        """FDMS-192
+        Validates the companyname field when adding a new client
+        :param companyname: name of the well to be entered into the form
         :param validationmessage: the expected validation message
         """
         self.clientpage.click_new_client()
@@ -121,39 +85,46 @@ class TestClients(unittest.TestCase):
         self.teststatus.mark_final(validationmessage == self.clienteditpage.get_validation_message_companyname(), "company name form validation")
 
     @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
+    @pytest.mark.usefixtures("clear_client_from_db")
     def test_client_pagination_limit_exceed_and_pagination_menu_exists(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        verify pagination menu exists
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/clientpaginationexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_client(row[0])
             table_entries+=1
-        # verify pagination menu exists
         self.clientpage.page_refresh()
         result = self.clientpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
     @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
+    @pytest.mark.usefixtures("clear_client_from_db")
     def test_client_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        # insert bulk data such that pagination limit is not exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is not exceeded then
+        verify pagination menu doesnt exist
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/clientpaginationnotexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_client(row[0])
             table_entries+=1
-        # verify pagination menu doesnt exists
         self.clientpage.page_refresh()
         result = not self.clientpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
     @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
+    @pytest.mark.usefixtures("clear_client_from_db")
     def test_client_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        ensure the number of rows in table match the default specified in config
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/clientpaginationexceed.csv')
         table_entries = 0

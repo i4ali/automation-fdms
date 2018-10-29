@@ -100,7 +100,6 @@ class SeleniumWebDriver():
             os.makedirs(destinationDirectory)
         self.driver.save_screenshot(destinationFile)
 
-
     def refresh(self):
         self.driver.refresh()
 

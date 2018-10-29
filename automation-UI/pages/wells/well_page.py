@@ -66,11 +66,20 @@ class WellPage(BasePage):
         self.well_edit_page = WellEditPage()
 
     def is_at(self):
+        """
+        To be used by test functions. Redirects to project page if not
+        already there
+        :return:True if successful
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         return self._is_at()
 
     def _is_at(self):
+        """
+        Internal function to check if currently at project page
+        :return: Boolean
+        """
         return self.isat(self.page_header, "xpath")
 
     def add_new_well(self, wellname, apinumber):
@@ -122,16 +131,27 @@ class WellPage(BasePage):
         return WellEditPage()
 
     def pagination_menu_exists(self):
+        """
+        Verify that the pagination menu exists
+        :return: Boolean
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         return self.driver.is_element_present(self.pagination_menu, "css")
 
     def page_refresh(self):
+        """
+        Refresh the page
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        return self.driver.refresh()
+        self.driver.refresh()
 
     def get_table_entries_count(self):
+        """
+        Return the count of rows in the table
+        :return: count of rows in the table
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         table_entries = self.driver.get_child_elements(self.well_table, self.well_table_rows, "xpath", "tag")

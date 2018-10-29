@@ -20,49 +20,13 @@ from utilities.read_data import getCSVData
 from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
+from pages.clients.clientedit_page import ClientEditPage
 import globalconfig
 from base.DBclient import DBClient
 
 
 @ddt
 class TestProjects(unittest.TestCase):
-    """
-        Project page test class
-
-        Attributes
-        ----------
-        wdf : WebDriverFactory instance
-        driver : web driver instance obtained from web driver factory instance
-        teststatus : TestStatus instance
-        conn : MongoClient connection instance
-        database : 'service-fdms' database
-        well : well collection from the db
-        projectpage : ProjectPage instance
-
-
-        Methods
-        -------
-        object_setup()
-            Fixture to setup objects needed for every test
-
-        clear_project_from_db()
-            Fixture to clear project from DB before making any changes to the DB
-            i.e. adding or removing project. Every time a data
-
-        test_can_go_to_project_page()
-            Verify that the project page comes up successfully
-
-        test_add_new_project(Projectname, Companyname, Wellname, APInumber)
-            Verify that new well can be added using the appropriate format for Projectname,
-            Companyname, Wellname, APInumber and validating the form entries
-
-        test_wellname_validation(wellname, validationmessage)
-            Validate the wellname field of the new well form
-
-        test_apiname_validation(apiname, validationmessage)
-            Validate the apiname field of the new well form
-
-        """
 
     @pytest.fixture(autouse=True)
     def object_setup(self):
@@ -74,12 +38,12 @@ class TestProjects(unittest.TestCase):
         self.wellpage = WellPage()
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
+        self.clienteditpage = ClientEditPage()
 
     @pytest.fixture()
     def clear_project_from_db(self):
         """
-        Connects to MongoDB and removes the project, well and client collection from the database
-        service-fdms
+        Connects to DB and removes the project, well and client collection from the database
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         self.client.delete_table('projects')
@@ -89,7 +53,7 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
         """
-        Instanstiates wells page and verifies the page can be reached
+        Instanstiates project page and verifies the page can be reached
         successfully from the browser
         """
         result = self.projectpage.is_at()
@@ -101,13 +65,10 @@ class TestProjects(unittest.TestCase):
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
     def test_add_new_project(self, projectname, companyname):
-        """
-        Adds a new well to the database
-        :param wellname: name of the well to be entered into the form
-        :param apinumber: api number to be entered into the form
-        :param projectname: project name to entered into the form
+        """FMDS-193
+        Adds a new project to the database
+        :param projectname: name of the project to be entered into the form
         :param companyname: client/company name to be entered into the form
-        :param expectedresult: expected result Pass or Fail
         """
         self.projectpage.add_new_project(projectname, companyname)
         result = self.projectpage.project_success_message_pops()
@@ -116,9 +77,7 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.usefixtures("clear_project_from_db")
     def test_companyname_validation(self):
         """FDMS-182
-        Validates the apiname field when adding a new project
-        :param apiname: apiname to be entered into the form
-        :param validationmessage: the expected validation message
+        Validates the companyname field when adding a new project
         """
         self.projectpage.click_new_project()
         self.projecteditpage.click_create_project()
@@ -131,7 +90,7 @@ class TestProjects(unittest.TestCase):
     def test_projectname_validation(self, projectname, validationmessage):
         """FDMS-182
         Validates the apiname field when adding a new project
-        :param apiname: apiname to be entered into the form
+        :param projectname: apiname to be entered into the form
         :param validationmessage: the expected validation message
         """
         self.projectpage.click_new_project()
@@ -139,17 +98,30 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage.click_create_project()
         self.teststatus.mark_final(validationmessage == self.projecteditpage.get_validation_message_projectname(), "project name validation")
 
-    @pytest.mark.pagination
+    @pytest.mark.smoketest
+    def test_create_new_company_link_on_new_project_page(self):
+        """FDMS-193
+        Validates that the create new company link works from the new project page
+        """
+        self.projectpage.click_new_project()
+        self.projecteditpage.click_create_new_company()
+        result = self.clienteditpage.is_at()
+        self.teststatus.mark_final(result, "click new client link works from new project page")
+
+
+    @pytest.mark.pagination87
     @pytest.mark.usefixtures("clear_project_from_db")
     def test_project_pagination_limit_exceed_and_pagination_menu_exists(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        verify pagination menu exists
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_project(row[0])
             table_entries += 1
-        # verify pagination menu exists
         self.projectpage.page_refresh()
         result = self.projectpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
@@ -157,14 +129,16 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_project_from_db")
     def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        # insert bulk data such that pagination limit is not exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is not exceeded then
+        verify pagination menu doesnt exist
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/projectpaginationnotexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_project(row[0])
             table_entries += 1
-        # verify pagination menu doesnt exists
         self.projectpage.page_refresh()
         result = not self.projectpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu doesnt shows up")
@@ -172,7 +146,10 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_project_from_db")
     def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        ensure the number of rows in table match the default specified in config
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
         table_entries = 0

@@ -1,7 +1,7 @@
 """
-@package pages.wells.welledit
+@package pages.clients
 
-WellEditPage class to encapsulate all functionality related to the FDMS wells page. This includes the
+ClientEditPage class to encapsulate all functionality related to the FDMS client edit page. This includes the
 locators, functions to be performed on the page
 """
 from pages.base.base_page import BasePage
@@ -14,7 +14,7 @@ class ClientEditPage(BasePage):
         'Company Name': 'companyName',
     }
     title = 'FDMS'
-    project_title = "//h1[contains(text(), 'NEW CLIENT')]"
+    client_title = "//h1[contains(text(), 'New Client')]"
     companyname_validation_message = 'test-companyName'
 
     def __init__(self):
@@ -22,7 +22,7 @@ class ClientEditPage(BasePage):
         self.navigation = NavigationPage()
 
     def is_at(self):
-        return self.isat(self.project_title, "xpath")
+        return self.isat(self.client_title, "xpath")
 
     def enter_company_name(self, companyname):
         self.driver.get_element(self.client_fields['Company Name'], "name").send_keys(companyname)

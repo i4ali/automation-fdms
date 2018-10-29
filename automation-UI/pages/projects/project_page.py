@@ -12,43 +12,7 @@ from pages.navigation.navigation_page import NavigationPage
 
 
 class ProjectPage(BasePage):
-    """
-        Project page class
 
-        Attributes
-        ----------
-        url : locator for page url
-        driver : web driver instance obtained from web driver factory instance
-        urlcontains : string to look for in url
-        new_project_button : locator in the form of xpath for the new project button
-        project_successfully_created_toast : locator in the form of xpath for the toast message on success for
-        well addition
-        page_header : locator in the form of xpath for the page header
-
-        Methods
-        -------
-        goto()
-            method to go to the url for the page
-
-        isat()
-            method to check if current page is wells page
-
-        add_new_project(projectname, companyname, wellname, apinumber)
-            method to add new project
-
-        project_success_message_pops()
-            method to check if the success message pops when project is added
-
-        project_exists(projectname)
-            method to check if the projectname by projectname exists in the table
-
-        get_toast_message()
-            method to grab toast message element and return its text
-
-        click_new_project()
-            method to click new project button on project page
-
-        """
     url = 'http://localhost:9000/projects'
     urlcontains = 'projects'
     new_project_button = "//button[text()='New Project']"
@@ -71,8 +35,6 @@ class ProjectPage(BasePage):
         all field information
         :param projectname: project name to be entered into form
         :param companyname: company name to be entered into form
-        :param wellname: well name to be entered into form
-        :param apinumber: apinumber to be entered into form
         """
         self.navigation.navigate_to_clients()
         self.client_page.add_new_client(companyname)
@@ -83,13 +45,18 @@ class ProjectPage(BasePage):
         self.project_edit_page.click_create_project()
 
     def is_at(self):
+        """
+        To be used by test functions. Redirects to project page if not
+        already there
+        :return:True if successful
+        """
         if not self._is_at():
             self.navigation.navigate_to_projects()
         return self._is_at()
 
     def _is_at(self):
         """
-        Check if currently at project page
+        Internal function to check if currently at project page
         :return: Boolean
         """
         return self.isat(self.page_header, "xpath")
@@ -131,16 +98,27 @@ class ProjectPage(BasePage):
         return ProjectEditPage()
 
     def page_refresh(self):
+        """
+        Refresh the page
+        """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        return self.driver.refresh()
+        self.driver.refresh()
 
     def pagination_menu_exists(self):
+        """
+        Verify that the pagination menu exists
+        :return: Boolean
+        """
         if not self._is_at():
             self.navigation.navigate_to_projects()
         return self.driver.is_element_present(self.pagination_menu, "css")
 
     def get_table_entries_count(self):
+        """
+        Return the count of rows in the table
+        :return: count of rows in the table
+        """
         if not self._is_at():
             self.navigation.navigate_to_projects()
         table_entries = self.driver.get_child_elements(self.project_table, self.project_table_rows, "xpath", "tag")

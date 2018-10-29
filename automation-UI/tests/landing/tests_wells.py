@@ -26,40 +26,6 @@ from base.DBclient import DBClient
 
 @ddt
 class TestWells(unittest.TestCase):
-    """
-    Landing page test class
-
-    Attributes
-    ----------
-    wdf : WebDriverFactory instance
-    driver : web driver instance obtained from web driver factory instance
-    teststatus : TestStatus instance
-    conn : MongoClient connection instance
-    database : 'service-fdms' database
-    well : well collection from the db
-    wellpage : LandingPage instance
-
-
-    Methods
-    -------
-    clearWellFromDB()
-        Fixture to clear Well collection from DB before making any changes to the well DB
-        i.e. adding or removing well for e.g.
-
-    test_can_go_to_landing_page()
-        Verify that the wells page comes up successfully
-
-    test_add_new_well(wellname, apinumber)
-        Verify that new well can be added using the appropriate format for wellname and apinumber
-        validating the form entries
-
-    test_wellname_validation(wellname, validationmessage)
-        Validate the wellname field of the new well form
-
-    test_apiname_validation(apiname, validationmessage)
-        Validate the apiname field of the new well form
-
-    """
 
     @pytest.fixture(autouse=True)
     def object_setup(self):
@@ -74,7 +40,7 @@ class TestWells(unittest.TestCase):
     @pytest.fixture()
     def clear_well_from_db(self):
         """
-        Connects to MongoDB and removes the well collection from the database
+        Connects to DB and removes the well collection from the database
         service-fdms
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
@@ -98,7 +64,6 @@ class TestWells(unittest.TestCase):
         Adds a new well to the database
         :param wellname: name of the well to be entered into the form
         :param apinumber: api number to be entered into the form
-        :param expectedresult: expected result Pass or Fail for the entry
         """
         self.wellpage.add_new_well(wellname, apinumber)
         result = self.wellpage.well_success_message_pops()
@@ -136,14 +101,16 @@ class TestWells(unittest.TestCase):
     @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        verify pagination menu exists
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_well(row[0], row[1])
             table_entries+=1
-        # verify pagination menu exists
         self.wellpage.page_refresh()
         result = self.wellpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
@@ -151,14 +118,16 @@ class TestWells(unittest.TestCase):
     @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        # insert bulk data such that pagination limit is not exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is not exceeded then
+        verify pagination menu doesnt exist
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/wellpaginationnotexceed.csv')
         table_entries = 0
         for row in rows:
             self.client.insert_well(row[0], row[1])
             table_entries+=1
-        # verify pagination menu doesnt exists
         self.wellpage.page_refresh()
         result = not self.wellpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
@@ -166,7 +135,10 @@ class TestWells(unittest.TestCase):
     @pytest.mark.pagination
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        # insert bulk data such that pagination limit is exceeded
+        """FDMS-189
+        insert bulk data such that pagination limit is exceeded then
+        ensure the number of rows in table match the default specified in config
+        """
         self.client = DBClient(globalconfig.postgres_conn_URI)
         rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
         table_entries = 0
