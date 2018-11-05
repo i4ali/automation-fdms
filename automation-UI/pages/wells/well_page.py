@@ -49,16 +49,14 @@ class WellPage(BasePage):
             method to navigate to projects page
 
         """
-    url = 'http://localhost:9000/'
     urlcontains = 'wells'
-    new_well_button = "//button[text()='New Well']"
+    new_well_button_xpath = "//button[text()='New Well']"
     title = 'FDMS'
-    well_success_message_toast = "//*[contains(text(), 'Well successfully created')]"
-    new_well_ok_button = "//button[text()='Create Well']"
-    page_header = "//h1[text()='Wells']"
-    pagination_menu = "div[class='ui pagination menu']"
-    well_table = "//table[@id='test-data-table']//tbody"
-    well_table_rows = "tr"
+    well_success_message_toast_xpath = "//*[contains(text(), 'Well successfully created')]"
+    new_well_ok_button_xpath = "//button[text()='Create Well']"
+    page_header_xpath = "//h1[text()='Wells']"
+    pagination_menu_css = "div[class='ui pagination menu']"
+    well_table_xpath = "//table[@id='test-data-table']//tbody"
 
     def __init__(self):
         super().__init__()
@@ -80,7 +78,7 @@ class WellPage(BasePage):
         Internal function to check if currently at project page
         :return: Boolean
         """
-        return self.isat(self.page_header, "xpath")
+        return self.isat(self.page_header_xpath, "xpath")
 
     def add_new_well(self, wellname, apinumber):
         """
@@ -103,7 +101,7 @@ class WellPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        return self.driver.is_element_present(self.well_success_message_toast, "xpath")
+        return self.driver.is_element_present(self.well_success_message_toast_xpath, "xpath")
 
     def get_toast_message(self):
         """
@@ -127,7 +125,7 @@ class WellPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        self.driver.get_element(self.new_well_button, "xpath").click()
+        self.driver.get_element(self.new_well_button_xpath, "xpath").click()
         return WellEditPage()
 
     def pagination_menu_exists(self):
@@ -137,7 +135,7 @@ class WellPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        return self.driver.is_element_present(self.pagination_menu, "css")
+        return self.driver.is_element_present(self.pagination_menu_css, "css")
 
     def page_refresh(self):
         """
@@ -154,7 +152,7 @@ class WellPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_wells()
-        table_entries = self.driver.get_child_elements(self.well_table, self.well_table_rows, "xpath", "tag")
+        table_entries = self.driver.get_child_elements(self.well_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
 
 
