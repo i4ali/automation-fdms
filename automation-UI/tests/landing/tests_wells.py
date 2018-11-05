@@ -44,7 +44,7 @@ class TestWells(unittest.TestCase):
         service-fdms
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('wells')
+        self.client.delete_table('well')
 
     @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):
@@ -55,7 +55,6 @@ class TestWells(unittest.TestCase):
         result = self.wellpage.is_at()
         self.teststatus.mark_final(result, "URL verification")
 
-    @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/welltestdata.csv'))
     @unpack
@@ -83,7 +82,6 @@ class TestWells(unittest.TestCase):
         self.welleditpage.click_create_well()
         self.teststatus.mark_final(validationmessage == self.welleditpage.get_validation_message_wellname(), "wellname form validation")
 
-
     @pytest.mark.usefixtures("clear_well_from_db")
     @data(*getCSVData('tests/testdata/validation/apinamevalidation.csv'))
     @unpack
@@ -98,56 +96,7 @@ class TestWells(unittest.TestCase):
         self.welleditpage.click_create_well()
         self.teststatus.mark_final(validationmessage == self.welleditpage.get_validation_message_apiname(), "api name form validation")
 
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        verify pagination menu exists
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_well(row[0], row[1])
-            table_entries+=1
-        self.wellpage.page_refresh()
-        result = self.wellpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
 
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is not exceeded then
-        verify pagination menu doesnt exist
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/wellpaginationnotexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_well(row[0], row[1])
-            table_entries+=1
-        self.wellpage.page_refresh()
-        result = not self.wellpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        ensure the number of rows in table match the default specified in config
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_well(row[0], row[1])
-            table_entries += 1
-        self.wellpage.page_refresh()
-        self.teststatus.mark_final(self.wellpage.get_table_entries_count() == globalconfig.pagination_limit,
-                                   "table rows match pagination limit")
 
     # @pytest.mark.pagination
     # @pytest.mark.usefixtures("clear_well_from_db")

@@ -46,9 +46,9 @@ class TestProjects(unittest.TestCase):
         Connects to DB and removes the project, well and client collection from the database
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('projects')
-        self.client.delete_table('clients')
-        self.client.delete_table('wells')
+        self.client.delete_table('project')
+        self.client.delete_table('client')
+        self.client.delete_table('well')
 
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
@@ -59,8 +59,6 @@ class TestProjects(unittest.TestCase):
         result = self.projectpage.is_at()
         self.teststatus.mark_final(result, "can go to project page")
 
-    @pytest.mark.inprogress
-    @pytest.mark.smoketest
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
@@ -109,56 +107,7 @@ class TestProjects(unittest.TestCase):
         self.teststatus.mark_final(result, "click new client link works from new project page")
 
 
-    @pytest.mark.pagination87
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_project_pagination_limit_exceed_and_pagination_menu_exists(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        verify pagination menu exists
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_project(row[0])
-            table_entries += 1
-        self.projectpage.page_refresh()
-        result = self.projectpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
 
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is not exceeded then
-        verify pagination menu doesnt exist
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/projectpaginationnotexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_project(row[0])
-            table_entries += 1
-        self.projectpage.page_refresh()
-        result = not self.projectpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu doesnt shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        ensure the number of rows in table match the default specified in config
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        rows = getCSVData('tests/testdata/pagination/projectpaginationexceed.csv')
-        table_entries = 0
-        for row in rows:
-            self.client.insert_project(row[0])
-            table_entries += 1
-        self.projectpage.page_refresh()
-        self.teststatus.mark_final(self.projectpage.get_table_entries_count() == globalconfig.pagination_limit,
-                                   "table rows match pagination limit")
 
 
     # @pytest.mark.usefixtures("clear_well_from_db")
