@@ -20,7 +20,7 @@ class ProjectPage(BasePage):
     project_title = "//h1[contains(text(), 'Projects')]"
     page_header = "//h1[text()='Projects']"
     pagination_menu = "div[class='ui pagination menu']"
-    project_table = "//table//tbody"
+    project_table = "//table[@id='test-data-table']//tbody"
     project_table_rows = "tr"
 
     def __init__(self):
