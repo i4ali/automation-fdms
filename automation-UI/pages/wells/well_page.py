@@ -57,6 +57,9 @@ class WellPage(BasePage):
     page_header_xpath = "//h1[text()='Wells']"
     pagination_menu_css = "div[class='ui pagination menu']"
     well_table_xpath = "//table[@id='test-data-table']//tbody"
+    pagination_listbox_xpath = "//*[@id='test-pagination']"
+    pagination_listbox_text_xpath = "//*[@role='listbox']/div[1]" #TODO this needs to be improved
+    #TODO visible menu transition element identifier needed
 
     def __init__(self):
         super().__init__()
@@ -154,6 +157,16 @@ class WellPage(BasePage):
             self.navigation.navigate_to_wells()
         table_entries = self.driver.get_child_elements(self.well_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
+
+    def click_pagination_listbox(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        self.driver.get_element(self.pagination_listbox_xpath).click()
+
+    def get_number_pagination_listbox(self):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        return self.driver.get_text(self.pagination_listbox_text_xpath, "xpath")
 
 
 

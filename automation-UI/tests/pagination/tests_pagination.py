@@ -36,31 +36,6 @@ class TestPagination(unittest.TestCase):
         self.client = DBClient(globalconfig.postgres_conn_URI)
 
     @pytest.fixture()
-    def clear_well_from_db(self):
-        """
-        Connects to DB and removes the well collection from the database
-        service-fdms
-        """
-        self.client.delete_table('well')
-
-    @pytest.fixture()
-    def clear_client_from_db(self):
-        """
-        Connects to DB and removes the well collection from the database
-        fdms
-        """
-        self.client.delete_table('client')
-
-    @pytest.fixture()
-    def clear_project_from_db(self):
-        """
-        Connects to DB and removes the project, well and client collection from the database
-        """
-        self.client.delete_table('project')
-        self.client.delete_table('client')
-        self.client.delete_table('well')
-
-    @pytest.fixture()
     def well_pagination_limit_exceed_setup(self):
         rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
         for row in rows:
@@ -112,6 +87,7 @@ class TestPagination(unittest.TestCase):
         self.clientpage.page_refresh()
 
     """Tests"""
+    @pytest.mark.inprogress
     @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
@@ -122,6 +98,7 @@ class TestPagination(unittest.TestCase):
         result = self.wellpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
+    @pytest.mark.inprogress
     @pytest.mark.pagination
     @pytest.mark.usefixtures("well_pagination_limit_not_exceed_setup")
     @pytest.mark.usefixtures("clear_well_from_db")
@@ -141,9 +118,16 @@ class TestPagination(unittest.TestCase):
         insert bulk data such that pagination limit is exceeded then
         ensure the number of rows in table match the default specified in config
         """
-        self.wellpage.page_refresh()
         self.teststatus.mark_final(self.wellpage.get_table_entries_count() == globalconfig.pagination_limit,
                                    "table rows match pagination limit")
+
+    @pytest.mark.pagination12
+    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_show_dropdown(self):
+        self.teststatus.mark_final(self.wellpage.get_number_pagination_listbox() == globalconfig.pagination_limit,
+                                   "table rows match number shown in list box")
+
 
     @pytest.mark.pagination
     @pytest.mark.usefixtures("client_pagination_limit_exceed_setup")
@@ -175,7 +159,6 @@ class TestPagination(unittest.TestCase):
         insert bulk data such that pagination limit is exceeded then
         ensure the number of rows in table match the default specified in config
         """
-        self.clientpage.page_refresh()
         self.teststatus.mark_final(self.clientpage.get_table_entries_count() == globalconfig.pagination_limit,
                                    "table rows match pagination limit")
 

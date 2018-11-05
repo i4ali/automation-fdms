@@ -40,16 +40,6 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage = ProjectEditPage()
         self.clienteditpage = ClientEditPage()
 
-    @pytest.fixture()
-    def clear_project_from_db(self):
-        """
-        Connects to DB and removes the project, well and client collection from the database
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('project')
-        self.client.delete_table('client')
-        self.client.delete_table('well')
-
     """Tests"""
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
@@ -106,9 +96,6 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage.click_create_new_company()
         result = self.clienteditpage.is_at()
         self.teststatus.mark_final(result, "click new client link works from new project page")
-
-
-
 
 
     # @pytest.mark.usefixtures("clear_well_from_db")

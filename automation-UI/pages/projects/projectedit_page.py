@@ -27,10 +27,6 @@ class ProjectEditPage(BasePage):
     def __init__(self):
         super().__init__()
 
-    def go_to(self):
-        self.goto(self.url)
-        return self
-
     def is_at(self):
         return self.isat(self.project_title_xpath, "xpath")
 

@@ -10,6 +10,7 @@ from pydal import DAL, Field
 import datetime
 import uuid
 
+
 class DBClient:
 
     def __init__(self, uri_db):
@@ -34,6 +35,11 @@ class DBClient:
         table = self.db.get(tablename)
         table.truncate(mode='CASCADE')
         self.db.commit()
+
+    def close(self):
+        self.db.close()
+
+
 
 
 

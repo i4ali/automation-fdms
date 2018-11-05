@@ -6,6 +6,7 @@ between all test cases
 
 """
 from base.driver import Driver
+from base.DBclient import DBClient
 import pytest
 import globalconfig
 
@@ -30,3 +31,41 @@ def method_setup():
     """
     driver = Driver.instance()
     driver.get(globalconfig.base_url)
+
+
+@pytest.yield_fixture()
+def clear_well_from_db():
+    """
+    Connects to DB and removes the well collection from the database
+    fdms. Teardowns client at the end
+    """
+    client = DBClient(globalconfig.postgres_conn_URI)
+    client.delete_table('well')
+    yield
+    client.close()
+
+
+@pytest.yield_fixture()
+def clear_client_from_db():
+    """
+    Connects to DB and removes the well collection from the database
+    fdms. Teardowns client at the end
+    """
+    client = DBClient(globalconfig.postgres_conn_URI)
+    client.delete_table('client')
+    yield
+    client.close()
+
+
+@pytest.yield_fixture()
+def clear_project_from_db():
+    """
+    Connects to DB and removes the project, well and client collection from the database.
+    Teardowns client at the end
+    """
+    client = DBClient(globalconfig.postgres_conn_URI)
+    client.delete_table('project')
+    client.delete_table('client')
+    client.delete_table('well')
+    yield
+    client.close()

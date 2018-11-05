@@ -37,15 +37,6 @@ class TestWells(unittest.TestCase):
         self.wellpage = WellPage()
         self.welleditpage = WellEditPage()
 
-    @pytest.fixture()
-    def clear_well_from_db(self):
-        """
-        Connects to DB and removes the well collection from the database
-        service-fdms
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('well')
-
     """Tests"""
     @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):

@@ -81,7 +81,10 @@ class SeleniumWebDriver():
                 text = element.get_attribute("innerText")
             if len(text) != 0:
                 text = text.strip()
-            return text
+            if text.isdigit():
+                return int(text)
+            else:
+                return text
         else:
             return ""
 
