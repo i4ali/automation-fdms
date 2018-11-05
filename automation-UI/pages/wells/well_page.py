@@ -57,7 +57,7 @@ class WellPage(BasePage):
     new_well_ok_button = "//button[text()='Create Well']"
     page_header = "//h1[text()='Wells']"
     pagination_menu = "div[class='ui pagination menu']"
-    well_table = "//table//tbody"
+    well_table = "//table[@id='test-data-table']//tbody"
     well_table_rows = "tr"
 
     def __init__(self):

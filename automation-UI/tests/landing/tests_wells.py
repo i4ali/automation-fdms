@@ -46,6 +46,7 @@ class TestWells(unittest.TestCase):
         self.client = DBClient(globalconfig.postgres_conn_URI)
         self.client.delete_table('well')
 
+    """Tests"""
     @pytest.mark.smoketest
     def test_can_go_to_landing_page(self):
         """

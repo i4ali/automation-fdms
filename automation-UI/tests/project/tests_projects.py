@@ -50,6 +50,7 @@ class TestProjects(unittest.TestCase):
         self.client.delete_table('client')
         self.client.delete_table('well')
 
+    """Tests"""
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
         """

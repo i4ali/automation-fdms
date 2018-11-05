@@ -19,7 +19,7 @@ class ClientPage(BasePage):
     client_successfully_created_toast = "//*[contains(text(), 'Client successfully created')]"
     project_title = "//h1[contains(text(), 'Projects')]"
     page_header = "//h1[text()='Clients']"
-    client_table = "//table//tbody"
+    client_table = "//table[@id='test-data-table']//tbody"
     client_table_rows = "tr"
 
     def __init__(self):
