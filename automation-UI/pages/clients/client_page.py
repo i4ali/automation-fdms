@@ -12,15 +12,13 @@ from pages.navigation.navigation_page import NavigationPage
 
 class ClientPage(BasePage):
 
-    url = 'http://localhost:9000/clients'
     urlcontains = 'clients'
-    new_client_button = "//button[text()='New Client']"
+    new_client_button_xpath = "//button[text()='New Client']"
     pagination_menu = "div[class='ui pagination menu']"
-    client_successfully_created_toast = "//*[contains(text(), 'Client successfully created')]"
-    project_title = "//h1[contains(text(), 'Projects')]"
-    page_header = "//h1[text()='Clients']"
-    client_table = "//table[@id='test-data-table']//tbody"
-    client_table_rows = "tr"
+    client_successfully_created_toast_xpath = "//*[contains(text(), 'Client successfully created')]"
+    project_title_xpath = "//h1[contains(text(), 'Projects')]"
+    page_header_xpath = "//h1[text()='Clients']"
+    client_table_xpath = "//table[@id='test-data-table']//tbody"
 
     def __init__(self):
         super().__init__()
@@ -55,7 +53,7 @@ class ClientPage(BasePage):
        Internal function to check if currently at project page
        :return: Boolean
        """
-        return self.isat(self.page_header, "xpath")
+        return self.isat(self.page_header_xpath, "xpath")
 
     def client_exists(self, companyname):
         """
@@ -74,7 +72,7 @@ class ClientPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_clients()
-        return self.driver.is_element_present(self.client_successfully_created_toast, "xpath")
+        return self.driver.is_element_present(self.client_successfully_created_toast_xpath, "xpath")
 
     def get_toast_message(self):
         """
@@ -90,7 +88,7 @@ class ClientPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_clients()
-        self.driver.get_element(self.new_client_button, "xpath").click()
+        self.driver.get_element(self.new_client_button_xpath, "xpath").click()
         return ClientEditPage()
 
     def page_refresh(self):
@@ -117,7 +115,7 @@ class ClientPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_clients()
-        table_entries = self.driver.get_child_elements(self.client_table, self.client_table_rows, "xpath", "tag")
+        table_entries = self.driver.get_child_elements(self.client_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
 
 

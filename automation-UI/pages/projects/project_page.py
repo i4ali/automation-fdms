@@ -13,15 +13,13 @@ from pages.navigation.navigation_page import NavigationPage
 
 class ProjectPage(BasePage):
 
-    url = 'http://localhost:9000/projects'
     urlcontains = 'projects'
-    new_project_button = "//button[text()='New Project']"
-    project_successfully_created_toast = "//*[contains(text(), 'Project successfully created')]"
-    project_title = "//h1[contains(text(), 'Projects')]"
-    page_header = "//h1[text()='Projects']"
-    pagination_menu = "div[class='ui pagination menu']"
-    project_table = "//table[@id='test-data-table']//tbody"
-    project_table_rows = "tr"
+    new_project_button_xpath = "//button[text()='New Project']"
+    project_successfully_created_toast_xpath = "//*[contains(text(), 'Project successfully created')]"
+    project_title_xpath = "//h1[contains(text(), 'Projects')]"
+    page_header_xpath = "//h1[text()='Projects']"
+    pagination_menu_css = "div[class='ui pagination menu']"
+    project_table_xpath = "//table[@id='test-data-table']//tbody"
 
     def __init__(self):
         super().__init__()
@@ -59,7 +57,7 @@ class ProjectPage(BasePage):
         Internal function to check if currently at project page
         :return: Boolean
         """
-        return self.isat(self.page_header, "xpath")
+        return self.isat(self.page_header_xpath, "xpath")
 
     def project_exists(self, projectname):
         """
@@ -78,7 +76,7 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        return self.driver.is_element_present(self.project_successfully_created_toast, "xpath")
+        return self.driver.is_element_present(self.project_successfully_created_toast_xpath, "xpath")
 
     def get_toast_message(self):
         """
@@ -94,7 +92,7 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        self.driver.get_element(self.new_project_button, "xpath").click()
+        self.driver.get_element(self.new_project_button_xpath, "xpath").click()
         return ProjectEditPage()
 
     def page_refresh(self):
@@ -112,7 +110,7 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        return self.driver.is_element_present(self.pagination_menu, "css")
+        return self.driver.is_element_present(self.pagination_menu_css, "css")
 
     def get_table_entries_count(self):
         """
@@ -121,7 +119,7 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        table_entries = self.driver.get_child_elements(self.project_table, self.project_table_rows, "xpath", "tag")
+        table_entries = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
 
 
