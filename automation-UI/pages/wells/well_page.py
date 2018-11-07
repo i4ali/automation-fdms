@@ -58,8 +58,9 @@ class WellPage(BasePage):
     pagination_menu_css = "div[class='ui pagination menu']"
     well_table_xpath = "//table[@id='test-data-table']//tbody"
     pagination_listbox_xpath = "//*[@id='test-pagination']"
-    pagination_listbox_text_xpath = "//*[@role='listbox']/div[1]" #TODO this needs to be improved
-    #TODO visible menu transition element identifier needed
+    pagination_listbox_text_xpath = "//*[@id='test-pagination']/div[@class='text']"
+    searchbox_xpath = "//input[@placeholder='Search']"
+    searchbox_text_attribute = "value"
 
     def __init__(self):
         super().__init__()
@@ -83,7 +84,7 @@ class WellPage(BasePage):
         """
         return self.isat(self.page_header_xpath, "xpath")
 
-    def add_new_well(self, wellname, apinumber):
+    def add_new_well(self, wellname, apinumber): #TODO need another method to add new well with project name
         """
         clicks new well on well page to create new well and enter
         all field information
@@ -167,6 +168,16 @@ class WellPage(BasePage):
         if not self._is_at():
             self.navigation.navigate_to_wells()
         return self.driver.get_text(self.pagination_listbox_text_xpath, "xpath")
+
+    def search_well_in_searchbox(self, wellname):
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        self.driver.get_element(self.searchbox_xpath, "xpath").send_keys(wellname)
+        # self.driver.\
+        #     get_element("//*[@id='container']//div[@class='results transition visible']//div[@class='title']").click()
+
+    def get_text_from_searchbox_dropdown(self):
+        return self.driver.get_text("//*[@id='container']//div[@class='results transition visible']//div[@class='title']", "xpath")
 
 
 

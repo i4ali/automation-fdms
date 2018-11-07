@@ -87,7 +87,6 @@ class TestPagination(unittest.TestCase):
         self.clientpage.page_refresh()
 
     """Tests"""
-    @pytest.mark.inprogress
     @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
@@ -98,7 +97,6 @@ class TestPagination(unittest.TestCase):
         result = self.wellpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
-    @pytest.mark.inprogress
     @pytest.mark.pagination
     @pytest.mark.usefixtures("well_pagination_limit_not_exceed_setup")
     @pytest.mark.usefixtures("clear_well_from_db")
@@ -127,6 +125,13 @@ class TestPagination(unittest.TestCase):
     def test_well_pagination_limit_exceed_and_table_has_rows_to_match_show_dropdown(self):
         self.teststatus.mark_final(self.wellpage.get_number_pagination_listbox() == globalconfig.pagination_limit,
                                    "table rows match number shown in list box")
+
+    @pytest.mark.inprogress
+    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination_limit_exceed_and_search_box_finds_input_well(self):
+        self.wellpage.search_well_in_searchbox("Gorman 11-3")
+        assert self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3"
 
 
     @pytest.mark.pagination
