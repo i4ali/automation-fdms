@@ -126,12 +126,21 @@ class TestPagination(unittest.TestCase):
         self.teststatus.mark_final(self.wellpage.get_number_pagination_listbox() == globalconfig.pagination_limit,
                                    "table rows match number shown in list box")
 
-    @pytest.mark.inprogress
+    @pytest.mark.inprogress2
     @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_well_from_db")
     def test_well_pagination_limit_exceed_and_search_box_finds_input_well(self):
-        self.wellpage.search_well_in_searchbox("Gorman 11-3")
-        assert self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3"
+        self.wellpage.search_well_in_searchbox("Gorman 11-3") # wellname should be in testdata
+        self.teststatus.mark_final(self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3",
+                                   "search box finds well in dropdown(autocomplete)")
+
+    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    @pytest.mark.usefixtures("clear_well_from_db")
+    def test_well_pagination_limit_exceed_and_navigate_all_pages_to_count_entries_which_should_match_total_well_count(self):
+        count = 0
+        pagecount = self.wellpage.get_table_entries_count()
+        if pagecount == globalconfig.pagination_limit:
+            self.wellpage.navigate_to_next_page()
 
 
     @pytest.mark.pagination
@@ -167,6 +176,14 @@ class TestPagination(unittest.TestCase):
         self.teststatus.mark_final(self.clientpage.get_table_entries_count() == globalconfig.pagination_limit,
                                    "table rows match pagination limit")
 
+    @pytest.mark.inprogress
+    @pytest.mark.usefixtures("client_pagination_limit_exceed_setup")
+    @pytest.mark.usefixtures("clear_client_from_db")
+    def test_client_pagination_limit_exceed_and_search_box_finds_input_client(self):
+        self.clientpage.search_client_in_searchbox("Bessie 44 1")  # client should be in testdata
+        self.teststatus.mark_final(self.clientpage.get_text_from_searchbox_dropdown() == "Bessie 44 1",
+                                   "search box finds well in dropdown(autocomplete)")
+
     @pytest.mark.pagination
     @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_project_from_db")
@@ -199,3 +216,11 @@ class TestPagination(unittest.TestCase):
         """
         self.teststatus.mark_final(self.projectpage.get_table_entries_count() == globalconfig.pagination_limit,
                                    "table rows match pagination limit")
+
+    @pytest.mark.inprogress
+    @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
+    @pytest.mark.usefixtures("clear_project_from_db")
+    def test_project_pagination_limit_exceed_and_search_box_finds_input_project(self):
+        self.projectpage.search_project_in_searchbox("LPI-Schwartz 30-3")  # client should be in testdata
+        self.teststatus.mark_final(self.projectpage.get_text_from_searchbox_dropdown() == "LPI-Schwartz 30-3",
+                                   "search box finds well in dropdown(autocomplete)")

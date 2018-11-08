@@ -19,6 +19,9 @@ class ClientPage(BasePage):
     project_title_xpath = "//h1[contains(text(), 'Projects')]"
     page_header_xpath = "//h1[text()='Clients']"
     client_table_xpath = "//table[@id='test-data-table']//tbody"
+    searchbox_xpath = "//input[@placeholder='Search']"
+    searchbox_text_attribute = "value"
+    searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
 
     def __init__(self):
         super().__init__()
@@ -118,4 +121,22 @@ class ClientPage(BasePage):
         table_entries = self.driver.get_child_elements(self.client_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
 
+    def search_client_in_searchbox(self, wellname):
+        """
+        Enters parameter into searchbox
+        :param wellname: wellname to search in searchbox
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
+        self.driver.get_element(self.searchbox_xpath, "xpath").send_keys(wellname)
+
+    def get_text_from_searchbox_dropdown(self):
+        """
+        As the data is entered into search box, the dropdown shows with
+        the relevant entry. This function should return that entry
+        :return: text from searchbox dropdown
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_clients()
+        return self.driver.get_text(self.searbox_text_dropdown_xpath, "xpath")
 

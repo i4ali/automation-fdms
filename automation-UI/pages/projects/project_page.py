@@ -20,6 +20,9 @@ class ProjectPage(BasePage):
     page_header_xpath = "//h1[text()='Projects']"
     pagination_menu_css = "div[class='ui pagination menu']"
     project_table_xpath = "//table[@id='test-data-table']//tbody"
+    searchbox_xpath = "//input[@placeholder='Search']"
+    searchbox_text_attribute = "value"
+    searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
 
     def __init__(self):
         super().__init__()
@@ -121,5 +124,24 @@ class ProjectPage(BasePage):
             self.navigation.navigate_to_projects()
         table_entries = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
         return len(table_entries)
+
+    def search_project_in_searchbox(self, projectname):
+        """
+        Enters parameter into searchbox
+        :param projectname: projectname to search in searchbox
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        self.driver.get_element(self.searchbox_xpath, "xpath").send_keys(projectname)
+
+    def get_text_from_searchbox_dropdown(self):
+        """
+        As the data is entered into search box, the dropdown shows with
+        the relevant entry. This function should return that entry
+        :return: text from searchbox dropdown
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        return self.driver.get_text(self.searbox_text_dropdown_xpath, "xpath")
 
 

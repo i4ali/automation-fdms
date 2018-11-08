@@ -61,6 +61,7 @@ class WellPage(BasePage):
     pagination_listbox_text_xpath = "//*[@id='test-pagination']/div[@class='text']"
     searchbox_xpath = "//input[@placeholder='Search']"
     searchbox_text_attribute = "value"
+    searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
 
     def __init__(self):
         super().__init__()
@@ -151,7 +152,6 @@ class WellPage(BasePage):
 
     def get_table_entries_count(self):
         """
-        Return the count of rows in the table
         :return: count of rows in the table
         """
         if not self._is_at():
@@ -160,24 +160,39 @@ class WellPage(BasePage):
         return len(table_entries)
 
     def click_pagination_listbox(self):
+        """
+        Clicks on the pagination list box menu
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         self.driver.get_element(self.pagination_listbox_xpath).click()
 
     def get_number_pagination_listbox(self):
+        """
+        :return: number shown on listbox for pagination
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         return self.driver.get_text(self.pagination_listbox_text_xpath, "xpath")
 
     def search_well_in_searchbox(self, wellname):
+        """
+        Enters parameter into searchbox
+        :param wellname: wellname to search in searchbox
+        """
         if not self._is_at():
             self.navigation.navigate_to_wells()
         self.driver.get_element(self.searchbox_xpath, "xpath").send_keys(wellname)
-        # self.driver.\
-        #     get_element("//*[@id='container']//div[@class='results transition visible']//div[@class='title']").click()
 
     def get_text_from_searchbox_dropdown(self):
-        return self.driver.get_text("//*[@id='container']//div[@class='results transition visible']//div[@class='title']", "xpath")
+        """
+        As the data is entered into search box, the dropdown shows with
+        the relevant entry. This function should return that entry
+        :return: text from searchbox dropdown
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_wells()
+        return self.driver.get_text(self.searbox_text_dropdown_xpath, "xpath")
 
 
 
