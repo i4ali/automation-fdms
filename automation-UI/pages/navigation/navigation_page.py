@@ -2,7 +2,8 @@
 @package  pages.navigation
 """
 from pages.base.base_page import BasePage
-
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 class NavigationPage(BasePage):
 
@@ -18,6 +19,8 @@ class NavigationPage(BasePage):
         self.driver.get_element(self.logo_link, "css").click()
 
     def navigate_to_projects(self):
+        # element = WebDriverWait(self.driver, 10).until(
+        #             EC.element_to_be_clickable((locatorType, locator)))
         self.driver.get_element(self.projects_link, "css").click()
 
     def navigate_to_wells(self):

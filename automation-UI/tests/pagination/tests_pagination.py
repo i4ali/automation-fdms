@@ -134,13 +134,13 @@ class TestPagination(unittest.TestCase):
         self.teststatus.mark_final(self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3",
                                    "search box finds well in dropdown(autocomplete)")
 
-    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_navigate_all_pages_to_count_entries_which_should_match_total_well_count(self):
-        count = 0
-        pagecount = self.wellpage.get_table_entries_count()
-        if pagecount == globalconfig.pagination_limit:
-            self.wellpage.navigate_to_next_page()
+    # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_navigate_all_pages_to_count_entries_which_should_match_total_well_count(self):
+    #     count = 0
+    #     pagecount = self.wellpage.get_table_entries_count()
+    #     if pagecount == globalconfig.pagination_limit:
+    #         self.wellpage.navigate_to_next_page()
 
 
     @pytest.mark.pagination

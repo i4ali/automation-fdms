@@ -8,6 +8,8 @@ import time
 import os
 from base.driver import Driver
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.support.ui import WebDriverWait
 
 
 class SeleniumWebDriver():
@@ -50,6 +52,9 @@ class SeleniumWebDriver():
             element = self.driver.find_element(byType, locator)
         except NoSuchElementException:
             return None
+        # element = WebDriverWait(self.driver, 20).until(
+        #     EC.element_to_be_clickable((byType, locator))
+        # )
         return element
 
     def get_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
@@ -105,6 +110,7 @@ class SeleniumWebDriver():
 
     def refresh(self):
         self.driver.refresh()
+
 
 
 

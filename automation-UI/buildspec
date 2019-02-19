@@ -1,0 +1,15 @@
+version: 0.1
+
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
+  build:
+    commands:
+      - echo $PYTHONPATH
+  post_build:
+    commands:
+      - printf '[{"exit-status":"%s"}]' $? > automationUI.json
+artifacts:
+    files: automationUI.json

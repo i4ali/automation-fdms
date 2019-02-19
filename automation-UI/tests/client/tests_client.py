@@ -46,7 +46,7 @@ class TestClients(unittest.TestCase):
         fdms
         """
         self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('client')
+        self.client.delete_table('clients')
 
     @pytest.mark.smoketest
     def test_can_go_to_clients_page(self):

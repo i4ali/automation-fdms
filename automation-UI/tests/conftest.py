@@ -40,7 +40,7 @@ def clear_well_from_db():
     fdms. Teardowns client at the end
     """
     client = DBClient(globalconfig.postgres_conn_URI)
-    client.delete_table('well')
+    client.delete_table('wells')
     yield
     client.close()
 
@@ -52,7 +52,7 @@ def clear_client_from_db():
     fdms. Teardowns client at the end
     """
     client = DBClient(globalconfig.postgres_conn_URI)
-    client.delete_table('client')
+    client.delete_table('clients')
     yield
     client.close()
 
@@ -64,8 +64,8 @@ def clear_project_from_db():
     Teardowns client at the end
     """
     client = DBClient(globalconfig.postgres_conn_URI)
-    client.delete_table('project')
-    client.delete_table('client')
-    client.delete_table('well')
+    client.delete_table('projects')
+    client.delete_table('clients')
+    client.delete_table('wells')
     yield
     client.close()
