@@ -4,7 +4,6 @@ phases:
   pre_build:
     commands:
       - cd /automationfdms/automationui
-      - docker login -u $DOCKERHUB_USERNAME -p $DOCKERHUB_PASSWORD
   build:
     commands:
       - pytest -v -s -m smoketest
