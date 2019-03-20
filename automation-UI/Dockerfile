@@ -17,4 +17,3 @@ WORKDIR /automationfdms/automationui
 ENV PYTHONPATH=/automationfdms/automationui
 CMD Xvfb :10 -ac &
 ENV DISPLAY=:10
-ENTRYPOINT ["pytest", "-v", "-s"]
