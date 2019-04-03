@@ -21,6 +21,7 @@ from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.clients.clientedit_page import ClientEditPage
+from pages.clients.newclient_modal import NewClientModalPage
 import globalconfig
 from base.DBclient import DBClient
 
@@ -39,6 +40,7 @@ class TestProjects(unittest.TestCase):
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
         self.clienteditpage = ClientEditPage()
+        self.newclientmodalpage = NewClientModalPage()
 
     """Tests"""
     @pytest.mark.smoketest
@@ -88,13 +90,13 @@ class TestProjects(unittest.TestCase):
         self.teststatus.mark_final(validationmessage == self.projecteditpage.get_validation_message_projectname(), "project name validation")
 
     @pytest.mark.smoketest
-    def test_create_new_company_link_on_new_project_page(self):
+    def test_create_new_client_link_on_new_project_page(self):
         """FDMS-193
         Validates that the create new company link works from the new project page
         """
         self.projectpage.click_new_project()
         self.projecteditpage.click_create_new_company()
-        result = self.clienteditpage.is_at()
+        result = self.newclientmodalpage.is_at()
         self.teststatus.mark_final(result, "click new client link works from new project page")
 
 

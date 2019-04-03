@@ -22,7 +22,7 @@ class ProjectEditPage(BasePage):
     projectname_validation_message_id = 'test-projectName'
     companyname_validation_message_content = "Select or Create a Company."
     companyname_dropdown_xpath = "//*[@class='dropdown icon']"
-    create_new_company_link_xpath = "//a[text() = 'Create New Company']"
+    create_new_company_link_xpath = "//a[text() = 'Create New Client']"
 
     def __init__(self):
         super().__init__()

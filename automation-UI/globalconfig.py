@@ -10,7 +10,7 @@ postgres_conn_URI = "postgres://service_toolkit_user:zMw1$ak85N^Z@toolkit-qa.cqz
 browser = "firefox"
 # List of arguments to provide to the driver. Default is empty list with no arguments.
 # It is best to use 'start-maximized' option for the browser window all the time to avoid issues with finding elements
-browser_arguments = ["--headless"]
+browser_arguments = ["start-maximized"]
 base_url = 'http://toolk-publi-1kaic7bnh5sva-448940884.us-east-1.elb.amazonaws.com'
 browser_implicit_wait_in_secs = 2
 pagination_limit = 10
