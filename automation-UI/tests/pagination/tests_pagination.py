@@ -87,52 +87,51 @@ class TestPagination(unittest.TestCase):
         self.clientpage.page_refresh()
 
     """Tests"""
-    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        verify pagination menu exists
-        """
-        result = self.wellpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("well_pagination_limit_not_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is not exceeded then
-        verify pagination menu doesnt exist
-        """
-        result = not self.wellpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        ensure the number of rows in table match the default specified in config
-        """
-        self.teststatus.mark_final(self.wellpage.get_table_entries_count() == globalconfig.pagination_limit,
-                                   "table rows match pagination limit")
-
-    @pytest.mark.pagination12
-    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_table_has_rows_to_match_show_dropdown(self):
-        self.teststatus.mark_final(self.wellpage.get_number_pagination_listbox() == globalconfig.pagination_limit,
-                                   "table rows match number shown in list box")
-
-    @pytest.mark.inprogress2
-    @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_well_from_db")
-    def test_well_pagination_limit_exceed_and_search_box_finds_input_well(self):
-        self.wellpage.search_well_in_searchbox("Gorman 11-3") # wellname should be in testdata
-        self.teststatus.mark_final(self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3",
-                                   "search box finds well in dropdown(autocomplete)")
+    # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_pagination_menu_exists(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is exceeded then
+    #     verify pagination menu exists
+    #     """
+    #     result = self.wellpage.pagination_menu_exists()
+    #     self.teststatus.mark_final(result, "check the pagination menu shows up")
+    #
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("well_pagination_limit_not_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is not exceeded then
+    #     verify pagination menu doesnt exist
+    #     """
+    #     result = not self.wellpage.pagination_menu_exists()
+    #     self.teststatus.mark_final(result, "check the pagination menu shows up")
+    #
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is exceeded then
+    #     ensure the number of rows in table match the default specified in config
+    #     """
+    #     self.teststatus.mark_final(self.wellpage.get_table_entries_count() == globalconfig.pagination_limit,
+    #                                "table rows match pagination limit")
+    #
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_table_has_rows_to_match_show_dropdown(self):
+    #     self.teststatus.mark_final(self.wellpage.get_number_pagination_listbox() == globalconfig.pagination_limit,
+    #                                "table rows match number shown in list box")
+    #
+    # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_well_from_db")
+    # def test_well_pagination_limit_exceed_and_search_box_finds_input_well(self):
+    #     self.wellpage.search_well_in_searchbox("Gorman 11-3") # wellname should be in testdata
+    #     self.teststatus.mark_final(self.wellpage.get_text_from_searchbox_dropdown() == "Gorman 11-3",
+    #                                "search box finds well in dropdown(autocomplete)")
 
     # @pytest.mark.usefixtures("well_pagination_limit_exceed_setup")
     # @pytest.mark.usefixtures("clear_well_from_db")
@@ -143,6 +142,7 @@ class TestPagination(unittest.TestCase):
     #         self.wellpage.navigate_to_next_page()
 
 
+    @pytest.mark.regression
     @pytest.mark.pagination
     @pytest.mark.usefixtures("client_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_client_from_db")
@@ -154,6 +154,7 @@ class TestPagination(unittest.TestCase):
         result = self.clientpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
+    @pytest.mark.regression
     @pytest.mark.pagination
     @pytest.mark.usefixtures("client_pagination_limit_not_exceed_setup")
     @pytest.mark.usefixtures("clear_client_from_db")
@@ -165,6 +166,7 @@ class TestPagination(unittest.TestCase):
         result = not self.clientpage.pagination_menu_exists()
         self.teststatus.mark_final(result, "check the pagination menu shows up")
 
+    @pytest.mark.regression
     @pytest.mark.pagination
     @pytest.mark.usefixtures("client_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_client_from_db")
@@ -176,7 +178,7 @@ class TestPagination(unittest.TestCase):
         self.teststatus.mark_final(self.clientpage.get_table_entries_count() == globalconfig.pagination_limit,
                                    "table rows match pagination limit")
 
-    @pytest.mark.inprogress
+    @pytest.mark.regression
     @pytest.mark.usefixtures("client_pagination_limit_exceed_setup")
     @pytest.mark.usefixtures("clear_client_from_db")
     def test_client_pagination_limit_exceed_and_search_box_finds_input_client(self):
@@ -184,43 +186,43 @@ class TestPagination(unittest.TestCase):
         self.teststatus.mark_final(self.clientpage.get_text_from_searchbox_dropdown() == "Bessie 44 1",
                                    "search box finds well in dropdown(autocomplete)")
 
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_project_pagination_limit_exceed_and_pagination_menu_exists(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        verify pagination menu exists
-        """
-        result = self.projectpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("project_pagination_limit_not_exceed_setup")
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_project_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is not exceeded then
-        verify pagination menu doesnt exist
-        """
-        result = not self.projectpage.pagination_menu_exists()
-        self.teststatus.mark_final(result, "check the pagination menu doesnt shows up")
-
-    @pytest.mark.pagination
-    @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_project_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
-        """FDMS-189
-        insert bulk data such that pagination limit is exceeded then
-        ensure the number of rows in table match the default specified in config
-        """
-        self.teststatus.mark_final(self.projectpage.get_table_entries_count() == globalconfig.pagination_limit,
-                                   "table rows match pagination limit")
-
-    @pytest.mark.inprogress
-    @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
-    @pytest.mark.usefixtures("clear_project_from_db")
-    def test_project_pagination_limit_exceed_and_search_box_finds_input_project(self):
-        self.projectpage.search_project_in_searchbox("LPI-Schwartz 30-3")  # client should be in testdata
-        self.teststatus.mark_final(self.projectpage.get_text_from_searchbox_dropdown() == "LPI-Schwartz 30-3",
-                                   "search box finds well in dropdown(autocomplete)")
+    # @pytest.mark.inprogress
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_project_from_db")
+    # def test_project_pagination_limit_exceed_and_pagination_menu_exists(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is exceeded then
+    #     verify pagination menu exists
+    #     """
+    #     result = self.projectpage.pagination_menu_exists()
+    #     self.teststatus.mark_final(result, "check the pagination menu shows up")
+    #
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("project_pagination_limit_not_exceed_setup")
+    # @pytest.mark.usefixtures("clear_project_from_db")
+    # def test_project_pagination_limit_not_exceed_and_pagination_menu_doesnt_exist(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is not exceeded then
+    #     verify pagination menu doesnt exist
+    #     """
+    #     result = not self.projectpage.pagination_menu_exists()
+    #     self.teststatus.mark_final(result, "check the pagination menu doesnt shows up")
+    #
+    # @pytest.mark.pagination
+    # @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_project_from_db")
+    # def test_project_pagination_limit_exceed_and_table_has_rows_to_match_default_limit(self):
+    #     """FDMS-189
+    #     insert bulk data such that pagination limit is exceeded then
+    #     ensure the number of rows in table match the default specified in config
+    #     """
+    #     self.teststatus.mark_final(self.projectpage.get_table_entries_count() == globalconfig.pagination_limit,
+    #                                "table rows match pagination limit")
+    #
+    # @pytest.mark.usefixtures("project_pagination_limit_exceed_setup")
+    # @pytest.mark.usefixtures("clear_project_from_db")
+    # def test_project_pagination_limit_exceed_and_search_box_finds_input_project(self):
+    #     self.projectpage.search_project_in_searchbox("LPI-Schwartz 30-3")  # client should be in testdata
+    #     self.teststatus.mark_final(self.projectpage.get_text_from_searchbox_dropdown() == "LPI-Schwartz 30-3",
+    #                                "search box finds well in dropdown(autocomplete)")
