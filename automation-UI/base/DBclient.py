@@ -10,7 +10,6 @@ from pydal import DAL, Field
 import datetime
 import uuid
 import logging
-import psycopg2
 
 # create logger
 # logger = logging.getLogger('main.wdvg_edw_to_csv')
