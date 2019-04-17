@@ -8,7 +8,7 @@ Global config file
 # postgres_conn_URI = "postgres://stack-user:stack-password@127.0.0.1:43000/toolkit-docker"
 
 # Use the below conn_URI for testing in AWS
-postgres_conn_URI = "postgres://service_toolkit_user:zMw1$ak85N^Z@toolkit-qa.cqztu6sln31x.us-east-1.rds.amazonaws.com:5432/service_toolkit_dev"
+postgres_conn_URI = "postgres://service_toolkit_user:zMw1$ak85N^Zqa@toolkit-qa.cqztu6sln31x.us-east-1.rds.amazonaws.com:5432/service_toolkit_qa"
 
 browser = "firefox"
 
