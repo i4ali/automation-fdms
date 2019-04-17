@@ -57,11 +57,23 @@ class SeleniumWebDriver():
         # )
         return element
 
+    def get_child_elements_given_parent_element(self, parentelement, locatorChild, locatorTypeChild="id"):
+        byType = self.get_by_type(locatorTypeChild.lower())
+        elements = parentelement.find_elements(byType, locatorChild)
+        if elements is not None:
+            return elements
+        else:
+            return None
+
     def get_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
         locatorChildType = locatorTypeChild.lower()
         ChildbyType = self.get_by_type(locatorChildType)
         parent_element = self.get_element(locatorParent, locatorTypeParent)
-        return parent_element.find_elements(ChildbyType, locatorChild)
+        elements = parent_element.find_elements(ChildbyType, locatorChild)
+        if elements is not None:
+            return elements
+        else:
+            return None
 
     def is_element_present(self, locator="", locatorType="id", element=None):
         if locator:  # This means if locator is not empty

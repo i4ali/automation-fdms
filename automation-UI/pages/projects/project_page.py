@@ -20,9 +20,12 @@ class ProjectPage(BasePage):
     page_header_xpath = "//h1[text()='Projects']"
     pagination_menu_css = "div[class='ui pagination menu']"
     project_table_xpath = "//table[@id='test-data-table']//tbody"
+    project_table_head_xpath = "//table[@id='test-data-table']//thead/tr"
     searchbox_xpath = "//input[@placeholder='Search']"
     searchbox_text_attribute = "value"
     searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
+    project_name_table_header = "PROJECT NAME"
+    basin_table_header = "BASIN"
 
     def __init__(self):
         super().__init__()
@@ -30,7 +33,7 @@ class ProjectPage(BasePage):
         self.project_edit_page = ProjectEditPage()
         self.client_page = ClientPage()
 
-    def add_new_project(self, projectname, companyname):
+    def add_new_project(self, projectname, companyname, projecttype, basin):
         """
         clicks new project on project page to create new project and enter
         all field information
@@ -43,6 +46,8 @@ class ProjectPage(BasePage):
         self.click_new_project()
         self.project_edit_page.enter_project_name(projectname)
         self.project_edit_page.select_company_name(companyname)
+        self.project_edit_page.select_project_type(projecttype)
+        self.project_edit_page.select_basin(basin)
         self.project_edit_page.click_create_project()
 
     def is_at(self):
@@ -143,5 +148,60 @@ class ProjectPage(BasePage):
         if not self._is_at():
             self.navigation.navigate_to_projects()
         return self.driver.get_text(self.searbox_text_dropdown_xpath, "xpath")
+
+    def get_table_header(self):
+        """
+        Retrieves a list of table headers from the project table
+        :return: list of table headers
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        header_elements = self.driver.get_child_elements(self.project_table_head_xpath, "th", "xpath", "tag")
+        header_elements_text = []
+        for element in header_elements:
+            header_elements_text.append(self.driver.get_text(element=element))
+        return header_elements_text
+
+    def get_table_data(self):
+        """
+        Retrieves a list of lists for e.g. [[],[]] where each sublist is a row from the project table
+        :return: list of lists
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        data_row_elements = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
+        table_data = []
+        for row in data_row_elements:
+            elements = self.driver.get_child_elements_given_parent_element(row, "td", "tag")
+            table_row_data = []
+            for element in elements:
+                table_row_data.append(self.driver.get_text(element=element))
+            table_data.append(table_row_data)
+        return table_data
+
+    def get_basin_for_a_project_from_table(self, projectname):
+        """
+        For a given projectname retrieves the basin name from the project table
+        :param projectname: name of the project to get basin name for
+        :return: basin name
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        table_header = self.get_table_header()
+        project_name_position_inside_header = table_header.index(self.project_name_table_header)
+        basin_position_inside_header = table_header.index(self.basin_table_header)
+        table_data = self.get_table_data()
+        for row in table_data:
+            if row[project_name_position_inside_header] == projectname:
+                return row[basin_position_inside_header]
+
+
+
+
+
+
+
+
+
 
 

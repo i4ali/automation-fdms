@@ -21,6 +21,7 @@ from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.clients.clientedit_page import ClientEditPage
+from pages.clients.newclient_modal import NewClientModalPage
 import globalconfig
 from base.DBclient import DBClient
 
@@ -39,8 +40,10 @@ class TestProjects(unittest.TestCase):
         self.projectpage = ProjectPage()
         self.projecteditpage = ProjectEditPage()
         self.clienteditpage = ClientEditPage()
+        self.newclientmodalpage = NewClientModalPage()
 
     """Tests"""
+    @pytest.mark.regression
     @pytest.mark.smoketest
     def test_can_go_to_project_page(self):
         """
@@ -50,19 +53,21 @@ class TestProjects(unittest.TestCase):
         result = self.projectpage.is_at()
         self.teststatus.mark_final(result, "can go to project page")
 
+    @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_add_new_project(self, projectname, companyname):
+    def test_add_new_project(self, projectname, companyname, projecttype, basin):
         """FMDS-193
         Adds a new project to the database
         :param projectname: name of the project to be entered into the form
         :param companyname: client/company name to be entered into the form
         """
-        self.projectpage.add_new_project(projectname, companyname)
+        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
         result = self.projectpage.project_success_message_pops()
         self.teststatus.mark_final(result, "project success message pops")
 
+    @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     def test_companyname_validation(self):
         """FDMS-182
@@ -73,6 +78,7 @@ class TestProjects(unittest.TestCase):
         result = self.projecteditpage.companyname_validation_message_shows()
         self.teststatus.mark_final(result, "verify validation message for company name")
 
+    @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/validation/projectnamevalidation.csv'))
     @unpack
@@ -87,16 +93,28 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage.click_create_project()
         self.teststatus.mark_final(validationmessage == self.projecteditpage.get_validation_message_projectname(), "project name validation")
 
+    @pytest.mark.regression
     @pytest.mark.smoketest
-    def test_create_new_company_link_on_new_project_page(self):
+    def test_create_new_client_link_on_new_project_page(self):
         """FDMS-193
         Validates that the create new company link works from the new project page
         """
         self.projectpage.click_new_project()
         self.projecteditpage.click_create_new_company()
-        result = self.clienteditpage.is_at()
+        result = self.newclientmodalpage.is_at()
         self.teststatus.mark_final(result, "click new client link works from new project page")
 
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_basin_exists_in_project_table(self, projectname, companyname, projecttype, basin):
+        """FDMS-668
+        Checks that the basin name is shown in the project table after a new project is created
+        """
+        self.projectpage.add_new_project(projectname,companyname,projecttype,basin)
+        actual_basin = self.projectpage.get_basin_for_a_project_from_table(projectname)
+        self.teststatus.mark_final(actual_basin == basin, "basin name exist in project table")
 
     # @pytest.mark.usefixtures("clear_well_from_db")
     # @data(*getCSVData('testdata/projectnamevalidation.csv'))

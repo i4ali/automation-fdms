@@ -1,9 +1,0 @@
-version: 0.2
-
-phases:
-  pre_build:
-    commands:
-      - cd /automationfdms/automationui
-  build:
-    commands:
-      - pytest -v -s -m smoketest

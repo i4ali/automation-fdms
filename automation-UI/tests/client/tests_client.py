@@ -49,6 +49,7 @@ class TestClients(unittest.TestCase):
         self.client.delete_table('clients')
 
     @pytest.mark.smoketest
+    @pytest.mark.regression
     def test_can_go_to_clients_page(self):
         """
         Instanstiates clients page and verifies the page can be reached
@@ -57,6 +58,7 @@ class TestClients(unittest.TestCase):
         result = self.clientpage.is_at()
         self.teststatus.mark_final(result, "URL verification")
 
+    @pytest.mark.regression
     @pytest.mark.usefixtures("clear_client_from_db")
     @data(*getCSVData('tests/testdata/clienttestdata.csv'))
     @unpack
@@ -69,6 +71,7 @@ class TestClients(unittest.TestCase):
         result = self.clientpage.client_success_message_pops()
         self.teststatus.mark_final(result, "success toast message")
 
+    @pytest.mark.regression
     @pytest.mark.usefixtures("clear_client_from_db")
     @data(*getCSVData('tests/testdata/validation/companynamevalidation.csv'))
     @unpack
