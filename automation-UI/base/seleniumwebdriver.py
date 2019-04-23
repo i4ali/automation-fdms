@@ -10,6 +10,7 @@ from base.driver import Driver
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions
 
 
 class SeleniumWebDriver():
@@ -119,9 +120,15 @@ class SeleniumWebDriver():
         if not os.path.exists(destinationDirectory):
             os.makedirs(destinationDirectory)
         self.driver.save_screenshot(destinationFile)
+        return destinationFile
 
     def refresh(self):
         self.driver.refresh()
+
+    def wait_for_element_visible(self, locator="", locatorType="id"):
+        element = self.get_element(locator, locatorType)
+        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of(element))
+
 
 
 

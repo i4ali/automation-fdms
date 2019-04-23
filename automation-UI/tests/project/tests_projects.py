@@ -22,6 +22,7 @@ from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.clients.clientedit_page import ClientEditPage
 from pages.clients.newclient_modal import NewClientModalPage
+from pages.acreage.acreage_planner import AcreagePlanner
 import globalconfig
 from base.DBclient import DBClient
 
@@ -41,6 +42,7 @@ class TestProjects(unittest.TestCase):
         self.projecteditpage = ProjectEditPage()
         self.clienteditpage = ClientEditPage()
         self.newclientmodalpage = NewClientModalPage()
+        self.acreageplannerpage = AcreagePlanner()
 
     """Tests"""
     @pytest.mark.regression
@@ -116,9 +118,15 @@ class TestProjects(unittest.TestCase):
         actual_basin = self.projectpage.get_basin_for_a_project_from_table(projectname)
         self.teststatus.mark_final(actual_basin == basin, "basin name exist in project table")
 
-    # @pytest.mark.usefixtures("clear_well_from_db")
-    # @data(*getCSVData('testdata/projectnamevalidation.csv'))
-    # @unpack
-    # def test_project_name_validation(self, wellname, apinumber, validationmessage):
-    #     """FDMS-183"""
-    #     pass
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
+        """
+        Check that the shapefile is successfully loaded when creating a project
+        """
+        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
+        result = self.acreageplannerpage.success_message_pops()
+        self.teststatus.mark_final(result, "project data success message pops")
+

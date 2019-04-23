@@ -7,8 +7,12 @@ locators, functions to be performed on the page
 
 from pages.base.base_page import BasePage
 from pages.projects.projectedit_page import ProjectEditPage
+from pages.projects.projecteditdata_page import ProjectEditDataPage
 from pages.clients.client_page import ClientPage
 from pages.navigation.navigation_page import NavigationPage
+from pages.acreage.acreage_planner import AcreagePlanner
+
+import time
 
 
 class ProjectPage(BasePage):
@@ -32,6 +36,8 @@ class ProjectPage(BasePage):
         self.navigation = NavigationPage()
         self.project_edit_page = ProjectEditPage()
         self.client_page = ClientPage()
+        self.projectdata_edit_page = ProjectEditDataPage()
+        self.acreage_planner_page = AcreagePlanner()
 
     def add_new_project(self, projectname, companyname, projecttype, basin):
         """
@@ -49,6 +55,10 @@ class ProjectPage(BasePage):
         self.project_edit_page.select_project_type(projecttype)
         self.project_edit_page.select_basin(basin)
         self.project_edit_page.click_create_project()
+
+    def add_new_project_with_shapefile(self, projectname, companyname, projecttype, basin, shapefile):
+        self.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectdata_edit_page.upload_shapefile(shapefile)
 
     def is_at(self):
         """
@@ -164,7 +174,8 @@ class ProjectPage(BasePage):
 
     def get_table_data(self):
         """
-        Retrieves a list of lists for e.g. [[],[]] where each sublist is a row from the project table
+        Retrieves a list of lists for e.g. [[],[]] where each sublist is a row from the project table containing text
+        of the elements
         :return: list of lists
         """
         if not self._is_at():
@@ -195,6 +206,12 @@ class ProjectPage(BasePage):
             if row[project_name_position_inside_header] == projectname:
                 return row[basin_position_inside_header]
 
+    def go_to_project(self, projectname):
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        self.driver.get_element(projectname, "link").click()
+        self.acreage_planner_page.wait_for_map_load()
+        time.sleep(3)
 
 
 

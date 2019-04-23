@@ -23,5 +23,5 @@ base_url = 'http://toolk-publi-1kaic7bnh5sva-448940884.us-east-1.elb.amazonaws.c
 # Use the below conn_URI for testing locally
 # base_url = 'http://127.0.0.1:30000'
 
-browser_implicit_wait_in_secs = 2
+browser_implicit_wait_in_secs = 4
 pagination_limit = 10

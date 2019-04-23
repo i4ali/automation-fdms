@@ -39,15 +39,6 @@ class TestClients(unittest.TestCase):
         self.clientpage = ClientPage()
         self.clienteditpage = ClientEditPage()
 
-    @pytest.fixture()
-    def clear_client_from_db(self):
-        """
-        Connects to DB and removes the well collection from the database
-        fdms
-        """
-        self.client = DBClient(globalconfig.postgres_conn_URI)
-        self.client.delete_table('clients')
-
     @pytest.mark.smoketest
     @pytest.mark.regression
     def test_can_go_to_clients_page(self):
@@ -86,8 +77,6 @@ class TestClients(unittest.TestCase):
         self.clienteditpage.click_create_client()
         self.teststatus.mark_final(validationmessage == self.clienteditpage.get_validation_message_companyname(), "company name form validation")
 
-
-
     # @pytest.mark.pagination
     # @pytest.mark.usefixtures("clear_well_from_db")
     # def test_well_pagination_limit_exceed_and_entries_to_show_match_number_table_rows(self):
@@ -100,9 +89,6 @@ class TestClients(unittest.TestCase):
     #         table_entries += 1
         # verify entries to show matches number of rows in table
 
-
-    # def test_well_pagination_limit_exceed_and_can_navigate_to_nxt_page(self):
-    #     pass
 
 
 
