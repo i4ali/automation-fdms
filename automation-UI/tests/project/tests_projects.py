@@ -130,3 +130,16 @@ class TestProjects(unittest.TestCase):
         result = self.acreageplannerpage.success_message_pops()
         self.teststatus.mark_final(result, "project data success message pops")
 
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_delete_project(self, projectname, companyname, projecttype, basin):
+        """
+        Deletes a project and checks the toast message for success
+        """
+        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectpage.delete_project(projectname)
+        result = self.projectpage.project_delete_success_message_pops()
+        self.teststatus.mark_final(result, "project delete success message pops")
+

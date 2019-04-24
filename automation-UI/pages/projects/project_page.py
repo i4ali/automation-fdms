@@ -12,8 +12,6 @@ from pages.clients.client_page import ClientPage
 from pages.navigation.navigation_page import NavigationPage
 from pages.acreage.acreage_planner import AcreagePlanner
 
-import time
-
 
 class ProjectPage(BasePage):
 
@@ -30,6 +28,9 @@ class ProjectPage(BasePage):
     searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
     project_name_table_header = "PROJECT NAME"
     basin_table_header = "BASIN"
+    delete_project_link_text = "Delete Project"
+    delete_project_ok_button_xpath = '//button[text()="OK"]'
+    project_successfully_deleted_toast_xpath = "//*[contains(text(), 'Project successfully deleted')]"
 
     def __init__(self):
         super().__init__()
@@ -43,8 +44,6 @@ class ProjectPage(BasePage):
         """
         clicks new project on project page to create new project and enter
         all field information
-        :param projectname: project name to be entered into form
-        :param companyname: company name to be entered into form
         """
         self.navigation.navigate_to_clients()
         self.client_page.add_new_client(companyname)
@@ -57,6 +56,9 @@ class ProjectPage(BasePage):
         self.project_edit_page.click_create_project()
 
     def add_new_project_with_shapefile(self, projectname, companyname, projecttype, basin, shapefile):
+        """
+        add new project on the project page with a shapefile
+        """
         self.add_new_project(projectname, companyname, projecttype, basin)
         self.projectdata_edit_page.upload_shapefile(shapefile)
 
@@ -190,6 +192,14 @@ class ProjectPage(BasePage):
             table_data.append(table_row_data)
         return table_data
 
+    def get_table_elements(self):
+        """Retrieves a list of row elements
+        ':return: list of row elements"""
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        data_row_elements = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
+        return data_row_elements
+
     def get_basin_for_a_project_from_table(self, projectname):
         """
         For a given projectname retrieves the basin name from the project table
@@ -207,11 +217,48 @@ class ProjectPage(BasePage):
                 return row[basin_position_inside_header]
 
     def go_to_project(self, projectname):
+        """
+        Find the project in the project table and click on it
+        """
         if not self._is_at():
             self.navigation.navigate_to_projects()
         self.driver.get_element(projectname, "link").click()
-        self.acreage_planner_page.wait_for_map_load()
-        time.sleep(3)
+
+    def delete_project(self, projectname):
+        """
+        Find the project in the project table and delete it
+        """
+        #TODO refactor this a bit into useable functions
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        row_elements = self.get_table_elements()
+        project_element = None
+        for element in row_elements:
+            data_elements = self.driver.get_child_elements_given_parent_element(element, "td", "tag")
+            for data_element in data_elements:
+                if self.driver.get_text(element=data_element) == projectname:
+                    project_element = element
+                    break
+        data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
+        project_icon_data_element = data_elements_of_project[-1]
+        project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
+        project_icon_element[0].click()
+        delete_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.delete_project_link_text, "link")
+        delete_project_element[0].click()
+        self.driver.get_element(self.delete_project_ok_button_xpath, "xpath").click()
+
+    def project_delete_success_message_pops(self):
+        """
+        Check to see if the success message pops after project deleted
+        :return: Boolean
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        return self.driver.is_element_present(self.project_successfully_deleted_toast_xpath, "xpath")
+
+
+
+
 
 
 
