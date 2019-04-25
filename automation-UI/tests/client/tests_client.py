@@ -39,6 +39,7 @@ class TestClients(unittest.TestCase):
         self.clientpage = ClientPage()
         self.clienteditpage = ClientEditPage()
 
+    """Tests"""
     @pytest.mark.smoketest
     @pytest.mark.regression
     def test_can_go_to_clients_page(self):
@@ -76,18 +77,6 @@ class TestClients(unittest.TestCase):
         self.clienteditpage.enter_company_name(companyname)
         self.clienteditpage.click_create_client()
         self.teststatus.mark_final(validationmessage == self.clienteditpage.get_validation_message_companyname(), "company name form validation")
-
-    # @pytest.mark.pagination
-    # @pytest.mark.usefixtures("clear_well_from_db")
-    # def test_well_pagination_limit_exceed_and_entries_to_show_match_number_table_rows(self):
-    #     # insert bulk data such that pagination limit is exceeded
-    #     self.client = DBClient(globalconfig.postgres_conn_URI)
-    #     rows = getCSVData('tests/testdata/pagination/wellpaginationexceed.csv')
-    #     table_entries = 0
-    #     for row in rows:
-    #         self.client.insert_well(row[0], row[1])
-    #         table_entries += 1
-        # verify entries to show matches number of rows in table
 
 
 

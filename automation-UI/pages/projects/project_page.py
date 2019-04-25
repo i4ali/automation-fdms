@@ -8,6 +8,7 @@ locators, functions to be performed on the page
 from pages.base.base_page import BasePage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.projects.projecteditdata_page import ProjectEditDataPage
+from pages.projects.projectdetails_page import ProjectDetailsPage
 from pages.clients.client_page import ClientPage
 from pages.navigation.navigation_page import NavigationPage
 from pages.acreage.acreage_planner import AcreagePlanner
@@ -29,6 +30,7 @@ class ProjectPage(BasePage):
     project_name_table_header = "PROJECT NAME"
     basin_table_header = "BASIN"
     delete_project_link_text = "Delete Project"
+    view_project_link_text = "View Project"
     delete_project_ok_button_xpath = '//button[text()="OK"]'
     project_successfully_deleted_toast_xpath = "//*[contains(text(), 'Project successfully deleted')]"
 
@@ -39,6 +41,7 @@ class ProjectPage(BasePage):
         self.client_page = ClientPage()
         self.projectdata_edit_page = ProjectEditDataPage()
         self.acreage_planner_page = AcreagePlanner()
+        self.projectdetail_page = ProjectDetailsPage()
 
     def add_new_project(self, projectname, companyname, projecttype, basin):
         """
@@ -85,6 +88,7 @@ class ProjectPage(BasePage):
         :param projectname: project name to search
         :return: Boolean
         """
+        #TODO this might not work when pagination exceeds
         if not self._is_at():
             self.navigation.navigate_to_projects()
         return self.driver.is_element_present(projectname, "link")
@@ -224,21 +228,27 @@ class ProjectPage(BasePage):
             self.navigation.navigate_to_projects()
         self.driver.get_element(projectname, "link").click()
 
+    def find_project_element(self, projectname, elements):
+        """
+        Find the project row element from a list of row elements
+        :param projectname: name of the project to find the row element for
+        :param elements: list of row elements
+        :return: project row element
+        """
+        for element in elements:
+            data_elements = self.driver.get_child_elements_given_parent_element(element, "td", "tag")
+            for data_element in data_elements:
+                if self.driver.get_text(element=data_element) == projectname:
+                    return element
+
     def delete_project(self, projectname):
         """
         Find the project in the project table and delete it
         """
-        #TODO refactor this a bit into useable functions
         if not self._is_at():
             self.navigation.navigate_to_projects()
         row_elements = self.get_table_elements()
-        project_element = None
-        for element in row_elements:
-            data_elements = self.driver.get_child_elements_given_parent_element(element, "td", "tag")
-            for data_element in data_elements:
-                if self.driver.get_text(element=data_element) == projectname:
-                    project_element = element
-                    break
+        project_element = self.find_project_element(projectname, row_elements)
         data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
         project_icon_data_element = data_elements_of_project[-1]
         project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
@@ -256,9 +266,21 @@ class ProjectPage(BasePage):
             self.navigation.navigate_to_projects()
         return self.driver.is_element_present(self.project_successfully_deleted_toast_xpath, "xpath")
 
-
-
-
+    def click_view_project(self, projectname):
+        """
+        Click on view project from the project table
+        :param projectname: projectname of the project to view project for
+        """
+        if not self._is_at():
+            self.navigation.navigate_to_projects()
+        elements = self.get_table_elements()
+        project_element = self.find_project_element(projectname, elements)
+        data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
+        project_icon_data_element = data_elements_of_project[-1]
+        project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
+        project_icon_element[0].click()
+        view_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.view_project_link_text, "link")
+        view_project_element[0].click()
 
 
 

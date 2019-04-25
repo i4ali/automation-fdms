@@ -20,6 +20,7 @@ from utilities.read_data import getCSVData
 from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
+from pages.projects.projectdetails_page import ProjectDetailsPage
 from pages.clients.clientedit_page import ClientEditPage
 from pages.clients.newclient_modal import NewClientModalPage
 from pages.acreage.acreage_planner import AcreagePlanner
@@ -43,6 +44,7 @@ class TestProjects(unittest.TestCase):
         self.clienteditpage = ClientEditPage()
         self.newclientmodalpage = NewClientModalPage()
         self.acreageplannerpage = AcreagePlanner()
+        self.projectdetailpage = ProjectDetailsPage()
 
     """Tests"""
     @pytest.mark.regression
@@ -142,4 +144,19 @@ class TestProjects(unittest.TestCase):
         self.projectpage.delete_project(projectname)
         result = self.projectpage.project_delete_success_message_pops()
         self.teststatus.mark_final(result, "project delete success message pops")
+
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_view_project(self, projectname, companyname, projecttype, basin):
+        """
+        Clicks on view project after adding that project. Then checks that view project
+        takes to the project details page
+        """
+        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectpage.click_view_project(projectname)
+        result = self.projectdetailpage.is_at()
+        self.teststatus.mark_final(result, "view project goes to project")
+
 

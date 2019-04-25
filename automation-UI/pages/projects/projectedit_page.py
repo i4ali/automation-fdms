@@ -1,7 +1,7 @@
 """
 @package pages.projects
 
-ProjectEditPage class to encapsulate all functionality related to the FDMS project page. This includes the
+ProjectEditPage class to encapsulate all functionality related to the FDMS project edit page. This includes the
 locators, functions to be performed on the page
 """
 from pages.base.base_page import BasePage

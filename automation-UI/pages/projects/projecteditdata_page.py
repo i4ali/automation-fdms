@@ -1,11 +1,12 @@
 """
 @package pages.projects
 
-ProjectEditPage class to encapsulate all functionality related to the FDMS project page. This includes the
+ProjectEditDataPage class to encapsulate all functionality related to the FDMS project edit data page. This includes the
 locators, functions to be performed on the page
 """
 from pages.base.base_page import BasePage
 import os
+
 
 class ProjectEditDataPage(BasePage):
     create_project_button_xpath = "//button[text()='Save and Continue']"
