@@ -21,6 +21,7 @@ from pages.wells.well_page import WellPage
 from pages.projects.project_page import ProjectPage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.projects.projectdetails_page import ProjectDetailsPage
+from pages.projects.projectaoi_page import ProjectAOIPage
 from pages.clients.clientedit_page import ClientEditPage
 from pages.clients.newclient_modal import NewClientModalPage
 from pages.acreage.acreage_planner import AcreagePlanner
@@ -45,6 +46,7 @@ class TestProjects(unittest.TestCase):
         self.newclientmodalpage = NewClientModalPage()
         self.acreageplannerpage = AcreagePlanner()
         self.projectdetailpage = ProjectDetailsPage()
+        self.projectaoipage = ProjectAOIPage()
 
     """Tests"""
     @pytest.mark.regression
@@ -57,6 +59,7 @@ class TestProjects(unittest.TestCase):
         result = self.projectpage.is_at()
         self.teststatus.mark_final(result, "can go to project page")
 
+    @pytest.mark.inprogress
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
@@ -120,17 +123,18 @@ class TestProjects(unittest.TestCase):
         actual_basin = self.projectpage.get_basin_for_a_project_from_table(projectname)
         self.teststatus.mark_final(actual_basin == basin, "basin name exist in project table")
 
-    @pytest.mark.regression
-    @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
-    @unpack
-    def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
-        """
-        Check that the shapefile is successfully loaded when creating a project
-        """
-        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
-        result = self.acreageplannerpage.success_message_pops()
-        self.teststatus.mark_final(result, "project data success message pops")
+    # @pytest.mark.inprogress
+    # @pytest.mark.regression
+    # @pytest.mark.usefixtures("clear_project_from_db")
+    # @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    # @unpack
+    # def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
+    #     """
+    #     Check that the shapefile is successfully loaded when creating a project
+    #     """
+    #     self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
+    #     result = self.acreageplannerpage.success_message_pops()
+    #     self.teststatus.mark_final(result, "project data success message pops")
 
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
@@ -159,4 +163,13 @@ class TestProjects(unittest.TestCase):
         result = self.projectdetailpage.is_at()
         self.teststatus.mark_final(result, "view project goes to project")
 
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_save_button_display_on_aoi_page(self, projectname, companyname, projecttype, basin):
+        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
+        self.projectpage.go_to_project(projectname)
+        result = self.projectaoipage.save_geomodel_button_present()
+        self.teststatus.mark_final(result, "geomodel button present")
 

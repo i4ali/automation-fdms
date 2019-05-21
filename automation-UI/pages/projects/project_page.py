@@ -12,7 +12,8 @@ from pages.projects.projectdetails_page import ProjectDetailsPage
 from pages.clients.client_page import ClientPage
 from pages.navigation.navigation_page import NavigationPage
 from pages.acreage.acreage_planner import AcreagePlanner
-
+from utilities.customlogger import customlogger
+import globalconfig
 
 class ProjectPage(BasePage):
 
