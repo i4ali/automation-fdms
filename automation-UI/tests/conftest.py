@@ -66,6 +66,6 @@ def clear_project_from_db():
     client = DBClient(globalconfig.postgres_conn_URI)
     client.delete_table('projects')
     client.delete_table('clients')
-    client.delete_table('wells')
+    # client.delete_table('wells')
     yield
     client.close()

@@ -1,0 +1,6 @@
+name: test includes
+description: configuration file for tests
+
+variables:
+  toolkit-qa:
+    host: http://qa.toolkit.wdvglab.com/api
