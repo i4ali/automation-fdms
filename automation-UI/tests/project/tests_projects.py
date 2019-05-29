@@ -59,7 +59,6 @@ class TestProjects(unittest.TestCase):
         result = self.projectpage.is_at()
         self.teststatus.mark_final(result, "can go to project page")
 
-    @pytest.mark.inprogress
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
@@ -123,19 +122,19 @@ class TestProjects(unittest.TestCase):
         actual_basin = self.projectpage.get_basin_for_a_project_from_table(projectname)
         self.teststatus.mark_final(actual_basin == basin, "basin name exist in project table")
 
-    # @pytest.mark.inprogress
-    # @pytest.mark.regression
-    # @pytest.mark.usefixtures("clear_project_from_db")
-    # @data(*getCSVData('tests/testdata/projecttestdata.csv'))
-    # @unpack
-    # def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
-    #     """
-    #     Check that the shapefile is successfully loaded when creating a project
-    #     """
-    #     self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
-    #     result = self.acreageplannerpage.success_message_pops()
-    #     self.teststatus.mark_final(result, "project data success message pops")
+    @pytest.mark.regression
+    @pytest.mark.usefixtures("clear_project_from_db")
+    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
+    @unpack
+    def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
+        """
+        Check that the shapefile is successfully loaded when creating a project
+        """
+        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
+        result = self.acreageplannerpage.success_message_pops()
+        self.teststatus.mark_final(result, "project data success message pops")
 
+    @pytest.mark.inprogress
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))

@@ -12,7 +12,6 @@ from pages.projects.projectdetails_page import ProjectDetailsPage
 from pages.clients.client_page import ClientPage
 from pages.navigation.navigation_page import NavigationPage
 from pages.acreage.acreage_planner import AcreagePlanner
-from utilities.customlogger import customlogger
 import globalconfig
 
 class ProjectPage(BasePage):
@@ -23,8 +22,8 @@ class ProjectPage(BasePage):
     project_title_xpath = "//h1[contains(text(), 'Projects')]"
     page_header_xpath = "//h1[text()='Projects']"
     pagination_menu_css = "div[class='ui pagination menu']"
-    project_table_xpath = "//table[@id='test-data-table']//tbody"
-    project_table_head_xpath = "//table[@id='test-data-table']//thead/tr"
+    project_table_xpath = "//table//tbody"
+    project_table_head_xpath = "//table//thead/tr"
     searchbox_xpath = "//input[@placeholder='Search']"
     searchbox_text_attribute = "value"
     searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
@@ -55,7 +54,7 @@ class ProjectPage(BasePage):
         self.click_new_project()
         self.project_edit_page.enter_project_name(projectname)
         self.project_edit_page.select_company_name(companyname)
-        self.project_edit_page.select_project_type(projecttype)
+        # self.project_edit_page.select_project_type(projecttype)
         self.project_edit_page.select_basin(basin)
         self.project_edit_page.click_create_project()
 
@@ -239,7 +238,7 @@ class ProjectPage(BasePage):
         for element in elements:
             data_elements = self.driver.get_child_elements_given_parent_element(element, "td", "tag")
             for data_element in data_elements:
-                if self.driver.get_text(element=data_element) == projectname:
+                if projectname in self.driver.get_text(element=data_element):
                     return element
 
     def delete_project(self, projectname):
@@ -277,6 +276,7 @@ class ProjectPage(BasePage):
         elements = self.get_table_elements()
         project_element = self.find_project_element(projectname, elements)
         data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
+        self.driver.get_child_elements()
         project_icon_data_element = data_elements_of_project[-1]
         project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
         project_icon_element[0].click()

@@ -54,7 +54,6 @@ class DriverSelector:
                    "ie": DriverSelectorIe(arguments)}
         self.strategy = my_dict[browser]
 
-
     def get_webdriver_instance(self):
         return self.strategy.get_webdriver_instance()
 
@@ -75,11 +74,16 @@ class DriverSelectorFirefox:
 
     def __init__(self, arguments):
         self.options = FirefoxOptions()
-        for argument in arguments:
-            self.options.add_argument(argument)
+        self.arguments = arguments
 
     def get_webdriver_instance(self):
-        return webdriver.Firefox(options=self.options)
+        if 'headless' in self.arguments:
+            self.options.add_argument('-headless')
+        ffox = webdriver.Firefox(options=self.options)
+        if 'start-maximized' in self.arguments:
+            ffox.maximize_window()
+        return ffox
+
 
 class DriverSelectorChrome:
     """
@@ -97,10 +101,13 @@ class DriverSelectorChrome:
 
     def __init__(self, arguments):
         self.options = ChromeOptions()
-        for argument in arguments:
-            self.options.add_argument(argument)
+        self.arguments = arguments
 
     def get_webdriver_instance(self):
+        if 'start-maximized' in self.arguments:
+            self.options.add_argument('start-maximized')
+        if 'headless' in self.arguments:
+            self.options.add_argument('--headless')
         return webdriver.Chrome(options=self.options)
 
 

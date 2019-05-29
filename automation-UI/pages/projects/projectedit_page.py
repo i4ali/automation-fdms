@@ -8,7 +8,7 @@ from pages.base.base_page import BasePage
 
 
 class ProjectEditPage(BasePage):
-    create_project_button_xpath = "//button[text()='Save and Continue']"
+    create_project_button_xpath = "//button[text()='Submit']"
     # project_fields = {
     #     'Project Name': 'projectName',
     #     'Company Name': 'companyName',

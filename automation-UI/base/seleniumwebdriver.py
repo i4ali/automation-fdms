@@ -72,8 +72,13 @@ class SeleniumWebDriver():
     def get_child_elements_given_parent_element(self, parentelement, locatorChild, locatorTypeChild="id"):
         self.log.info("getting child element(s) with locator {0} and locatortype {1}"
                            "for parent {2}".format(locatorChild, locatorTypeChild, parentelement))
+        self._wait_for_doc_ready()
         byType = self.get_by_type(locatorTypeChild.lower())
+        # if parentelement.is_displayed():
+        self.log.info("parentelement:{0}".format(parentelement))
         elements = parentelement.find_elements(byType, locatorChild)
+        # else:
+        #     self.log.info("parent element lost contact")
         if elements is not None:
             return elements
         else:
@@ -84,6 +89,7 @@ class SeleniumWebDriver():
     def get_child_elements(self, locatorParent, locatorChild, locatorTypeParent="id", locatorTypeChild="id"):
         self.log.info("getting child element(s) with locator {0} and locatortype {1}"
                            "for parent with locator {2} and locatortype {3}".format(locatorChild, locatorTypeChild, locatorParent, locatorTypeParent))
+        self._wait_for_doc_ready()
         locatorChildType = locatorTypeChild.lower()
         ChildbyType = self.get_by_type(locatorChildType)
         parent_element = self.get_element(locatorParent, locatorTypeParent)
@@ -98,6 +104,7 @@ class SeleniumWebDriver():
     def is_element_present(self, locator="", locatorType="id", element=None):
         self.log.info("checking if element with locator {0}, locator type {1} "
                       "or element {2} is present".format(locator, locatorType, element))
+        self._wait_for_doc_ready()
         if locator:  # This means if locator is not empty
             element = self.get_element(locator, locatorType)
         if element is not None:
@@ -123,6 +130,7 @@ class SeleniumWebDriver():
             if len(text) != 0:
                 text = text.strip()
             if text.isdigit():
+
                 return int(text)
             else:
                 return text
