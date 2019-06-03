@@ -29,7 +29,7 @@ class StatusTest:
         else:
             self.resultList.append("FAIL")
             self.driver.screenshot(resultMessage)
-            # print_stack()
+            print_stack()
 
     def mark(self, result, resultMessage):
         """

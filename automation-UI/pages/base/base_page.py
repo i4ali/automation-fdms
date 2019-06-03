@@ -18,3 +18,6 @@ class BasePage:
 
     def isat(self, page_header, locatortype):
         return self.driver.is_element_present(page_header, locatortype)
+
+    def refresh(self):
+        self.driver.refresh()

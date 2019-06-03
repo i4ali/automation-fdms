@@ -63,13 +63,13 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_add_new_project(self, projectname, companyname, projecttype, basin):
+    def test_add_new_project(self, projectname, companyname, basin):
         """FMDS-193
         Adds a new project to the database
         :param projectname: name of the project to be entered into the form
         :param companyname: client/company name to be entered into the form
         """
-        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectpage.add_new_project(projectname, companyname, basin)
         result = self.projectpage.project_success_message_pops()
         self.teststatus.mark_final(result, "project success message pops")
 
@@ -114,11 +114,11 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_basin_exists_in_project_table(self, projectname, companyname, projecttype, basin):
+    def test_basin_exists_in_project_table(self, projectname, companyname, basin):
         """FDMS-668
         Checks that the basin name is shown in the project table after a new project is created
         """
-        self.projectpage.add_new_project(projectname,companyname,projecttype,basin)
+        self.projectpage.add_new_project(projectname,companyname,basin)
         actual_basin = self.projectpage.get_basin_for_a_project_from_table(projectname)
         self.teststatus.mark_final(actual_basin == basin, "basin name exist in project table")
 
@@ -126,24 +126,26 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_load_shapefile_when_creating_project(self, projectname, companyname, projecttype, basin):
+    def test_load_shapefile_when_creating_project(self, projectname, companyname, basin):
         """
         Check that the shapefile is successfully loaded when creating a project
         """
-        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
-        result = self.acreageplannerpage.success_message_pops()
-        self.teststatus.mark_final(result, "project data success message pops")
+        self.projectpage.add_new_project(projectname, companyname, basin)
+        self.projectpage.go_to_project(projectname)
+        self.projectaoipage.upload_acreage('tests/testdata/sable-shapefiles.zip')
+        result = self.projectaoipage.upload_acreage_success_message_pops()
+        self.teststatus.mark_final(result, "project acreage upload success message pops")
 
     @pytest.mark.inprogress
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_delete_project(self, projectname, companyname, projecttype, basin):
+    def test_delete_project(self, projectname, companyname, basin):
         """
         Deletes a project and checks the toast message for success
         """
-        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectpage.add_new_project(projectname, companyname, basin)
         self.projectpage.delete_project(projectname)
         result = self.projectpage.project_delete_success_message_pops()
         self.teststatus.mark_final(result, "project delete success message pops")
@@ -152,23 +154,13 @@ class TestProjects(unittest.TestCase):
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
     @unpack
-    def test_view_project(self, projectname, companyname, projecttype, basin):
+    def test_view_project(self, projectname, companyname, basin):
         """
         Clicks on view project after adding that project. Then checks that view project
         takes to the project details page
         """
-        self.projectpage.add_new_project(projectname, companyname, projecttype, basin)
+        self.projectpage.add_new_project(projectname, companyname, basin)
         self.projectpage.click_view_project(projectname)
         result = self.projectdetailpage.is_at()
         self.teststatus.mark_final(result, "view project goes to project")
-
-    @pytest.mark.regression
-    @pytest.mark.usefixtures("clear_project_from_db")
-    @data(*getCSVData('tests/testdata/projecttestdata.csv'))
-    @unpack
-    def test_save_button_display_on_aoi_page(self, projectname, companyname, projecttype, basin):
-        self.projectpage.add_new_project_with_shapefile(projectname, companyname, projecttype, basin, "tests/testdata/sable-shapefiles.zip")
-        self.projectpage.go_to_project(projectname)
-        result = self.projectaoipage.save_geomodel_button_present()
-        self.teststatus.mark_final(result, "geomodel button present")
 
