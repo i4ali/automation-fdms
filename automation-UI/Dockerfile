@@ -7,7 +7,7 @@ RUN apt-get update && \
     apt-get install -q -y --no-install-recommends software-properties-common && \
     apt-add-repository ppa:mozillateam/firefox-next && \
     apt-get update && \
-    apt-get install -q -y --no-install-recommends curl firefox xvfb python3-pip python3-setuptools nano && \
+    apt-get install -q -y --no-install-recommends curl firefox xvfb python3-pip python3-setuptools nano iputils-ping && \
     apt-get clean && \
     ln -s /usr/bin/python3 python && \
     pip3 install -r /automationfdms/automationui/requirements.txt && \

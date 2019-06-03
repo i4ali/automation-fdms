@@ -64,9 +64,6 @@ class SeleniumWebDriver():
         except NoSuchElementException:
             self.log.error("Element not found using Locator-{0}, Locator type-{1}".format(locator, locatorType))
             return None
-        # element = WebDriverWait(self.driver, 20).until(
-        #     EC.element_to_be_clickable((byType, locator))
-        # )
         return element
 
     def get_child_elements_given_parent_element(self, parentelement, locatorChild, locatorTypeChild="id"):
@@ -74,11 +71,7 @@ class SeleniumWebDriver():
                            "for parent {2}".format(locatorChild, locatorTypeChild, parentelement))
         self._wait_for_doc_ready()
         byType = self.get_by_type(locatorTypeChild.lower())
-        # if parentelement.is_displayed():
-        self.log.info("parentelement:{0}".format(parentelement))
         elements = parentelement.find_elements(byType, locatorChild)
-        # else:
-        #     self.log.info("parent element lost contact")
         if elements is not None:
             return elements
         else:
@@ -112,6 +105,12 @@ class SeleniumWebDriver():
         else:
             return False
 
+    def click_element(self, locator="", locatorType="id"):
+        element = self.get_element(locator, locatorType)
+        wait = WebDriverWait(self.driver, 10)
+        element = wait.until(EC.element_to_be_clickable((self.get_by_type(locatorType), locator)))
+        self.driver.execute_script("arguments[0].click();", element)
+
     def get_title(self):
         return self.driver.title
 
@@ -130,7 +129,6 @@ class SeleniumWebDriver():
             if len(text) != 0:
                 text = text.strip()
             if text.isdigit():
-
                 return int(text)
             else:
                 return text
@@ -159,7 +157,10 @@ class SeleniumWebDriver():
     def wait_for_element_visible(self, locator="", locatorType="id"):
         self.log.info("wait for element with locator {0}, with locator type {1}".format(locator, locatorType))
         element = self.get_element(locator, locatorType)
-        WebDriverWait(self.driver, 30).until(expected_conditions.visibility_of(element))
+        WebDriverWait(self.driver, 10).until(expected_conditions.visibility_of(element))
+
+    def get_page_source(self):
+        return self.driver.page_source
 
 
 

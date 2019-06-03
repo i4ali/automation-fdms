@@ -5,6 +5,8 @@ Project page object to encapsulate all functionality related to the FDMS project
 locators, functions to be performed on the page
 """
 
+from bs4 import BeautifulSoup
+
 from pages.base.base_page import BasePage
 from pages.projects.projectedit_page import ProjectEditPage
 from pages.projects.projecteditdata_page import ProjectEditDataPage
@@ -14,6 +16,7 @@ from pages.navigation.navigation_page import NavigationPage
 from pages.acreage.acreage_planner import AcreagePlanner
 import globalconfig
 
+
 class ProjectPage(BasePage):
 
     urlcontains = 'projects'
@@ -22,8 +25,9 @@ class ProjectPage(BasePage):
     project_title_xpath = "//h1[contains(text(), 'Projects')]"
     page_header_xpath = "//h1[text()='Projects']"
     pagination_menu_css = "div[class='ui pagination menu']"
-    project_table_xpath = "//table//tbody"
-    project_table_head_xpath = "//table//thead/tr"
+    project_table_xpath = "//table[@id='test-data-table']//tbody"
+    project_table_id = 'test-data-table'
+    project_table_head_xpath = "//table[@id='test-data-table']//thead/tr"
     searchbox_xpath = "//input[@placeholder='Search']"
     searchbox_text_attribute = "value"
     searbox_text_dropdown_xpath = "//*[@id='container']//div[@class='results transition visible']//div[@class='title']"
@@ -43,7 +47,7 @@ class ProjectPage(BasePage):
         self.acreage_planner_page = AcreagePlanner()
         self.projectdetail_page = ProjectDetailsPage()
 
-    def add_new_project(self, projectname, companyname, projecttype, basin):
+    def add_new_project(self, projectname, companyname, basin):
         """
         clicks new project on project page to create new project and enter
         all field information
@@ -54,16 +58,8 @@ class ProjectPage(BasePage):
         self.click_new_project()
         self.project_edit_page.enter_project_name(projectname)
         self.project_edit_page.select_company_name(companyname)
-        # self.project_edit_page.select_project_type(projecttype)
         self.project_edit_page.select_basin(basin)
         self.project_edit_page.click_create_project()
-
-    def add_new_project_with_shapefile(self, projectname, companyname, projecttype, basin, shapefile):
-        """
-        add new project on the project page with a shapefile
-        """
-        self.add_new_project(projectname, companyname, projecttype, basin)
-        self.projectdata_edit_page.upload_shapefile(shapefile)
 
     def is_at(self):
         """
@@ -116,7 +112,7 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        self.driver.get_element(self.new_project_button_xpath, "xpath").click()
+        self.driver.click_element(self.new_project_button_xpath, "xpath")
         return ProjectEditPage()
 
     def page_refresh(self):
@@ -186,23 +182,16 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        data_row_elements = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
         table_data = []
-        for row in data_row_elements:
-            elements = self.driver.get_child_elements_given_parent_element(row, "td", "tag")
-            table_row_data = []
-            for element in elements:
-                table_row_data.append(self.driver.get_text(element=element))
-            table_data.append(table_row_data)
+        soup = BeautifulSoup(self.driver.get_page_source(), 'html.parser')
+        table = soup.find('table', attrs={'id': self.project_table_id})
+        table_body = table.find('tbody')
+        rows = table_body.find_all('tr')
+        for row in rows:
+            cols = row.find_all('td')
+            cols = [ele.text.strip() for ele in cols]
+            table_data.append([ele for ele in cols])
         return table_data
-
-    def get_table_elements(self):
-        """Retrieves a list of row elements
-        ':return: list of row elements"""
-        if not self._is_at():
-            self.navigation.navigate_to_projects()
-        data_row_elements = self.driver.get_child_elements(self.project_table_xpath, "tr", "xpath", "tag")
-        return data_row_elements
 
     def get_basin_for_a_project_from_table(self, projectname):
         """
@@ -226,20 +215,8 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        self.driver.get_element(projectname, "link").click()
-
-    def find_project_element(self, projectname, elements):
-        """
-        Find the project row element from a list of row elements
-        :param projectname: name of the project to find the row element for
-        :param elements: list of row elements
-        :return: project row element
-        """
-        for element in elements:
-            data_elements = self.driver.get_child_elements_given_parent_element(element, "td", "tag")
-            for data_element in data_elements:
-                if projectname in self.driver.get_text(element=data_element):
-                    return element
+        # self.driver.get_element(projectname, "link").click()
+        self.driver.click_element(projectname, "link")
 
     def delete_project(self, projectname):
         """
@@ -247,15 +224,21 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        row_elements = self.get_table_elements()
-        project_element = self.find_project_element(projectname, row_elements)
-        data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
-        project_icon_data_element = data_elements_of_project[-1]
-        project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
-        project_icon_element[0].click()
-        delete_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.delete_project_link_text, "link")
-        delete_project_element[0].click()
-        self.driver.get_element(self.delete_project_ok_button_xpath, "xpath").click()
+        table_headers = self.get_table_header()
+        project_header_index = table_headers.index(self.project_name_table_header)
+        data_rows = self.get_table_data()
+        for data_row in data_rows:
+            if projectname == data_row[project_header_index]:
+                project_data_row = data_rows.index(data_row)
+                project_row_xpath = self.project_table_xpath+'/tr[{0}]'.format(project_data_row+1)
+                data_elements_of_project = self.driver.get_child_elements(project_row_xpath, "td", "xpath", "tag")
+                project_icon_data_element = data_elements_of_project[-1]
+                project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
+                project_icon_element[0].click()
+                delete_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.delete_project_link_text, "link")
+                delete_project_element[0].click()
+                self.driver.click_element(self.delete_project_ok_button_xpath, "xpath")
+                break
 
     def project_delete_success_message_pops(self):
         """
@@ -273,20 +256,20 @@ class ProjectPage(BasePage):
         """
         if not self._is_at():
             self.navigation.navigate_to_projects()
-        elements = self.get_table_elements()
-        project_element = self.find_project_element(projectname, elements)
-        data_elements_of_project = self.driver.get_child_elements_given_parent_element(project_element, "td", "tag")
-        self.driver.get_child_elements()
-        project_icon_data_element = data_elements_of_project[-1]
-        project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
-        project_icon_element[0].click()
-        view_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.view_project_link_text, "link")
-        view_project_element[0].click()
-
-
-
-
-
+        table_headers = self.get_table_header()
+        project_header_index = table_headers.index(self.project_name_table_header)
+        data_rows = self.get_table_data()
+        for data_row in data_rows:
+            if projectname == data_row[project_header_index]:
+                project_data_row = data_rows.index(data_row)
+                project_row_xpath = self.project_table_xpath + '/tr[{0}]'.format(project_data_row + 1)
+                data_elements_of_project = self.driver.get_child_elements(project_row_xpath, "td", "xpath", "tag")
+                project_icon_data_element = data_elements_of_project[-1]
+                project_icon_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, "i", "tag")
+                project_icon_element[0].click()
+                view_project_element = self.driver.get_child_elements_given_parent_element(project_icon_data_element, self.view_project_link_text, "link")
+                view_project_element[0].click()
+                break
 
 
 

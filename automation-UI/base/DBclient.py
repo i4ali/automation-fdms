@@ -10,10 +10,8 @@ from pydal import DAL, Field
 import datetime
 import uuid
 from utilities.customlogger import customlogger
+from utilities.add_delay import add_post_func_delay
 import globalconfig
-
-# create logger
-# logger = logging.getLogger('main.wdvg_edw_to_csv')
 
 
 class DBClient:
@@ -27,11 +25,13 @@ class DBClient:
         self.clients = self.db.define_table('clients', Field('uuid'), Field('company_name'), Field('created_at'), Field('modified_at'), primarykey=['uuid'])
         self.projects = self.db.define_table('projects', Field('uuid'), Field('client_uuid'), Field('name'), Field('created_at'), Field('modified_at'), Field('basin'), Field('shapefile'), primarykey=['uuid'])
 
+    @add_post_func_delay(0.5)
     def insert_well(self, *args):
         self.log.info("inserting well into DB..")
         self.wells.insert(uuid=uuid.uuid4(), well_name=args[0], uwi=args[1], created_at=datetime.datetime.now(), modified_at=datetime.datetime.now())
         self.db.commit()
 
+    @add_post_func_delay(0.5)
     def insert_client(self, *args):
         self.log.info("inserting client into DB..")
         self.clients.insert(uuid=uuid.uuid4(), company_name=args[0], created_at=datetime.datetime.now(), modified_at=datetime.datetime.now())
@@ -45,6 +45,7 @@ class DBClient:
     #     self.projects.insert(uuid=uuid.uuid4(), name=args[1], client_uuid=c_uuid, basin='midland', created_at=datetime.datetime.now(), modified_at=datetime.datetime.now())
     #     self.db.commit()
 
+    @add_post_func_delay(0.5)
     def delete_table(self, tablename):
         self.log.info("deleteing table {0}".format(tablename))
         table = self.db.get(tablename)
