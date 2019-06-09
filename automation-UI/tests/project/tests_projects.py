@@ -136,7 +136,6 @@ class TestProjects(unittest.TestCase):
         result = self.projectaoipage.upload_acreage_success_message_pops()
         self.teststatus.mark_final(result, "project acreage upload success message pops")
 
-    @pytest.mark.inprogress
     @pytest.mark.regression
     @pytest.mark.usefixtures("clear_project_from_db")
     @data(*getCSVData('tests/testdata/projecttestdata.csv'))
@@ -163,4 +162,3 @@ class TestProjects(unittest.TestCase):
         self.projectpage.click_view_project(projectname)
         result = self.projectdetailpage.is_at()
         self.teststatus.mark_final(result, "view project goes to project")
-

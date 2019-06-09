@@ -17,7 +17,7 @@ browser = "firefox"
 # Browser arguments supported: 1) start-maximized 2) headless
 # It is best to use 'start-maximized' option for the browser window all the time to avoid issues with finding elements
 # For testing in AWS, use the headless option
-browser_arguments = ["start-maximized"]
+browser_arguments = ["start-maximized", "headless"]
 
 # Use the below conn_URI for testing in AWS
 base_url = 'http://toolk-publi-6sbctz7ri1v7-321671128.us-east-1.elb.amazonaws.com/'

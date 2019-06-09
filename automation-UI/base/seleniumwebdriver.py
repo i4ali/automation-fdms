@@ -107,8 +107,8 @@ class SeleniumWebDriver():
 
     def click_element(self, locator="", locatorType="id"):
         element = self.get_element(locator, locatorType)
-        wait = WebDriverWait(self.driver, 10)
-        element = wait.until(EC.element_to_be_clickable((self.get_by_type(locatorType), locator)))
+        # wait = WebDriverWait(self.driver, 10)
+        # element = wait.until(EC.element_to_be_clickable((self.get_by_type(locatorType), locator)))
         self.driver.execute_script("arguments[0].click();", element)
 
     def get_title(self):
