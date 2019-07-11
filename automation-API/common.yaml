@@ -3,4 +3,6 @@ description: configuration file for tests
 
 variables:
   toolkit-qa:
-    host: http://qa.toolkit.wdvglab.com/api
+#    host: http://qa.toolkit.wdvglab.com/api
+    host: http://toolk-publi-6sbctz7ri1v7-321671128.us-east-1.elb.amazonaws.com/api
+#    host: http://qa.toolkit.wdvglab.com/api

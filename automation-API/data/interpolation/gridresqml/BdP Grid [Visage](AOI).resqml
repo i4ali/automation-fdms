@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resqmlDocument uid="Doc" version="1.1.0.0(RESQML)" xmlns="http://www.resqml.org/schemas/1series" xmlns:dc="http://purl.org/dc/terms/"><dc:title/>
+<dc:description/>
+<dc:format/>
+<spatialReferenceSet><global2dCRS><unit>m</unit>
+</global2dCRS>
+<globalVerticalCRS><unit>m</unit>
+</globalVerticalCRS>
+<local3dCRS uid="CRS"><dc:title>Chos_Malal_Neuquina</dc:title>
+</local3dCRS>
+</spatialReferenceSet>
+<propertyKindSet><propertyKind uid="TVD [PropKind]"><dc:title>TVD</dc:title>
+<dc:description>Elevation depth</dc:description>
+<isAbstract>false</isAbstract>
+<resqmlKind>standard_depth_index</resqmlKind>
+</propertyKind>
+<propertyKind uid="RHOB[U] [PropKind]"><dc:title>RHOB[U]</dc:title>
+<dc:description>Density</dc:description>
+<isAbstract>false</isAbstract>
+<resqmlKind>density</resqmlKind>
+</propertyKind>
+<propertyKind uid="UOIL[U] [PropKind]"><dc:title>UOIL[U]</dc:title>
+<dc:description>Oil saturation</dc:description>
+<isAbstract>false</isAbstract>
+<resqmlKind>saturation</resqmlKind>
+</propertyKind>
+</propertyKindSet>
+<interfaceFeatureSet><horizon uid="UPR CARBONATE,UPR CARBONATE"><dc:title>UPR CARBONATE,UPR CARBONATE</dc:title>
+</horizon>
+<horizon uid="MID CARBONATE,UPR CARBONATE"><dc:title>MID CARBONATE,UPR CARBONATE</dc:title>
+</horizon>
+<horizon uid="LWR CARBONATE,MID CARBONATE"><dc:title>LWR CARBONATE,MID CARBONATE</dc:title>
+</horizon>
+<horizon uid="LWR ORGANIC,LWR CARBONATE"><dc:title>LWR ORGANIC,LWR CARBONATE</dc:title>
+</horizon>
+<horizon uid="BASAL CARB,LWR ORGANIC"><dc:title>BASAL CARB,LWR ORGANIC</dc:title>
+</horizon>
+<horizon uid="LA COCINA,BASAL CARB"><dc:title>LA COCINA,BASAL CARB</dc:title>
+</horizon>
+<horizon uid="CATRIEL,LA COCINA"><dc:title>CATRIEL,LA COCINA</dc:title>
+</horizon>
+</interfaceFeatureSet>
+<griddedVolumeSet><blockedWellboreSet/>
+<gridSet><rootIJKGrid uid="Grid"><dc:title>BdP Grid [Visage](AOI)</dc:title>
+<dc:description>,RESQML: BdP Grid [Visage](AOI) import from HDF5 format,Thu Apr 25 19:30:44 2019,Thu Apr 25 19:30:44 2019,Import grid from RESQML,matt.wolinsky</dc:description>
+<startIndexI>0</startIndexI>
+<startIndexJ>0</startIndexJ>
+<startIndexK>0</startIndexK>
+<ni>116</ni>
+<nj>61</nj>
+<nk>81</nk>
+<ijkGridHdfGroup><groupPath>RESQML/Grid</groupPath>
+</ijkGridHdfGroup>
+<propertyValues><continuousPropertyValues uid="Pillars"><dc:title>Pillar information</dc:title>
+<dc:description>8</dc:description>
+<propertyAttachment>cells</propertyAttachment>
+<hdfRepresentation><groupPath>RESQML/Pillars</groupPath>
+</hdfRepresentation>
+</continuousPropertyValues>
+<discretePropertyValues uid="Horizons"><dc:title>Horizon Information</dc:title>
+<propertyAttachment>cells</propertyAttachment>
+<minimumValue>0</minimumValue>
+<maximumValue>0</maximumValue>
+<xmlRepresentation><intValues array="0 7 30 52 65 71 81"/>
+</xmlRepresentation>
+</discretePropertyValues>
+<continuousPropertyValues uid="Props/TVD"><dc:title>TVD</dc:title>
+<localKind uidRef="TVD [PropKind]">MyKind</localKind>
+<propertyAttachment>cells</propertyAttachment>
+<minimumValue>2698.7915021037147</minimumValue>
+<maximumValue>3149.8214455969182</maximumValue>
+<hdfRepresentation><groupPath>RESQML/Props/TVD</groupPath>
+</hdfRepresentation>
+</continuousPropertyValues>
+<continuousPropertyValues uid="Props/RHOB[U]"><dc:title>RHOB[U]</dc:title>
+<localKind uidRef="RHOB[U] [PropKind]">MyKind</localKind>
+<propertyAttachment>cells</propertyAttachment>
+<minimumValue>2.1646485049834223</minimumValue>
+<maximumValue>2.7609736647255483</maximumValue>
+<hdfRepresentation><groupPath>RESQML/Props/RHOB[U]</groupPath>
+</hdfRepresentation>
+</continuousPropertyValues>
+<continuousPropertyValues uid="Props/UOIL[U]"><dc:title>UOIL[U]</dc:title>
+<localKind uidRef="UOIL[U] [PropKind]">MyKind</localKind>
+<propertyAttachment>cells</propertyAttachment>
+<minimumValue>0.0</minimumValue>
+<maximumValue>0.16057295204080588</maximumValue>
+<hdfRepresentation><groupPath>RESQML/Props/UOIL[U]</groupPath>
+</hdfRepresentation>
+</continuousPropertyValues>
+</propertyValues>
+<explicitGridRepresentation><description/>
+<ijExplicitNodeSet><ijkGridHdfGroup><groupPath>RESQML/Grid</groupPath>
+</ijkGridHdfGroup>
+</ijExplicitNodeSet>
+</explicitGridRepresentation>
+</rootIJKGrid>
+</gridSet>
+</griddedVolumeSet>
+<customData/>
+</resqmlDocument>

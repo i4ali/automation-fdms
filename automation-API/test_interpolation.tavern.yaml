@@ -1,0 +1,173 @@
+---
+# Every test file has one or more tests...
+test_name: Create a geocube and run interpolation using homogenized logs
+
+marks:
+  - usefixtures:
+      - clean_tables_from_db
+includes:
+  - !include common.yaml
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: create client
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/clients"
+      method: POST
+      json:
+        companyName: "test company name"
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      save:
+        body:
+          client_uuid: client.uuid
+
+
+  - name: create project
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/projects"
+      method: POST
+      json:
+        project:
+          basin: "vaca-muerta"
+          name: "test project"
+          crs: "EPSG:5864"
+          clientUuid: "{client_uuid:s}"
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      save:
+        body:
+          project_uuid: project.uuid
+
+
+  - name: create geocube
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/stage"
+      method: POST
+      json:
+        name: "test cube"
+        projectUuid: "{project_uuid:s}"
+
+    response:
+      status_code: 200
+      save:
+        body:
+          cube_uuid: uuid
+
+  - name: add wells
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells"
+      method: POST
+      json: !include data/interpolation/wellhead.yaml
+
+    response:
+      status_code: 200
+      save:
+        $ext:
+          function: utilities.utils:get_well_uid
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      method: POST
+      files:
+        file: "data/interpolation/tops/APo-1003.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      method: POST
+      files:
+        file: "data/interpolation/trajectory/apo-1003.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      method: POST
+      files:
+        file: "data/interpolation/homogenizedrpe/APo-1003.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+#  - name: add grid settings
+  - name: add grid settings (add grid resqml)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      method: POST
+      files:
+        file: "data/interpolation/gridresqml/BdP Grid [Visage](AOI).resqml"
+        type: 'GRID_RESQML'
+    response:
+      status_code: 200
+
+  - name: add grid settings (add grid h5)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      method: POST
+      files:
+        file: "data/interpolation/gridh5/BdP Grid [Visage](AOI).resqml.h5"
+        type: 'GRID_H5'
+    response:
+      status_code: 200
+
+  - name: add grid settings (add strat)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      method: POST
+      files:
+        file: "data/interpolation/zone/strat.csv"
+        type: 'ZONE'
+    response:
+      status_code: 200
+
+  - name: edit interpolation settings (interpolation properties)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/interpolation"
+      method: PUT
+      json: !include data/interpolation/interpolationsettings.yaml
+    response:
+      status_code: 200
+
+  - name: run interpolation
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/interpolation/start"
+      method: POST
+    response:
+      status_code: 200
+
+  - name: verify successfull interpolation run
+    # Define the request to be made...
+    delay_before: 60
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}"
+      method: GET
+    response:
+      status_code: 200
+      body:
+        $ext:
+          function: utilities.utils:assert_finish_status_interpolation
+---
+

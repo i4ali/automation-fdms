@@ -1,0 +1,46 @@
+---
+# Every test file has one or more tests...
+test_name: Search a polygon and verify wellname exists within
+
+includes:
+  - !include common.yaml
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: send search polygon request and validate the wellname exist
+
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/wells?withinPolygon=%5B%5B-101.54230719531043%2C31.00765880595941%5D%2C%5B-101.48874884570102%2C31.008835844289656%5D%2C%5B-101.47913580859166%2C30.938187831113584%5D%2C%5B-101.55878668749794%2C30.93700992133803%5D%2C%5B-101.5780127617167%2C30.994710425187762%5D%2C%5B-101.54230719531043%2C31.00765880595941%5D%5D"
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        $ext:
+          function: utilities.utils:well_exists_in_polygon
+---
+
+# Every test file has one or more tests...
+test_name: Search a polygon and verify data exists for a well
+
+includes:
+  - !include common.yaml
+
+# ...and each test has one or more stages (e.g. an HTTP request)
+stages:
+  - name: send search polygon request and validate data for one of the returned well
+
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/wells?withinPolygon=%5B%5B-101.54230719531043%2C31.00765880595941%5D%2C%5B-101.48874884570102%2C31.008835844289656%5D%2C%5B-101.47913580859166%2C30.938187831113584%5D%2C%5B-101.55878668749794%2C30.93700992133803%5D%2C%5B-101.5780127617167%2C30.994710425187762%5D%2C%5B-101.54230719531043%2C31.00765880595941%5D%5D"
+      method: GET
+
+    # ...and the expected response code and body
+    response:
+      status_code: 200
+      body:
+        $ext:
+          function: utilities.utils:data_for_well_exists_in_polygon
+---
