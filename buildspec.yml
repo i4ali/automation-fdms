@@ -1,0 +1,13 @@
+version: 0.1
+
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - ECR_URI=946454339744.dkr.ecr.us-east-1.amazonaws.com/toolkit-automation:latest
+  build:
+    commands:
+      - docker build -t $ECR_URI .
+  post_build:
+    commands:
+      - docker push $ECR_URI
