@@ -133,7 +133,9 @@ stages:
     request:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/homogenization/start"
       method: POST
-      json: !include data/homogenization/homogenizationwells.yaml
+      json:
+        wells:
+          - well_uuid
     response:
       status_code: 200
 
