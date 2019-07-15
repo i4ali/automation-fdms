@@ -11,6 +11,8 @@ phases:
     commands:
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - ECR_URI=946454339744.dkr.ecr.us-east-1.amazonaws.com/toolkit-automation:latest
+      - echo $username
+      - echo $password
       - export username=username
       - export password_b64=password_b64
       - export password=password
