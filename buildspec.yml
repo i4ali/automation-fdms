@@ -6,10 +6,9 @@ phases:
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - ECR_URI=946454339744.dkr.ecr.us-east-1.amazonaws.com/toolkit-automation:latest
       - export PIP_INDEX_URL=https://$JFROG_USERNAME:$JFROG_PASSWORD@prodjfrogapplicationus.jfrog.io/prodjfrogapplicationus/api/pypi/pypi/simple
-      - echo $PIP_INDEX_URL
   build:
     commands:
-      - docker build -t $ECR_URI .
+      - docker build -t $ECR_URI . --build-arg PIP_INDEX_URL
   post_build:
     commands:
       - docker push $ECR_URI

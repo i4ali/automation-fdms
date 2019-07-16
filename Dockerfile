@@ -1,10 +1,10 @@
 FROM ubuntu:18.04
 ADD . /automationfdms
-# ADD pip.conf /root/.pip/pip.conf
-# ADD .pypirc /root/.pypirc
 ADD automation-UI/drivers/chromedriver /usr/local/bin
 ADD automation-UI/drivers/geckodriver /usr/local/bin
 ENV DEBIAN_FRONTEND=noninteractive
+ARG PIP_INDEX_URL
+ENV PIP_INDEX_URL=$PIP_INDEX_URL
 RUN apt-get update && \
     apt-get install -q -y --no-install-recommends software-properties-common && \
     apt-add-repository ppa:mozillateam/firefox-next && \
