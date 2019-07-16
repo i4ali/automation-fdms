@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   parameter-store:
-    username: cicd_jfrog_username
-    password: cicd_jfrog_password
+    username: CICD_JFROG_USERNAME
+    password: CICD_JFROG_PASSWORD
 
 phases:
   pre_build:
