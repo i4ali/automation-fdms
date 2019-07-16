@@ -1,7 +1,7 @@
 FROM ubuntu:18.04
 ADD . /automationfdms
-ADD pip.conf /root/.pip/pip.conf
-ADD .pypirc /root/.pypirc
+# ADD pip.conf /root/.pip/pip.conf
+# ADD .pypirc /root/.pypirc
 ADD automation-UI/drivers/chromedriver /usr/local/bin
 ADD automation-UI/drivers/geckodriver /usr/local/bin
 ENV DEBIAN_FRONTEND=noninteractive
