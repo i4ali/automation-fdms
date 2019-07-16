@@ -1,20 +1,11 @@
 version: 0.2
 
-env:
-  parameter-store:
-    username: CICD_JFROG_USERNAME
-    password: CICD_JFROG_PASSWORD
-
 phases:
   pre_build:
     commands:
       - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
       - ECR_URI=946454339744.dkr.ecr.us-east-1.amazonaws.com/toolkit-automation:latest
-      - export username=username
-      - export password=password
-      - echo $username
-      - echo $password
-      - export PIP_INDEX_URL=https://$username:$password@prodjfrogapplicationus.jfrog.io/prodjfrogapplicationus/api/pypi/pypi/simple
+      - export PIP_INDEX_URL=https://$JFROG_USERNAME:$JFROG_PASSWORD@prodjfrogapplicationus.jfrog.io/prodjfrogapplicationus/api/pypi/pypi/simple
       - echo $PIP_INDEX_URL
   build:
     commands:
