@@ -12,6 +12,8 @@ phases:
       - ECR_URI=946454339744.dkr.ecr.us-east-1.amazonaws.com/toolkit-automation:latest
       - export username=username
       - export password=password
+      - echo $username
+      - echo $password
       - export PIP_INDEX_URL=https://$username:$password@prodjfrogapplicationus.jfrog.io/prodjfrogapplicationus/api/pypi/pypi/simple
       - echo $PIP_INDEX_URL
   build:
