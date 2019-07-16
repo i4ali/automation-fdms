@@ -35,7 +35,7 @@ stages:
         project:
           basin: "vaca-muerta"
           name: "test project"
-          crs: "EPSG:5864"
+          crs: "EPSG:2081"
           clientUuid: "{client_uuid:s}"
 
     # ...and the expected response code and body
