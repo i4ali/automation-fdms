@@ -2,8 +2,8 @@ version: 0.2
 
 env:
   parameter-store:
-    username: imran_jfrog_username
-    password: imran_jfrog_password
+    username: cicd_jfrog_username
+    password: cicd_jfrog_password
 
 phases:
   pre_build:
@@ -13,6 +13,7 @@ phases:
       - export username=username
       - export password=password
       - export PIP_INDEX_URL=https://$username:$password@prodjfrogapplicationus.jfrog.io/prodjfrogapplicationus/api/pypi/pypi/simple
+      - echo $PIP_INDEX_URL
   build:
     commands:
       - docker build -t $ECR_URI .
