@@ -4,7 +4,7 @@ test_name: Create a geocube and run interpolation using homogenized logs
 
 marks:
   - usefixtures:
-      - clean_tables_from_db
+      - clean_resources_from_db
 includes:
   - !include common.yaml
 
@@ -138,6 +138,17 @@ stages:
       files:
         file: "data/interpolation/zone/strat.csv"
         type: 'ZONE'
+    response:
+      status_code: 200
+
+  - name: add pred parameters
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      method: POST
+      files:
+        file: "data/interpolation/prediction/p_par.csv"
+        type: 'PREDICTION'
     response:
       status_code: 200
 
