@@ -48,6 +48,7 @@ python-box==3.4.1
 python-dateutil==2.8.0
 PyYAML==5.1.1
 requests==2.20.0
+ruamel.yaml==0.15.100
 selenium==3.14.1
 simplegeneric==0.8.1
 six==1.11.0
