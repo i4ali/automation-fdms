@@ -1,0 +1,34 @@
+{
+    "geomechDepthKey": "MD",
+    "interfacesMdKey": "MD",
+    "interfacesWellNameKey": "Well",
+    "gridFreeSampleDz": 2,
+    "biotCoeff": 0.9,
+    "matrixLoMult": 1,
+    "intLoMult": 1,
+    "tectonicStrainUpperH": 0.0001,
+    "tectonicStrainLowerH": 0,
+    "calcUncertainty": true,
+    "zoneTopsKeys": [
+        "Well",
+        "Surface",
+        "MD"
+    ],
+    "porePressureKeys": [
+        "MD",
+        "Formation",
+        "Pore Pressure Gradient"
+    ],
+    "interfacesClassKeys": [
+        "Class 1",
+        "Class 2",
+        "Class 3",
+        "Class 3b",
+        "Class 4"
+    ],
+    "connectionFileKeys": [
+        "Well",
+        "MD"
+    ],
+    "interfaceMdKey": "MD"
+}

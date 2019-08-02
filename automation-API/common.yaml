@@ -3,4 +3,4 @@ description: configuration file for tests
 
 variables:
   toolkit-qa:
-    host: http://qa.fieldedge.io/api
+    host: http://dev.fieldedge.io/api

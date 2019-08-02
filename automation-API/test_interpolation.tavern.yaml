@@ -1,6 +1,190 @@
+#---
+## Every test file has one or more tests...
+#test_name: Create a geocube and run interpolation using homogenized logs
+#
+#marks:
+#  - usefixtures:
+#      - clean_resources_from_db
+#includes:
+#  - !include common.yaml
+#
+## ...and each test has one or more stages (e.g. an HTTP request)
+#stages:
+#  - name: create client
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/clients"
+#      method: POST
+#      json:
+#        companyName: "test company name"
+#
+#    # ...and the expected response code and body
+#    response:
+#      status_code: 200
+#      save:
+#        body:
+#          client_uuid: client.uuid
+#
+#
+#  - name: create project
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/projects"
+#      method: POST
+#      json:
+#        project:
+#          basin: "vaca-muerta"
+#          name: "test project"
+#          crs: "EPSG:2081"
+#          clientUuid: "{client_uuid:s}"
+#
+#    # ...and the expected response code and body
+#    response:
+#      status_code: 200
+#      save:
+#        body:
+#          project_uuid: project.uuid
+#
+#
+#  - name: create geocube
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/stage"
+#      method: POST
+#      json:
+#        name: "test cube"
+#        projectUuid: "{project_uuid:s}"
+#
+#    response:
+#      status_code: 200
+#      save:
+#        body:
+#          cube_uuid: uuid
+#
+#  - name: add wells
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells"
+#      method: POST
+#      json: !include data/interpolation/wellhead.yaml
+#
+#    response:
+#      status_code: 200
+#      save:
+#        $ext:
+#          function: utilities.utils:get_well_uid
+#
+#  - name: add data (tops)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+#      method: POST
+#      files:
+#        file: "data/interpolation/tops/APo-1003.csv"
+#        type: 'TOPS'
+#    response:
+#      status_code: 200
+#
+#  - name: add data (trajectories)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+#      method: POST
+#      files:
+#        file: "data/interpolation/trajectory/apo-1003.dev"
+#        type: 'TRAJECTORY'
+#    response:
+#      status_code: 200
+#
+#  - name: add data (rpe homogenized logs)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+#      method: POST
+#      files:
+#        file: "data/interpolation/homogenizedrpe/APo-1003.las"
+#        type: 'HOMOGENIZEDRPE'
+#    response:
+#      status_code: 200
+#
+#  #  - name: add grid settings
+#  - name: add grid settings (add grid resqml)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+#      method: POST
+#      files:
+#        file: "data/interpolation/gridresqml/BdP Grid [Visage](AOI).resqml"
+#        type: 'GRID_RESQML'
+#    response:
+#      status_code: 200
+#
+#  - name: add grid settings (add grid h5)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+#      method: POST
+#      files:
+#        file: "data/interpolation/gridh5/BdP Grid [Visage](AOI).resqml.h5"
+#        type: 'GRID_H5'
+#    response:
+#      status_code: 200
+#
+#  - name: add grid settings (add strat)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+#      method: POST
+#      files:
+#        file: "data/interpolation/zone/strat.csv"
+#        type: 'ZONE'
+#    response:
+#      status_code: 200
+#
+#  - name: add pred parameters
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+#      method: POST
+#      files:
+#        file: "data/interpolation/prediction/p_par.csv"
+#        type: 'PREDICTION'
+#    response:
+#      status_code: 200
+#
+#  - name: edit interpolation settings (interpolation properties)
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/interpolation"
+#      method: PUT
+#      json: !include data/interpolation/interpolationsettings.yaml
+#    response:
+#      status_code: 200
+#
+#  - name: run interpolation
+#    # Define the request to be made...
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/interpolation/start"
+#      method: POST
+#    response:
+#      status_code: 200
+#
+#  - name: verify successfull interpolation run
+#    # Define the request to be made...
+#    delay_before: 60
+#    request:
+#      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}"
+#      method: GET
+#    response:
+#      status_code: 200
+#      body:
+#        $ext:
+#          function: utilities.utils:assert_finish_status_interpolation
+#---
+
 ---
 # Every test file has one or more tests...
-test_name: Create a geocube and run interpolation using homogenized logs
+test_name: Create a geocube and run interpolation using homogenized logs using Grenadier dataset
 
 marks:
   - usefixtures:
@@ -25,7 +209,6 @@ stages:
         body:
           client_uuid: client.uuid
 
-
   - name: create project
     # Define the request to be made...
     request:
@@ -33,9 +216,10 @@ stages:
       method: POST
       json:
         project:
-          basin: "vaca-muerta"
+          basin: "midland"
           name: "test project"
-          crs: "EPSG:2081"
+          crs: "EPSG:32039"
+          unit: "FEET"
           clientUuid: "{client_uuid:s}"
 
     # ...and the expected response code and body
@@ -66,21 +250,154 @@ stages:
     request:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells"
       method: POST
-      json: !include data/interpolation/wellhead.yaml
+      json: !include data/grenadier/interpolation/wellhead.yaml
 
     response:
       status_code: 200
       save:
         $ext:
-          function: utilities.utils:get_well_uid
+          function: utilities.utils:get_well_uid_mapping
 
   - name: add data (tops)
     # Define the request to be made...
     request:
-      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BET THE FARM UNIT_1:s}/data"
       method: POST
       files:
-        file: "data/interpolation/tops/APo-1003.csv"
+        file: "data/grenadier/interpolation/tops/BET THE FARM UNIT_1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BARR RANCH 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/BARR RANCH 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BUCHANAN 42 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/BUCHANAN 42 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{COHIBA_1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/COHIBA_1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{GRIFFIN 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/GRIFFIN 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{LAITALA 2:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/LAITALA 2.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL 39-26 3WB:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/MORGAN-NEAL 39-26 3WB.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4051 WA:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/OLDHAM TRUST 4051 WA.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/OLDHAM 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 39 2:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/OLDHAM 39 2.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 41 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/OLDHAM 41 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{TAYLOR 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/TAYLOR 1.csv"
+        type: 'TOPS'
+    response:
+      status_code: 200
+
+  - name: add data (tops)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{THOMPSON 24 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/tops/THOMPSON 24 1.csv"
         type: 'TOPS'
     response:
       status_code: 200
@@ -88,10 +405,219 @@ stages:
   - name: add data (trajectories)
     # Define the request to be made...
     request:
-      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BET THE FARM UNIT_1:s}/data"
       method: POST
       files:
-        file: "data/interpolation/trajectory/apo-1003.dev"
+        file: "data/grenadier/interpolation/trajectory/BET_THE_FARM_UNIT_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BARR RANCH 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/BARR_RANCH_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BUCHANAN 42 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/BUCHANAN_42_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{COHIBA_1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/COHIBA_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{GRIFFIN 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/GRIFFIN_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{LAITALA 2:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/LAITALA_2.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL 39-26_2LS:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/MORGAN-NEAL_39-26_2LS.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL 39-26 3WB:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/MORGAN-NEAL_39-26_3WB.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL UNIT NO 2 39-26_1LS:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/MORGAN-NEAL_UNIT_NO_2_39-26_1LS.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL UNIT NO 2 39-26_1WA:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/MORGAN-NEAL_UNIT_NO_2_39-26_1WA.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{MORGAN-NEAL UNIT NO 2 39-26_2WA:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/MORGAN-NEAL_UNIT_NO_2_39-26_2WA.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 39 2:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_39_2.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 41 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_41_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4051 WA:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_TRUST_40-25_WA.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4051 WA 1H:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_TRUST_40-25_WA_1H.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 3871WA:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_TRUST_3871WA.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4058LS:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/OLDHAM_TRUST_4058LS.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{TAYLOR 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/TAYLOR_1.dev"
+        type: 'TRAJECTORY'
+    response:
+      status_code: 200
+
+  - name: add data (trajectories)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{THOMPSON 24 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/trajectory/THOMPSON_24_1.dev"
         type: 'TRAJECTORY'
     response:
       status_code: 200
@@ -99,34 +625,110 @@ stages:
   - name: add data (rpe homogenized logs)
     # Define the request to be made...
     request:
-      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{well_uuid:s}/data"
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BET THE FARM UNIT_1:s}/data"
       method: POST
       files:
-        file: "data/interpolation/homogenizedrpe/APo-1003.las"
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204159-BET THE FARM UNIT_1-results.las"
         type: 'HOMOGENIZEDRPE'
     response:
       status_code: 200
 
-#  - name: add grid settings
-  - name: add grid settings (add grid resqml)
+  - name: add data (rpe homogenized logs)
     # Define the request to be made...
     request:
-      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4051 WA 1H:s}/data"
       method: POST
       files:
-        file: "data/interpolation/gridresqml/BdP Grid [Visage](AOI).resqml"
-        type: 'GRID_RESQML'
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204158-OLDHAM TRUST 4051 WA 1H-results.las"
+        type: 'HOMOGENIZEDRPE'
     response:
       status_code: 200
 
-  - name: add grid settings (add grid h5)
+  - name: add data (rpe homogenized logs)
     # Define the request to be made...
     request:
-      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM 1:s}/data"
       method: POST
       files:
-        file: "data/interpolation/gridh5/BdP Grid [Visage](AOI).resqml.h5"
-        type: 'GRID_H5'
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204158-OLDHAM 1-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{THOMPSON 24 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204158-THOMPSON 24 1-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{BUCHANAN 42 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204159-BUCHANAN 42 1-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{COHIBA_1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204159-COHIBA_1-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{LAITALA 2:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204159-LAITALA 2-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST 4058LS:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204159-OLDHAM TRUST 4058LS-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{GRIFFIN 1:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204200-GRIFFIN 1-results.las"
+        type: 'HOMOGENIZEDRPE'
+    response:
+      status_code: 200
+
+  - name: add data (rpe homogenized logs)
+    # Define the request to be made...
+    request:
+      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells/{OLDHAM TRUST_3875LS:s}/data"
+      method: POST
+      files:
+        file: "data/grenadier/interpolation/homogenizedrpe/20190730204200-OLDHAM TRUST_3875LS-results.las"
+        type: 'HOMOGENIZEDRPE'
     response:
       status_code: 200
 
@@ -136,7 +738,7 @@ stages:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
       method: POST
       files:
-        file: "data/interpolation/zone/strat.csv"
+        file: "data/grenadier/interpolation/zone/strat.csv"
         type: 'ZONE'
     response:
       status_code: 200
@@ -147,7 +749,7 @@ stages:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/inputs"
       method: POST
       files:
-        file: "data/interpolation/prediction/p_par.csv"
+        file: "data/grenadier/interpolation/prediction/p_par.csv"
         type: 'PREDICTION'
     response:
       status_code: 200
@@ -157,7 +759,7 @@ stages:
     request:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/interpolation"
       method: PUT
-      json: !include data/interpolation/interpolationsettings.yaml
+      json: !include data/grenadier/interpolation/interpolationsettings.yaml
     response:
       status_code: 200
 
@@ -171,7 +773,7 @@ stages:
 
   - name: verify successfull interpolation run
     # Define the request to be made...
-    delay_before: 60
+    max_retries: 50
     request:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}"
       method: GET
@@ -180,5 +782,5 @@ stages:
       body:
         $ext:
           function: utilities.utils:assert_finish_status_interpolation
+    delay_after: 10
 ---
-

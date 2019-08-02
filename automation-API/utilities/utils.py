@@ -13,8 +13,11 @@ def data_for_well_exists_in_polygon(response):
             assert items['data']['clientFormationTops']
 
 
-def get_well_uid(response):
-    return {"well_uuid": response.json()["wells"][0]["uuid"]}
+def get_well_uid_mapping(response):
+    name_uuid_mapping={}
+    for well in response.json()["wells"]:
+        name_uuid_mapping[well['name']] = well['uuid']
+    return name_uuid_mapping
 
 
 def assert_finish_status_interpolation(response):
