@@ -66,7 +66,7 @@
 #    request:
 #      url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells"
 #      method: POST
-#      json: !include data/interpolation/wellhead.yaml
+#      json: !include data/interpolation/header-wells.yaml
 #
 #    response:
 #      status_code: 200
@@ -189,6 +189,7 @@ test_name: Create a geocube and run interpolation using homogenized logs using G
 marks:
   - usefixtures:
       - clean_resources_from_db
+  - geocube
 includes:
   - !include common.yaml
 
@@ -218,7 +219,7 @@ stages:
         project:
           basin: "midland"
           name: "test project"
-          crs: "EPSG:32039"
+          crs: "EPSG:32038"
           unit: "FEET"
           clientUuid: "{client_uuid:s}"
 
@@ -250,7 +251,7 @@ stages:
     request:
       url: "{toolkit-qa.host:s}/runs/geocube/{cube_uuid:s}/wells"
       method: POST
-      json: !include data/grenadier/interpolation/wellhead.yaml
+      json: !include data/grenadier/interpolation/header-wells.yaml
 
     response:
       status_code: 200

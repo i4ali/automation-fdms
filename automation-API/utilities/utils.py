@@ -20,6 +20,10 @@ def get_well_uid_mapping(response):
     return name_uuid_mapping
 
 
+def get_well_uid(response):
+    return {"well_uuid": response.json()["wells"][0]["uuid"]}
+
+
 def assert_finish_status_interpolation(response):
     assert response.json()["interpolation"]["status"] == "FINISHED"
 

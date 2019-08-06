@@ -2,6 +2,10 @@
 # Every test file has one or more tests...
 test_name: Search a polygon and verify wellname exists within
 
+marks:
+  - toolkit
+  - well
+
 includes:
   - !include common.yaml
 
