@@ -160,7 +160,6 @@ test_name: Create a geocube and run bulk homogenization using Grenadier dataset
 marks:
   - usefixtures:
       - clean_resources_from_db
-  - homogenization
   - geocube
 includes:
   - !include common.yaml
