@@ -190,6 +190,7 @@ marks:
   - usefixtures:
       - clean_resources_from_db
   - geocube
+  - interpolation
 includes:
   - !include common.yaml
 
