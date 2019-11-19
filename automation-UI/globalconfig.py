@@ -9,7 +9,7 @@ import logging
 # postgres_conn_URI = "postgres://stack-user:stack-password@127.0.0.1:43000/toolkit-docker"
 
 # Use the below conn_URI for testing in AWS
-postgres_conn_URI = "postgres://service-toolkit-user:JgR6zYpVmsny@toolkit-qa.cqztu6sln31x.us-east-1.rds.amazonaws.com:5432/service-toolkit-qa"
+postgres_conn_URI = ""
 
 browser = "firefox"
 
@@ -20,7 +20,7 @@ browser = "firefox"
 browser_arguments = ["start-maximized", "headless"]
 
 # Use the below conn_URI for testing in AWS
-base_url = 'http://toolk-publi-6sbctz7ri1v7-321671128.us-east-1.elb.amazonaws.com/'
+base_url = ""
 
 # Use the below conn_URI for testing locally
 # base_url = 'http://127.0.0.1:30000'
