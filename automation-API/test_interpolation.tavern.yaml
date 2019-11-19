@@ -221,7 +221,7 @@ stages:
           basin: "midland"
           name: "test project"
           crs: "EPSG:32038"
-          unit: "FEET"
+          unit: "FEET"request
           clientUuid: "{client_uuid:s}"
 
     # ...and the expected response code and body
