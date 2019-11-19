@@ -1,7 +1,7 @@
 # automation-fdms
 Test automation project for FDMS software
 
-Project root contains sub-project automation-UI and potentially automation-backend in the near future
+Project root contains sub-projects automation-UI and potentially automation-backend in the near future
 
 ## automation-UI
 UI automation is done using Python binding for selenium v3
@@ -23,4 +23,7 @@ Python v3.6
 #### Windows TBD
 
 TODO 
+
+## automation-API
+Service layer automation done using python tavern library
 
